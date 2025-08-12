@@ -1,0 +1,67 @@
+/* owl.carousel.min.css - Dùng cho thư viện Owl Carousel */
+/* Thêm nội dung CSS tại đây nếu cần */
+/* Owl Carousel - Beautiful Custom Styles */
+.owl-carousel {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 0;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.owl-carousel .owl-item {
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 10px;
+}
+.owl-carousel .owl-item.active {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.owl-carousel .owl-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.owl-carousel .owl-nav button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    cursor: pointer;
+    pointer-events: all;
+    transition: background 0.2s;
+}
+.owl-carousel .owl-nav button:hover {
+    background: #0056b3;
+}
+
+.owl-carousel .owl-dots {
+    text-align: center;
+    margin-top: 16px;
+}
+.owl-carousel .owl-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 6px;
+    background: #dee2e6;
+    border-radius: 50%;
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+.owl-carousel .owl-dot.active {
+    background: #007bff;
+    transform: scale(1.2);
+}

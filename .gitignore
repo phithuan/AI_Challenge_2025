@@ -1,0 +1,16 @@
+# Bỏ các file/dataset nặng
+*.zip
+*.rar
+*.7z
+*.mp4
+*.avi
+*.mkv
+*.pkl
+*.h5
+*.csv
+*.xlsx
+
+# Bỏ thư mục dataset
+dataset/
+data/
+D:\Big_project_2025\Text-to-Image\images_folder

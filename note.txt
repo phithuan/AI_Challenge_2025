@@ -1,0 +1,10 @@
+pip install django
+django-admin startproject name # tạo project buoi1 á
+    python manage.py startapp nameapp   # tạo app
+
+python manage.py migrate # khởi tạo mấy cái mặt định ban đầu...
+    
+
+python manage.py runserver 8888
+
+python manage.py createsuperuser # tạo account
