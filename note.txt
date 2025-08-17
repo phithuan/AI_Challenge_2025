@@ -8,3 +8,17 @@ python manage.py migrate # khởi tạo mấy cái mặt định ban đầu...
 python manage.py runserver 8888
 
 python manage.py createsuperuser # tạo account
+
+
+Mở terminal, chạy:
+
+docker compose up -d
+
+
+Truy cập:
+Milvus API ở localhost:19530
+Attu UI ở http://localhost:8000 (quản lý collection, xem vector, tìm kiếm thử)
+
+Đăng nhập Attu:
+Milvus address: milvus-standalone:19530
+Username/password: (để trống, vì Milvus chưa bật auth)
