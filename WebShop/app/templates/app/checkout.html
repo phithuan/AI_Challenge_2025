@@ -1,0 +1,109 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content_checkout %}
+
+<div class="container my-5">
+  <div class="row g-4">
+
+    <!-- ✅ Cột trái: Form nhập thông tin -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm p-4">
+        <h4 class="mb-3 text-success">Thông tin đặt hàng</h4>
+
+        <!-- Form Checkout -->
+        <form id="form">
+
+          <!-- Thông tin người dùng -->
+          <div id="user-info">
+            <!-- Họ và tên -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Họ và tên</label>
+              <input required class="form-control" type="text" name="name" placeholder="Nhập họ tên...">
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+              <input required class="form-control" type="email" name="email" placeholder="Nhập email...">
+            </div>
+
+            <!-- ✅ Số điện thoại -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Số điện thoại</label>
+              <input required class="form-control" type="tel" name="phone" placeholder="Nhập số điện thoại..." pattern="[0-9]{10,12}">
+              <small class="text-muted">Ví dụ: 0912345678</small>
+            </div>
+          </div>
+
+          <!-- Thông tin giao hàng -->
+          <div id="shipping-info">
+            <hr>
+            <h5 class="text-secondary">Thông tin giao hàng</h5>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Quốc gia</label>
+              <input class="form-control" type="text" name="country" placeholder="Nhập quốc gia...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Thành phố/ Tỉnh</label>
+              <input class="form-control" type="text" name="city" placeholder="Nhập thành phố/ tỉnh...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Quận/ xã/ ấp</label>
+              <input class="form-control" type="text" name="state" placeholder="Nhập Quận/ xã/ ấp...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
+              <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Mã bưu điện</label>
+              <input class="form-control" type="text" name="zipcode" placeholder="Nhập mã bưu điện...">
+            </div>
+          </div>
+
+          <!-- Nút tiếp tục -->
+          <div class="d-grid">
+            <input id="form-button" class="btn btn-success" type="submit" value="Tiếp tục thanh toán">
+          </div>
+        </form>
+      </div>
+
+      <!-- ✅ Thông tin thanh toán -->
+      <div class="card shadow-sm p-4 mt-4 d-none" id="payment-info">
+        <h5 class="text-primary">Phương thức thanh toán</h5>
+        <small>Hiện tại hỗ trợ <strong>PayPal</strong></small>
+      </div>
+    </div>
+
+    <!-- ✅ Cột phải: Order Summary -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm p-4">
+        <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
+        <h4 class="mb-3 text-success">Tóm tắt đơn hàng</h4>
+
+        <!-- Một sản phẩm -->
+        <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+          <img class="img-fluid rounded me-3" src="{% static 'app/images/placeholder.png' %}" alt="Sản phẩm" style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">Product 1</h6>
+            <p class="mb-0 text-muted">$20.00 x 2</p>
+          </div>
+          <span class="fw-bold">$40.00</span>
+        </div>
+
+        <!-- Tổng kết -->
+        <div class="d-flex justify-content-between mb-2">
+          <span class="fw-semibold">Số lượng sản phẩm:</span>
+          <span>2</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="fw-bold text-success">Tổng cộng:</span>
+          <span class="fw-bold text-danger">$40.00</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content_checkout %}
