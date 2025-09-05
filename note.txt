@@ -9,7 +9,10 @@ python manage.py runserver 8888
 
 python manage.py createsuperuser # tạo account
 
+python manage.py makemigrations # tạo file migration thêm cái gì mới
+python manage.py migrate # áp dụng file migration vào db
 
+==============================================================================
 Mở terminal, chạy:
 
 docker compose up -d

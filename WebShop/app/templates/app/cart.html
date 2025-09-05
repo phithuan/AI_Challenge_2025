@@ -1,0 +1,71 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block cart_content %}
+<div class="container-fluid my-5 px-5">  <!-- Đổi container → container-fluid -->
+  <h2 class="fw-bold text-success mb-4">🛒 Giỏ hàng của bạn</h2>
+
+  <!-- Nếu có sản phẩm -->
+  <div class="card shadow border-0 w-100">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2">
+          ← Tiếp tục mua sắm
+        </a>
+        <a href="{% url 'checkout' %}" class="btn btn-success mb-2">
+          Thanh toán
+        </a>
+      </div>
+
+      <!-- Bảng sản phẩm -->
+      <div class="table-responsive">
+        <table class="table table-striped align-middle text-center">
+          <thead class="table-success">
+            <tr>
+              <th scope="col" class="text-start ps-4">Sản phẩm</th>
+              <th scope="col">Giá</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col">Thành tiền</th>
+              <th scope="col">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Ví dụ 1 item -->
+            <tr>
+              <td class="text-start ps-4">
+                <div class="d-flex align-items-center">
+                  <img src="{% static 'app/images/placeholder.png' %}" 
+                       class="rounded me-3 shadow-sm" 
+                       style="width:60px; height:60px; object-fit:cover;" 
+                       alt="Product">
+                  <span class="fw-semibold">Product 1</span>
+                </div>
+              </td>
+              <td class="text-danger fw-bold">$20</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <button class="btn btn-sm btn-outline-secondary">-</button>
+                  <span class="mx-2">2</span>
+                  <button class="btn btn-sm btn-outline-secondary">+</button>
+                </div>
+              </td>
+              <td class="fw-bold">$40</td>
+              <td>
+                <button class="btn btn-sm btn-danger">Xóa</button>
+              </td>
+            </tr>
+            <!-- Kết thúc ví dụ -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tổng tiền -->
+      <div class="d-flex justify-content-end mt-4 pe-4">
+        <h4 class="fw-bold">Tổng cộng: 
+          <span class="text-danger">$42</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock cart_content %}
