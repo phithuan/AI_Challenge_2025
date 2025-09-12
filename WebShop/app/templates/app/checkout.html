@@ -15,19 +15,16 @@
 
           <!-- Thông tin người dùng -->
           <div id="user-info">
-            <!-- Họ và tên -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Họ và tên</label>
-              <input required class="form-control" type="text" name="name" placeholder="Nhập họ tên...">
+              <input required class="form-control" type="text" name="name" placeholder="Nhập họ tên..." value="{{ request.user.get_full_name }}">
             </div>
 
-            <!-- Email -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Email</label>
-              <input required class="form-control" type="email" name="email" placeholder="Nhập email...">
+              <input required class="form-control" type="email" name="email" placeholder="Nhập email..." value="{{ request.user.email }}">
             </div>
 
-            <!-- ✅ Số điện thoại -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Số điện thoại</label>
               <input required class="form-control" type="tel" name="phone" placeholder="Nhập số điện thoại..." pattern="[0-9]{10,12}">
@@ -44,15 +41,15 @@
               <input class="form-control" type="text" name="country" placeholder="Nhập quốc gia...">
             </div>
             <div class="mb-3">
-              <label class="form-label fw-semibold">Thành phố/ Tỉnh</label>
-              <input class="form-control" type="text" name="city" placeholder="Nhập thành phố/ tỉnh...">
+              <label class="form-label fw-semibold">Thành phố/ Tỉnh</label>
+              <input class="form-control" type="text" name="city" placeholder="Nhập thành phố/ tỉnh...">
             </div>
             <div class="mb-3">
-              <label class="form-label fw-semibold">Quận/ xã/ ấp</label>
-              <input class="form-control" type="text" name="state" placeholder="Nhập Quận/ xã/ ấp...">
+              <label class="form-label fw-semibold">Quận/ xã/ ấp</label>
+              <input class="form-control" type="text" name="state" placeholder="Nhập Quận/ xã/ ấp...">
             </div>
             <div class="mb-3">
-              <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
+              <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
               <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ...">
             </div>
             <div class="mb-3">
@@ -81,25 +78,33 @@
         <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
         <h4 class="mb-3 text-success">Tóm tắt đơn hàng</h4>
 
-        <!-- Một sản phẩm -->
-        <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-          <img class="img-fluid rounded me-3" src="{% static 'app/images/placeholder.png' %}" alt="Sản phẩm" style="width: 80px; height: 80px; object-fit: cover;">
-          <div class="flex-grow-1">
-            <h6 class="mb-1">Product 1</h6>
-            <p class="mb-0 text-muted">$20.00 x 2</p>
+        <!-- Danh sách sản phẩm trong giỏ -->
+        {% if items %}
+          {% for item in items %}
+          <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+            <img class="img-fluid rounded me-3" src="{{ item.product.ImageURL }}" alt="{{ item.product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
+            <div class="flex-grow-1">
+              <h6 class="mb-1">{{ item.product.name }}</h6> <!-- Tên sản phẩm -->
+              <p class="mb-0 text-muted">${{ item.product.price|floatformat:0 }} x {{ item.quantity }}</p> <!-- Giá và số lượng -->
+            </div>
+            <span class="fw-bold">${{ item.get_price_quantity|floatformat:0 }}</span> <!-- Thành tiền -->
           </div>
-          <span class="fw-bold">$40.00</span>
-        </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">Giỏ hàng trống.</p>
+        {% endif %}
 
         <!-- Tổng kết -->
+        {% if order %}
         <div class="d-flex justify-content-between mb-2">
-          <span class="fw-semibold">Số lượng sản phẩm:</span>
-          <span>2</span>
+          <span class="fw-semibold">Tổng số lượng sản phẩm:</span>
+          <span>{{ order.get_cart_items }}</span> <!-- Số lượng sản phẩm -->
         </div>
         <div class="d-flex justify-content-between">
           <span class="fw-bold text-success">Tổng cộng:</span>
-          <span class="fw-bold text-danger">$40.00</span>
+          <span class="fw-bold text-danger">${{ order.get_cart_total|floatformat:0 }}</span> <!-- Tổng tiền -->
         </div>
+        {% endif %}
       </div>
     </div>
 
