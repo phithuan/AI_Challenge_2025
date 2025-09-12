@@ -6,7 +6,7 @@
   <h2 class="fw-bold text-success mb-4">🛒 Giỏ hàng của bạn</h2>
 
   <!-- Nếu có sản phẩm -->
-  <div class="card shadow border-0 w-100">
+  <div class="card shadow border-0 w-100auto">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2">
@@ -30,31 +30,33 @@
             </tr>
           </thead>
           <tbody>
+            {% for item in items %}
             <!-- Ví dụ 1 item -->
             <tr>
               <td class="text-start ps-4">
                 <div class="d-flex align-items-center">
-                  <img src="{% static 'app/images/placeholder.png' %}" 
+                  <img src="{{ item.product.ImageURL }}" 
                        class="rounded me-3 shadow-sm" 
                        style="width:60px; height:60px; object-fit:cover;" 
                        alt="Product">
-                  <span class="fw-semibold">Product 1</span>
+                  <span class="fw-semibold">{{ item.product.name }}</span>
                 </div>
               </td>
-              <td class="text-danger fw-bold">$20</td>
+              <td class="text-danger fw-bold">{{ item.product.price |floatformat:0 }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <button class="btn btn-sm btn-outline-secondary">-</button>
-                  <span class="mx-2">2</span>
-                  <button class="btn btn-sm btn-outline-secondary">+</button>
+                  <button data-product="{{ item.product.id }}" data-action="remove" class="btn btn-sm btn-outline-secondary update-cart">-</button> <!-- Nút giảm số lượng -->
+                  <span class="mx-2">{{ item.quantity }}</span> <!-- Hiển thị số lượng -->
+                  <button data-product="{{ item.product.id }}" data-action="add" class="btn btn-sm btn-outline-secondary update-cart">+</button> <!-- Nút tăng số lượng -->
                 </div>
               </td>
-              <td class="fw-bold">$40</td>
+              <td class="fw-bold">${{ item.get_price_quantity|floatformat:0 }}</td>
               <td>
-                <button class="btn btn-sm btn-danger">Xóa</button>
+                <button data-product="{{ item.product.id }}" data-action="delete" class="btn btn-sm btn-danger update-cart">Xóa</button>
               </td>
             </tr>
             <!-- Kết thúc ví dụ -->
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -62,7 +64,7 @@
       <!-- Tổng tiền -->
       <div class="d-flex justify-content-end mt-4 pe-4">
         <h4 class="fw-bold">Tổng cộng: 
-          <span class="text-danger">$42</span>
+          <span class="text-danger">${{ order.get_cart_total|floatformat:0 }}</span>
         </h4>
       </div>
     </div>

@@ -1,0 +1,31 @@
+{% extends 'app/base.html' %}
+
+{% block main-content %}
+<div class="container my-5">
+  <div class="row g-5">
+    <!-- Hình ảnh sản phẩm -->
+    <div class="col-md-6 text-center">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+           class="img-fluid rounded shadow-lg" 
+           style="max-height: 450px; object-fit: cover;">
+    </div>
+
+    <!-- Thông tin sản phẩm -->
+    <div class="col-md-6">
+      <h2 class="fw-bold text-dark">{{ product.name }}</h2>
+      <p class="text-danger fs-3 fw-bold">{{ product.price }} ₫</p>
+      <p class="text-muted fs-5">{{ product.description }}</p>
+
+      <!-- Nút hành động -->
+      <div class="d-flex gap-3 mt-4">
+        <a href="{% url 'cart' %}" class="btn btn-success btn-lg px-4 shadow">
+          🛒 Thêm vào giỏ
+        </a>
+        <a href="{% url 'checkout' %}" class="btn btn-outline-primary btn-lg px-4 shadow">
+          💳 Mua ngay
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

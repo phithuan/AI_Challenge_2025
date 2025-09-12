@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator  # ✅ dùng validator cho số điện thoại
+from django.contrib.auth.forms import UserCreationForm  # để làm việc với User
+
 
 # Khách hàng
 class Customer(models.Model):
@@ -13,7 +15,7 @@ class Customer(models.Model):
 
 
 # Sản phẩm
-class Product(models.Model):
+class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
     name = models.CharField(max_length=200, null=True)  # Tên sản phẩm
     price = models.FloatField()  # Giá sản phẩm
     digital = models.BooleanField(default=False, null=True, blank=True)  # digital=True nghĩa là sản phẩm số (ví dụ: Ebook, phần mềm), không cần shipping
@@ -38,6 +40,18 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=200, null=True)  # Mã giao dịch
     def __str__(self):
         return str(self.id)  # Hiển thị ID đơn hàng
+    @property
+    def get_cart_items(self):
+        # Tổng số lượng sản phẩm
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total
+    @property
+    def get_cart_total(self):
+        # Tổng tiền
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_price_quantity for item in orderitems])
+        return total
 
 
 # Chi tiết từng sản phẩm trong đơn hàng
@@ -46,6 +60,11 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)  # Đơn hàng nào chứa sản phẩm này
     quantity = models.IntegerField(default=0, null=True, blank=True)  # Số lượng
     date_added = models.DateTimeField(auto_now_add=True)  # Ngày thêm vào giỏ hàng
+    @property
+    def get_price_quantity(self):
+        # Tổng tiền = giá * số lượng
+        total = self.product.price * self.quantity
+        return total
 
 
 # Địa chỉ giao hàng

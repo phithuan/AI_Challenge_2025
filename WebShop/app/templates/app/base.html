@@ -15,6 +15,25 @@
 
     <!-- ✅ JS Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+      var user = '{{ request.user }}'
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  // Cookie bắt đầu bằng tên cần tìm
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      const csrftoken = getCookie('csrftoken'); // 🔹 tạo biến global csrftoken
+    </script> <!-- Biến user để kiểm tra đăng nhập trong cart.js -->
 
     <!-- ✅ Dark mode toggle -->
     <script>
@@ -86,16 +105,40 @@
 
     <!-- User menu -->
     <ul class="navbar-nav ms-3">
+      <li class="nav-item me-3">
+        <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
+          🛒 Giỏ hàng
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cart_items }}
+          </span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link fw-semibold text-primary" href="{% url 'login' %}">
+          <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link fw-semibold text-success" href="{% url 'register' %}">
+          <i class="fas fa-user-plus me-1"></i> Đăng ký
+        </a>
+      </li>
+
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">User</a>
-        <ul class="dropdown-menu shadow">
-          <li><a class="dropdown-item" href="#">Có gì mới</a></li>
-          <li><a class="dropdown-item" href="#">Thoát</a></li>
+        <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i> {{ request.user.username|default:"Tài khoản" }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
+          <li class="dropdown-header text-muted small">
+            👋 Xin chào, <strong>{{ request.user }}</strong>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#"> Bảo mật</a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"> Thoát</a></li>
         </ul>
       </li>
-      <li class="nav-item"><a class="nav-link fw-semibold" href="{% url 'cart' %}">Giỏ hàng</a></li>
-      <li class="nav-item"><a class="nav-link fw-semibold" href="#">Đăng nhập</a></li>
-      <li class="nav-item"><a class="nav-link fw-semibold" href="#">Đăng ký</a></li>
     </ul>
   </div>
 </nav>
@@ -106,6 +149,8 @@
     {% block main-content %}{% endblock main-content %}
     {% block cart_content %}{% endblock cart_content %} <!-- giao diện trang cart -->
     {% block content_checkout %}{% endblock content_checkout %} <!-- giao diện trang checkout -->
+    {% block Register %}{% endblock Register %} <!-- giao diện trang đăng ký -->
+    {% block Login %}{% endblock Login %} <!-- giao diện trang đăng nhập -->
 
 </main>
 
@@ -144,6 +189,6 @@
     transition: 0.2s;
   }
 </style>
-
+<script src="{% static 'app/js/cart.js' %}"></script>
 </body>
 </html>
