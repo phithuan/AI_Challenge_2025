@@ -7,8 +7,11 @@ urlpatterns = [
     path('register/', views.register, name='register'), # trang đăng ký
     path('login/', views.loginPage, name='login'), # trang login
     path('logout/', views.logoutPage, name='logout'), 
+    path('search/', views.search, name='search'), 
+    path('category/<slug:slug>/', views.category, name='category'), # trang danh mục sản phẩm với slug của danh mục 
     path('cart/', views.cart, name='cart'), # trang giỏ hàng
-    path('checkout/', views.checkout, name='checkout'), # trang thanh toán  
+    path('checkout/', views.checkout, name='checkout'), # trang thanh toán
+
 
     path('update_item/', views.updateItem, name='update_item'), # cập nhật giỏ hàng
 

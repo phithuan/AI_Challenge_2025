@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.cart_data',  # Thêm context processor tùy chỉnh
+                'app.context_processors.categories_processor',  # Thêm context processor tùy chỉnh
             ],
         },
     },

@@ -1,0 +1,100 @@
+/* dark.css */
+
+/* Toàn bộ body */
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #f1f1f1 !important;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+  background-color: #1f1f1f !important;
+}
+
+/* Footer */
+body.dark-mode footer {
+  background-color: #222 !important;
+}
+
+/* Card */
+body.dark-mode .card {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .card .card-body {
+  background-color: #2a2a2a !important;
+}
+
+/* Các link hover */
+body.dark-mode .nav-link:hover {
+  color: #0dcaf0 !important;
+  transition: 0.3s;
+}
+
+
+/* 🌙 DARK MODE CHO CART */
+/* 🌙 DARK MODE CHO CART */
+body.dark-mode .card {
+  background-color: #1e1e1e !important;
+  border: 1px solid #333 !important;
+}
+
+body.dark-mode .card .card-body {
+  background-color: #262626 !important;
+  color: #f0f0f0 !important;
+}
+
+/* Header bảng */
+body.dark-mode table thead {
+  background-color: #333a46 !important; /* xám xanh đậm */
+  color: #e8e8e8 !important;
+  border-bottom: 2px solid #444 !important;
+}
+
+/* Bảng - các dòng */
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+  background-color: #2a2a2a !important;
+}
+body.dark-mode .table-striped tbody tr:nth-of-type(even) {
+  background-color: #242424 !important;
+}
+body.dark-mode table td, 
+body.dark-mode table th {
+  border-color: #444 !important;
+}
+
+/* Nút thao tác */
+body.dark-mode .btn-outline-secondary {
+  color: #ddd !important;
+  border-color: #666 !important;
+  background-color: #2f2f2f !important;
+}
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #444 !important;
+}
+
+body.dark-mode .btn-danger {
+  background-color: #a93d3d !important;
+  border: none !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-danger:hover {
+  background-color: #c74d4d !important;
+}
+
+/* Nút Thanh toán */
+body.dark-mode .btn-success {
+  background-color: #2d7d46 !important;
+  border: none !important;
+}
+body.dark-mode .btn-success:hover {
+  background-color: #379857 !important;
+}
+
+/* Tổng cộng */
+body.dark-mode .card h4 {
+  color: #f1f1f1 !important;
+}
+body.dark-mode .card h4 .text-danger {
+  color: #ff6b6b !important;  /* đỏ dịu hơn */
+}

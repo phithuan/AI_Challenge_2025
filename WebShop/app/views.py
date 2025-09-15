@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect  # render: trả template, get_object_or_404: lấy object hoặc 404, redirect: chuyển hướng
 from django.http import HttpResponse, JsonResponse  # HttpResponse đơn giản, JsonResponse nếu muốn trả JSON
-from .models import Product, Customer, Order, OrderItem  # import rõ ràng các model bạn cần
+from .models import Category, Product, Order, OrderItem  # import rõ ràng các model bạn cần
 from json import loads  # để parse JSON từ request.body nếu cần
 from django.views.decorators.csrf import csrf_exempt  # để bỏ qua CSRF cho API (nếu cần)
 import datetime  # để xử lý thời gian nếu cần
@@ -9,6 +9,26 @@ from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
+def category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category)
+    categories = Category.objects.filter(is_sub=False)
+    context = {
+        'category': category,       # danh mục đang chọn
+        'categories': categories,   # list để render dropdown
+        'products': products        # sản phẩm theo danh mục
+    }
+    return render(request, 'app/category.html', context)
+
+
+def search(request):
+    if request.method == "POST":
+        searched = request.POST["searched"]
+        keys = Product.objects.filter(name__contains = searched)
+        if not searched:
+            return redirect('home')
+    return render(request,'app/search.html',{"searched":searched, "keys":keys}) 
 
 def register(request):
     form = CreateUserForm()
@@ -40,32 +60,21 @@ def logoutPage(request):
 
 # Trang chủ: liệt kê sản phẩm
 def home(request):
-    products = Product.objects.all()  # lấy tất cả sản phẩm từ DB
-    context = {'product': products}  # gán vào context (key 'product' vì home.html đang dùng {% for item in product %})
-    return render(request, 'app/home.html', context)  # render template với context
+    products = Product.objects.all()  # lấy tất cả sản phẩm
+    context = { # đưa products và categorys vào context
+        'product': products,
+    }
+    return render(request, 'app/home.html', context)
 
 
 # Trang giỏ hàng
 def cart(request):
     # Kiểm tra user đã đăng nhập hay chưa
-    if request.user.is_authenticated:  # nếu đã đăng nhập (fix: trước đó bạn gõ 'ueser' bị sai)
-        # Lấy hoặc tạo Customer gắn với User hiện tại (tránh lỗi khi chưa có Customer)
-        customer, created = Customer.objects.get_or_create(
-            user=request.user,  # liên kết với object User
-            defaults={'name': request.user.get_full_name() or request.user.username, 'email': request.user.email}
-        )
-        # Lấy hoặc tạo Order chưa hoàn tất cho customer này
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        # Lấy các OrderItem liên quan (dùng select_related để giảm queries)
+    if request.user.is_authenticated:
+        order, created = Order.objects.get_or_create(customer=request.user, complete=False)
         items = order.orderitem_set.select_related('product').all()
     else:
-        # Người dùng ẩn danh: dùng session hoặc trả rỗng (ở đây tạm trả rỗng để tránh crash)
-        order = None  # đặt order = None để template không bị lỗi khi tham chiếu
-        items = []  # danh sách item rỗng cho anonymous users
-
-        # LƯU Ý: bạn có thể implement session-cart ở đây:
-        # cart = request.session.get('cart', {})
-        # sau đó chuyển cart dict -> items hiển thị tương tự
+        order, items = None, []
 
     context = {'items': items, 'order': order}  # đưa items và order vào context cho template sử dụng
     return render(request, 'app/cart.html', context)  # render trang cart
@@ -74,24 +83,11 @@ def cart(request):
 # Trang checkout
 def checkout(request):
     # Kiểm tra user đã đăng nhập hay chưa
-    if request.user.is_authenticated:  # nếu đã đăng nhập (fix: trước đó bạn gõ 'ueser' bị sai)
-        # Lấy hoặc tạo Customer gắn với User hiện tại (tránh lỗi khi chưa có Customer)
-        customer, created = Customer.objects.get_or_create(
-            user=request.user,  # liên kết với object User
-            defaults={'name': request.user.get_full_name() or request.user.username, 'email': request.user.email}
-        )
-        # Lấy hoặc tạo Order chưa hoàn tất cho customer này
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        # Lấy các OrderItem liên quan (dùng select_related để giảm queries)
+    if request.user.is_authenticated:
+        order, created = Order.objects.get_or_create(customer=request.user, complete=False)
         items = order.orderitem_set.select_related('product').all()
     else:
-        # Người dùng ẩn danh: dùng session hoặc trả rỗng (ở đây tạm trả rỗng để tránh crash)
-        order = None  # đặt order = None để template không bị lỗi khi tham chiếu
-        items = []  # danh sách item rỗng cho anonymous users
-
-        # LƯU Ý: bạn có thể implement session-cart ở đây:
-        # cart = request.session.get('cart', {})
-        # sau đó chuyển cart dict -> items hiển thị tương tự
+        order, items = None, []
 
     context = {'items': items, 'order': order}  # đưa items và order vào context cho template sử dụng
     return render(request, 'app/checkout.html', context)  # render template checkout
@@ -100,9 +96,8 @@ def updateItem(request):
     data = json.loads(request.body)  # parse JSON từ request body
     productId = data['productId']  # lấy productId từ data
     action = data['action']  # lấy action từ data
-    customer = request.user.customer  # lấy customer từ user hiện tại (giả sử user đã đăng nhập)
     product = Product.objects.get(id=productId)  # lấy product từ DB
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)  # lấy hoặc tạo order chưa hoàn tất
+    order, created = Order.objects.get_or_create(customer=request.user, complete=False)  # lấy hoặc tạo order chưa hoàn tất
     orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)  # lấy hoặc tạo order item (sản phẩm trong đơn hàng)
     if action == 'add':
         orderItem.quantity += 1  # tăng số lượng lên 1
@@ -130,12 +125,8 @@ def add_to_cart(request, pk):
     # Nếu user đã đăng nhập: lưu vào Order/OrderItem trong DB
     if request.user.is_authenticated:
         # lấy hoặc tạo Customer
-        customer, created = Customer.objects.get_or_create(
-            user=request.user,
-            defaults={'name': request.user.get_full_name() or request.user.username, 'email': request.user.email}
-        )
-        # lấy hoặc tạo Order chưa hoàn tất
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        order, created = Order.objects.get_or_create(customer=request.user, complete=False)
+
         # lấy hoặc tạo OrderItem cho product trong order
         order_item, created = OrderItem.objects.get_or_create(order=order, product=product, defaults={'quantity': 0})
         order_item.quantity = (order_item.quantity or 0) + 1  # tăng số lượng lên 1
