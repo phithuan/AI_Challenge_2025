@@ -47,6 +47,19 @@
                 Don't have an account? 
                 <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">Register here</a>
               </p>
+              {% if messages %}
+                {% for message in messages %}
+                  <p id="message" class="mt-4 text-center text-danger fw-bold">
+                    {{ message }}
+                  </p>
+                {% endfor %}
+              {% endif %}
+
+              <p class="mt-3 text-center">
+                <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">
+                  Register here
+                </a>
+              </p>
             </div>
 
             <!-- Image -->

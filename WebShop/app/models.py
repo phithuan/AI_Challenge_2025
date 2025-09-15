@@ -5,14 +5,22 @@ from django.contrib.auth.forms import UserCreationForm  # để làm việc vớ
 
 
 # Khách hàng
-class Customer(models.Model):
-    # Liên kết 1-1 với User trong Django, nếu user bị xóa thì set NULL
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)  
-    name = models.CharField(max_length=200, null=True)  # Tên khách hàng
-    email = models.CharField(max_length=200, null=True)  # Email khách hàng
-    def __str__(self):
-        return self.name  # Hiển thị tên khách hàng
+# class Customer(models.Model):
+#     # Liên kết 1-1 với User trong Django, nếu user bị xóa thì set NULL
+#     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)  
+#     name = models.CharField(max_length=200, null=True)  # Tên khách hàng
+#     email = models.CharField(max_length=200, null=True)  # Email khách hàng
+#     def __str__(self):
+#         return str(self.name) if self.name else "Unnamed Customer" 
 
+# danh mục Category
+class Category(models.Model): # Mỗi danh mục có các thuộc tính sau
+    sub_category = models.ForeignKey('self', on_delete=models.CASCADE, related_name='sub_categories', null=True, blank=True)
+    is_sub = models.BooleanField(default=False) # Danh mục con hay không
+    name = models.CharField(max_length=200, null=True)  # Tên danh mục
+    slug = models.SlugField(max_length=200, unique=True)  # Slug cho URL thân thiện
+    def __str__(self):
+        return self.name # Hiển thị tên danh mục
 
 # Sản phẩm
 class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
@@ -20,6 +28,8 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
     price = models.FloatField()  # Giá sản phẩm
     digital = models.BooleanField(default=False, null=True, blank=True)  # digital=True nghĩa là sản phẩm số (ví dụ: Ebook, phần mềm), không cần shipping
     image = models.ImageField(null=True, blank=True)  # Ảnh sản phẩm
+    category = models.ManyToManyField(Category, related_name='products')  # Danh mục cha
+    description = models.TextField(null=True, blank=True)  # ✅ Thêm trường mô tả
     def __str__(self):
         return self.name # Hiển thị tên sản phẩm
     @property
@@ -34,7 +44,7 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
 # Đơn hàng
 class Order(models.Model):
     # Mỗi đơn hàng thuộc về 1 khách hàng (Customer)
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)  
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  
     date_ordered = models.DateTimeField(auto_now_add=True)  # Thời điểm đặt hàng
     complete = models.BooleanField(default=False, null=True, blank=False)  # Đơn hàng đã hoàn tất chưa
     transaction_id = models.CharField(max_length=200, null=True)  # Mã giao dịch
@@ -69,7 +79,7 @@ class OrderItem(models.Model):
 
 # Địa chỉ giao hàng
 class ShippingAddress(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)  # Khách hàng nào
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # Khách hàng nào
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)  # Đơn hàng nào
     address = models.CharField(max_length=200, null=True)  # Địa chỉ cụ thể
     city = models.CharField(max_length=200, null=True)  # Thành phố

@@ -40,72 +40,51 @@ body, .header, .product, .footer, .navbar, .form-control, .btn, .dropdown-menu, 
     font-weight: bold;
 }
 
-/* Footer */
-.footer {
-    background: #f1f1f1;
-    color: #333;
-    text-align: center;
-    padding: 16px 0;
-    margin-top: 40px;
-    font-size: 1rem;
-}
 
 /* Dark mode styles */
-.dark-mode,
-.dark-mode body {
-    background-color: #121212 !important;
-    color: #f0f0f0 !important;
+/* Light mode (giữ mặc định) */
+.cart-table {
+  background-color: #3b2626;
+}
+.cart-table th,
+.cart-table td {
+  color: #122130; /* chữ tối */
 }
 
-.dark-mode .navbar,
-.dark-mode .navbar.bg-body-tertiary,
-.dark-mode .dropdown-menu,
-.dark-mode .bg-body-tertiary {
-    background-color: #1e1e1e !important;
-    color: #f0f0f0 !important;
+/* Dark mode */
+body.dark-mode .cart-table {
+  background-color: #1c1c1c; /* nền tối nhẹ */
 }
 
-.dark-mode .nav-link,
-.dark-mode .navbar-brand,
-.dark-mode .dropdown-item {
-    color: #f0f0f0 !important;
+body.dark-mode .cart-table th {
+  background-color: #2a2a2a; /* header đậm hơn */
+  color: #f8f9fa; /* chữ sáng */
 }
 
-.dark-mode .form-control {
-    background-color: #23272b !important;
-    color: #f0f0f0 !important;
-    border-color: #444 !important;
+body.dark-mode .cart-table td {
+  background-color: #1c1c1c;
+  color: #eaeaea; /* chữ sáng hơn */
+  border-color: #333; /* viền mờ */
 }
 
-.dark-mode .btn {
-    background-color: #23272b !important;
-    color: #f0f0f0 !important;
-    border-color: #444 !important;
+/* Giữ nút nổi bật */
+body.dark-mode .btn-outline-secondary {
+  border-color: #666;
+  color: #eaeaea;
+}
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #333;
+  color: #fff;
 }
 
-.dark-mode footer,
-.dark-mode .footer {
-    background-color: #1e1e1e !important;
-    color: #f0f0f0 !important;
+/* Nút Xóa vẫn đỏ nhưng sáng hơn */
+body.dark-mode .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
 }
-
-.dark-mode .header {
-    background: #1e1e1e !important;
-    color: #f0f0f0 !important;
-}
-
-.dark-mode .product {
-    background: #1e1e1e !important;
-    border-color: #444 !important;
-    box-shadow: 0 2px 8px rgba(255,255,255,0.05) !important;
-}
-.dark-mode .product:hover {
-    box-shadow: 0 4px 16px rgba(255,255,255,0.12) !important;
-}
-
-.dark-mode .product-title {
-    color: #f0f0f0 !important;
-}
-.dark-mode .product-price {
-    color: #ff6b6b !important; /* Màu đỏ nhạt hơn cho dark mode */
+body.dark-mode .btn-danger:hover {
+  background-color: #e55361;
+  border-color: #e55361;
+  color: #fff;
 }
