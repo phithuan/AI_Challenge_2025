@@ -20,4 +20,7 @@ urlpatterns = [
 
     # Thêm route thêm vào giỏ hàng
     path('add-to-cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
+
+    # API chatbot
+    path("chatbot_api/", views.chatbot_api, name="chatbot_api"),
 ]

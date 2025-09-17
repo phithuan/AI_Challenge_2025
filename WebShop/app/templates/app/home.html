@@ -87,6 +87,28 @@
   </div>
 </div>
 
+<!-- Bong bóng chatbot -->
+<div id="chatbot-bubble" onclick="toggleChat()">💬</div>
+
+<!-- Khung chat -->
+<div id="chatbot-box">
+  <div id="chatbot-header">
+    🤖 Chatbot AI
+    <button onclick="toggleChat()">✖</button>
+  </div>
+  <div id="chatbot-messages"></div>
+  <div id="chatbot-input">
+    <textarea id="chatbot-text" placeholder="Nhập câu hỏi..."></textarea>
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+
+<!-- ✅ Import CSS + JS -->
+<link rel="stylesheet" href="{% static 'app/css/chatbot.css' %}">
+<script src="{% static 'app/js/chatbot.js' %}"></script>
+
+
 <!-- ✅ CSS cho ảnh sản phẩm -->
 <style>
   /* Hiệu ứng hover */
