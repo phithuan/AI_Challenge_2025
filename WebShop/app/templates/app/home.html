@@ -1,6 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% block banner_slider %}
+<link rel="stylesheet" href="{% static 'app/css/style.css' %}">
 <!-- ✅ Carousel Bootstrap -->
 <div id="carouselExampleDark" class="carousel slide carousel-fade" data-bs-ride="carousel">
 
@@ -12,31 +13,39 @@
 
   <!-- 🔹 Nội dung của từng slide -->
   <div class="carousel-inner">
-
     <!-- Slide 1 -->
     <div class="carousel-item active" data-bs-interval="6000">
-      <img src="{% static 'app/image/banner/nen_OP.jpg' %}" 
-           class="d-block w-100 img-fluid" 
-           alt="Thời đại mới" 
-           style="height: 500px; object-fit: cover;">
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-        <h5 class="fw-bold text-light">🌊 Thời đại hải tặc mới</h5>
-        <p class="text-light">⚡ Trí tuệ nhân tạo - Trợ lý cá nhân của bạn</p>
+      <img src="{% static 'app/image/banner/Gemini_Generated_2.png' %}" 
+          class="d-block w-100 img-fluid" 
+          alt="Thời đại hải tặc mới" 
+          style="height: 950px; object-fit: cover;">
+      <!-- 🔹 Caption căn giữa, màu đen -->
+      <div class="carousel-caption d-none d-md-block text-animate text-dark" 
+          style="top: 30%; transform: translateY(-30%);">
+        <h1 class="fw-bold display-2">Không gian tập trung</h1>
+        <p class="fs-3">Trí tuệ nhân tạo - Trợ lý cá nhân của bạn</p>
       </div>
     </div>
 
     <!-- Slide 2 -->
     <div class="carousel-item" data-bs-interval="6000">
-      <img src="{% static 'app/image/banner/anhgiadinh.jpg' %}" 
-           class="d-block w-100 img-fluid" 
-           alt="Thời đại mới" 
-           style="height: 500px; object-fit: cover;">
-      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-        <h5 class="fw-bold text-light">Thời đại mới</h5>
-        <p class="text-light">Bộ sofa, kích thước lớn trong một không gian không chỉ rộng mà còn mở thích hợp cho những buổi sum họp gia đình và hội ngộ bạn bè.</p>
+      <img src="{% static 'app/image/banner/Gemini_Generated.png' %}" 
+          class="d-block w-100 img-fluid" 
+          alt="Thời đại mới" 
+          style="height: 950px; object-fit: cover;">
+      <!-- 🔹 Caption đặt trên cao bên trái -->
+      <div class="carousel-caption d-none d-md-block text-start text-animate"
+          style="position: absolute; top: 1%; left: 20%; right: auto; max-width: 600px; text-align: left;">
+        <h1 class="fw-bold display-3" style="color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); white-space: nowrap;"> 
+          Thế giới trong tầm tay
+        </h1>
+        <p class="fs-4" style="color: #ffffff; text-shadow: 1px 1px 6px rgba(0,0,0,0.6);">
+          Khám phá không gian làm việc hiện đại, năng động, 
+          nơi công nghệ và sự sáng tạo hòa quyện cùng tầm nhìn đô thị đầy cảm hứng. 
+          Bắt đầu hành trình của bạn ngay tại đây!
+        </p>
       </div>
     </div>
-
   </div>
 
   <!-- 🔹 Nút qua lại -->

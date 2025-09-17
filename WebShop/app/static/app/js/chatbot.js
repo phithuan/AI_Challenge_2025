@@ -1,4 +1,4 @@
-function toggleChat() { // Hiển thị/hấp hộp hộp thoại
+function toggleChat() { // dùng để mở/đóng hộp thoại chat.
   let box = document.getElementById("chatbot-box");
   let bubble = document.getElementById("chatbot-bubble");
   if (box.style.display === "flex") {
@@ -10,12 +10,12 @@ function toggleChat() { // Hiển thị/hấp hộp hộp thoại
   }
 }
 
-async function sendMessage() {
-  let input = document.getElementById("chatbot-text");
-  let messages = document.getElementById("chatbot-messages");
-  let text = input.value.trim();
+async function sendMessage() { // gửi tin nhắn và nhận phản hồi từ chatbot
+  let input = document.getElementById("chatbot-text"); // input text area
+  let messages = document.getElementById("chatbot-messages"); // div chứa tin nhắn
+  let text = input.value.trim(); // lấy nội dung và loại bỏ khoảng trắng thừa
 
-  if (text === "") return;
+  if (text === "") return; // nếu rỗng thì không làm gì
 
   // Tin nhắn người dùng
   let userMsg = document.createElement("div");
@@ -23,7 +23,7 @@ async function sendMessage() {
   userMsg.textContent = text;
   messages.appendChild(userMsg);
 
-  // Separator
+  // Separator giữa các lượt chat (⭐)
   let sep = document.createElement("div");
   sep.className = "separator";
   sep.innerHTML = "⭐";
