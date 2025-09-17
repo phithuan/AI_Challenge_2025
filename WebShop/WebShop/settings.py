@@ -16,6 +16,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import sys, os
+sys.path.append(os.path.join(BASE_DIR, '..', 'RAG_Milvus')) # Thêm đường dẫn đến thư mục RAG_Milvus vào sys.path
+print("BASE_DIR:", BASE_DIR)
+print("sys.path:", sys.path)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/

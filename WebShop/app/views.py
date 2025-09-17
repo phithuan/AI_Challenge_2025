@@ -10,6 +10,7 @@ from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
+
 def category(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(category=category)
@@ -148,3 +149,28 @@ def add_to_cart(request, pk):
 # - Tạo template 'app/product_detail.html' để hiển thị chi tiết product (mình đã gọi render đến template đó).
 # - Nếu muốn dùng session-cart cho anonymous, hãy ở cart() đọc request.session['cart'] và build items tương ứng.
 # - Nếu bạn muốn API (AJAX) cho add_to_cart, có thể return JsonResponse thay vì redirect.
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn
+
+@csrf_exempt
+def chatbot_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            question = data.get("question", "")
+            if not question:
+                return JsonResponse({"answer": "❌ Bạn chưa nhập câu hỏi"}, status=400)
+
+            # Gọi Milvus RAG
+            answer = search_text(question, top_k=1)
+
+            return JsonResponse({"answer": answer})
+        except Exception as e:
+            return JsonResponse({"answer": f"❌ Lỗi server: {str(e)}"}, status=500)
+    return JsonResponse({"answer": "❌ Chỉ hỗ trợ POST"}, status=405)
+
