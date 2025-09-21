@@ -17,3 +17,13 @@ Text-to-Image/images_folder/
 
 # Bỏ HuggingFace cache
 huggingface_cache/
+
+models--BAAI--bge-m3/
+.locks/
+__pycache__/
+*.pt
+*.onnx
+*.bin
+*.h5
+*.pkl
+.ipynb_checkpoints/
