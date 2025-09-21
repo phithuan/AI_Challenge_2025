@@ -1,18 +1,19 @@
 {% extends 'app/base.html' %}
+ <!-- ✅ Dynamic title -->
+<title>{% block title %}Shopping Cart{% endblock %}</title>
 {% load static %}
-
 {% block cart_content %}
-<div class="container-fluid my-5 px-5">
-  <h2 class="fw-bold cart-title">🛒 Giỏ hàng của bạn</h2>
 
+<div class="container-fluid my-5 px-5">
+  <h2 class="fw-bold cart-title">🛒Your Shopping Cart</h2>
   <div class="card shadow border-0 w-100auto cart-card">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2">
-          ← Tiếp tục mua sắm
+          ← Continue Shopping
         </a>
         <a href="{% url 'checkout' %}" class="btn btn-success mb-2">
-          Thanh toán
+          Checkout
         </a>
       </div>
 
@@ -21,11 +22,11 @@
         <table class="table align-middle text-center cart-table">
           <thead class="cart-thead">
             <tr>
-              <th scope="col" class="text-start ps-4">Sản phẩm</th>
-              <th scope="col">Giá</th>
-              <th scope="col">Số lượng</th>
-              <th scope="col">Thành tiền</th>
-              <th scope="col">Thao tác</th>
+              <th scope="col" class="text-start ps-4">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -60,9 +61,7 @@
 
       <!-- Tổng tiền -->
       <div class="d-flex justify-content-end mt-4 pe-4">
-        <h4 class="fw-bold">Tổng cộng: 
-          <span class="total-text fw-bold">${{ order.get_cart_total|floatformat:0 }}</span>
-        </h4>
+        <h4 class="fw-bold">Total: <span class="total-text fw-bold">${{ order.get_cart_total|floatformat:0 }}</span></h4>
       </div>
     </div>
   </div>

@@ -51,7 +51,7 @@ services:
       - etcd
       - minio
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health"]
       interval: 30s
       timeout: 20s
       retries: 3

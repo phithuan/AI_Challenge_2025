@@ -23,13 +23,38 @@ def category(request, slug):
     return render(request, 'app/category.html', context)
 
 
+from django.shortcuts import render, redirect
+from django.db.models import Q
+from .models import Product
+from .milvus_utils import search_milvus
+
 def search(request):
     if request.method == "POST":
         searched = request.POST["searched"]
-        keys = Product.objects.filter(name__contains = searched)
+
         if not searched:
             return redirect('home')
-    return render(request,'app/search.html',{"searched":searched, "keys":keys}) 
+
+        # Tách từ khóa
+        keywords = searched.split()
+
+        # Tạo truy vấn OR
+        query = Q()
+        for keyword in keywords:
+            query |= Q(name__icontains=keyword)
+
+        # Tìm trong DB
+        keys = Product.objects.filter(query)
+
+        # Tìm trong Milvus
+        image_results = search_milvus(searched, top_k=6)
+
+        return render(
+            request,
+            'app/search.html',
+            {"searched": searched, "keys": keys, "image_results": image_results}
+        )
+
 
 def register(request):
     form = CreateUserForm()
