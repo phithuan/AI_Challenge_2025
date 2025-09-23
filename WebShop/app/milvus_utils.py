@@ -40,10 +40,10 @@ def search_milvus(query_vi: str, top_k=6):
     )
 
     # Parse kết quả
-    hits = []
+    hits = [] # danh sách kết quả
     for result in search_results[0]:
         # Chuyển đường dẫn tuyệt đối thành tương đối
         filepath = result["entity"]["filepath"]
         relative_path = filepath.replace(r"D:/Big_project_2025/WebShop/app/static", "").replace("\\", "/").lstrip("/") # Windows path fix + remove leading slash
         hits.append({"filepath": relative_path})
-    return hits
+    return hits 

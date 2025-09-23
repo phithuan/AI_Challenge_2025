@@ -52,21 +52,19 @@
     </div>
   {% endif %}
 
-  {% if image_results %}
+  {% if image_results %} <!-- Kiểm tra nếu có kết quả từ Milvus -->
   <hr class="my-5">
-  <h4 class="mb-4">🖼 Gợi ý sản phẩm tương tự bằng hình ảnh</h4>
+  <h4 class="mb-4">🖼 Gợi ý sản phẩm tương tự bằng Milvus vector search:</h4>
   <div class="row text-center">
-    {% for hit in image_results %}
+    {% for hit in image_results %} 
     <div class="col-md-3 mb-4">
       <div class="card shadow-sm border-0 rounded-3">
-        <img src="{% static hit.filepath %}" class="product-img" alt="Similar product">
+        <img src="{% static hit.filepath %}" class="product-img" alt="Similar product"> <!-- Sử dụng static cho ảnh tĩnh -->
       </div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
-
-
 </div>
 
 <!-- ✅ CSS cho ảnh sản phẩm -->

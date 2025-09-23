@@ -1,0 +1,50 @@
+{% extends 'app/base.html' %}
+<title>{% block title %}Order Success{% endblock %}</title>
+{% load static %}
+
+{% block content_checkout %}
+<div class="container my-5">
+  <div class="card shadow-lg p-5 text-center">
+
+    <!-- Thông báo thành công -->
+    <h2 class="text-success fw-bold mb-4">🎉 Đặt hàng thành công!</h2>
+    <p class="text-muted mb-5">Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi. Đơn hàng của bạn đã được xác nhận</p>
+
+    <!-- Thông tin sản phẩm -->
+    <h5 class="text-start mb-3">🛒 Sản phẩm đã mua:</h5>
+    <ul class="list-group text-start mb-4">
+      {% for item in items %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+        <strong>${{ item.get_price_quantity|floatformat:0 }}</strong>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Tổng tiền -->
+    <div class="d-flex justify-content-between border-top pt-3 mb-4">
+      <span class="fw-bold text-success">Tổng cộng:</span>
+      <span class="fw-bold text-danger">${{ order.get_cart_total|floatformat:0 }}</span>
+    </div>
+
+    <!-- Địa chỉ giao hàng -->
+    {% if shipping %}
+    <div class="alert alert-light text-start border rounded-3 shadow-sm">
+      <h6 class="fw-bold mb-2">📦 Địa chỉ giao hàng:</h6>
+      <p class="mb-0">
+        {{ shipping.address }}<br>
+        {{ shipping.state }}, {{ shipping.city }}<br>
+        {{ shipping.country }} - {{ shipping.zipcode }}
+      </p>
+      <small>📞 {{ shipping.mobile }}</small>
+    </div>
+    {% endif %}
+
+    <!-- Nút quay về -->
+    <div class="mt-4">
+      <a href="{% url 'home' %}" class="btn btn-primary">⬅️ Quay về trang chủ</a>
+    </div>
+
+  </div>
+</div>
+{% endblock content_checkout %}

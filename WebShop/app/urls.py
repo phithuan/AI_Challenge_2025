@@ -11,6 +11,7 @@ urlpatterns = [
     path('category/<slug:slug>/', views.category, name='category'), # trang danh mục sản phẩm với slug của danh mục 
     path('cart/', views.cart, name='cart'), # trang giỏ hàng
     path('checkout/', views.checkout, name='checkout'), # trang thanh toán
+    path('order_success/<int:order_id>/', views.order_success, name='order_success'), # trang thông báo đặt hàng thành công
 
 
     path('update_item/', views.updateItem, name='update_item'), # cập nhật giỏ hàng
@@ -23,4 +24,7 @@ urlpatterns = [
 
     # API chatbot
     path("chatbot_api/", views.chatbot_api, name="chatbot_api"),
+
+    # ✅ Xử lý thanh toán + thông báo
+    path('process_order/', views.process_order, name='process_order'), # xử lý đơn hàng
 ]

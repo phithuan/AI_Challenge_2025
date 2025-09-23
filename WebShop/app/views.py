@@ -168,12 +168,55 @@ def add_to_cart(request, pk):
     request.session.modified = True  # đánh dấu session đã thay đổi để Django lưu
     return redirect('cart')  # chuyển về trang cart
 
-
 # GHI CHÚ:
 # - Đảm bảo trong urls.py bạn có tên đường dẫn 'cart', 'product_detail', 'add_to_cart' tương ứng.
 # - Tạo template 'app/product_detail.html' để hiển thị chi tiết product (mình đã gọi render đến template đó).
 # - Nếu muốn dùng session-cart cho anonymous, hãy ở cart() đọc request.session['cart'] và build items tương ứng.
 # - Nếu bạn muốn API (AJAX) cho add_to_cart, có thể return JsonResponse thay vì redirect.
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Order, OrderItem, ShippingAddress
+from django.contrib.auth.decorators import login_required
+
+@login_required # đảm bảo chỉ user đã đăng nhập mới được gọi
+def process_order(request): # xử lý đơn hàng
+    if request.method == "POST":
+        # Lấy đơn hàng chưa hoàn tất của user
+        order, created = Order.objects.get_or_create(customer=request.user, complete=False) # lấy hoặc tạo đơn hàng chưa hoàn tất
+
+        # Lưu ShippingAddress
+        ShippingAddress.objects.create(
+            customer=request.user,
+            order=order,
+            address=request.POST.get('address'),
+            city=request.POST.get('city'),
+            state=request.POST.get('state'),
+            mobile=request.POST.get('phone'),
+        )
+
+        # Đánh dấu đơn hàng đã hoàn tất
+        order.complete = True
+        order.save()
+
+        return redirect('order_success', order_id=order.id) # chuyển đến trang thông báo thành công
+
+    return redirect('checkout')
+
+
+@login_required
+def order_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user, complete=True)
+    items = order.orderitem_set.all()
+
+    shipping = ShippingAddress.objects.filter(order=order).first()
+
+    context = {
+        "order": order,
+        "items": items,
+        "shipping": shipping,
+    }
+    return render(request, "app/order_success.html", context)
+
 
 
 
@@ -198,4 +241,5 @@ def chatbot_api(request):
         except Exception as e:
             return JsonResponse({"answer": f"❌ Lỗi server: {str(e)}"}, status=500)
     return JsonResponse({"answer": "❌ Chỉ hỗ trợ POST"}, status=405)
+
 

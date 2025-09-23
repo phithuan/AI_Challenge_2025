@@ -12,7 +12,8 @@
         <h4 class="mb-3 text-success">Thông tin đặt hàng</h4>
 
         <!-- Form Checkout -->
-        <form id="form">
+        <form method="POST" action="{% url 'process_order' %}" id="form">
+          {% csrf_token %}
 
           <!-- Thông tin người dùng -->
           <div id="user-info">
@@ -61,9 +62,10 @@
 
           <!-- Nút tiếp tục -->
           <div class="d-grid">
-            <input id="form-button" class="btn btn-success" type="submit" value="Tiếp tục thanh toán">
+            <input id="form-button" class="btn btn-success" type="submit" value="Thanh toán">
           </div>
         </form>
+
       </div>
 
       <!-- ✅ Thông tin thanh toán -->
@@ -76,7 +78,7 @@
     <!-- ✅ Cột phải: Order Summary -->
     <div class="col-lg-6">
       <div class="card shadow-sm p-4">
-        <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
+        <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a> <!-- Nút quay lại giỏ hàng -->
         <h4 class="mb-3 text-success">Tóm tắt đơn hàng</h4>
 
         <!-- Danh sách sản phẩm trong giỏ -->
