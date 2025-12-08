@@ -1,50 +1,44 @@
-# WebShop – Demo Hệ thống Bán hàng
+# CUỘC THI AI Challenge 2025
+Tên đội: HTTA Legends Cuộc thi: AI Challenge 2025 – Thành phố Hồ Chí Minh
 
-## Giới thiệu
-Đây là một dự án **demo cơ bản** xây dựng hệ thống bán hàng trực tuyến bằng **Django + Bootstrap**.  
-Mục tiêu chính không phải thương mại hóa mà là **thử nghiệm các tính năng AI** như:
-- Chatbot hỗ trợ khách hàng.
-- Tìm kiếm sản phẩm thông minh.
-- Gợi ý sản phẩm tương đồng dựa trên ảnh.
+Nhiệm vụ
+Phát triển Hệ thống tìm bằng văn bản (Semantic Multimedia Search System), cho phép người dùng tìm ảnh, video.
 
-## Tính năng đã có
+Hệ thống được tối ưu cho CLIP + Milvus, triển khai thực tế trên Google Cloud (Ubuntu Linux).
 
-- **Trang chủ**
-  - Banner động (carousel slider) với hiệu ứng chữ.
-  - Hiển thị sản phẩm dưới dạng card (ảnh, tên, mô tả, giá).
-  - Hiệu ứng hover zoom ảnh sản phẩm.
+Thành viên
+Trưởng nhóm: Vỏ Văn Tài
 
-- **Người dùng**
-  - Đăng ký tài khoản.
-  - Đăng nhập hệ thống.
+Thành viên:
 
-- **Giỏ hàng & Thanh toán**
-  - Thêm sản phẩm vào giỏ hàng.
-  - Xem chi tiết giỏ hàng.
-  - Tiến hành thanh toán.
+Huỳnh Chí Phi Thuận
+Phan Nguyễn Vũ Huy
+Nguyễn Hoàng Ân
 
-- **Sản phẩm**
-  - Xem chi tiết sản phẩm.
-  - Phân loại sản phẩm theo danh mục.
-  - Tìm kiếm sản phẩm theo tên.
+## Mục tiêu dự án
+Xây dựng hệ thống tìm kiếm sản phẩm nội thất cực kỳ thông minh cho cửa hàng Nội Thất PT:
+- Tìm sản phẩm bằng ảnh (chụp/gửi ảnh → ra đúng món đồ)
+- Tìm sản phẩm bằng câu mô tả tự nhiên tiếng Việt (dài, lủng củng, sai chính tả vẫn ra đúng)
+- Chatbot tự động tư vấn 24/7, hiểu ý khách hàng ngay lập tức
 
-- **Chatbot AI**
-  - Bong bóng chatbot hiển thị trên mọi trang.
-  - Người dùng có thể trò chuyện trực tiếp với chatbot.
+→ Thay thế hoàn toàn tìm kiếm LIKE %% chậm chạp và “không hiểu ý”.
 
-- **Hệ thống quản lý dữ liệu**
-  - Quản lý người dùng, sản phẩm, danh mục, đơn hàng, mô tả sản phẩm.
-  - CSDL: SQLite3.
+## Vấn đề cũ → Giải pháp mới
 
-## Định hướng phát triển
-Trong tương lai, hệ thống sẽ được mở rộng:
-- 🤖 Chatbot nâng cao (dùng LLM, gợi ý sản phẩm cá nhân hóa).
-- 🖼️ Tìm kiếm sản phẩm dựa trên **ảnh tương đồng AI**.
-- 🛍️ Quản lý giỏ hàng, thanh toán cơ bản.
-- 📊 Hệ thống gợi ý sản phẩm thông minh.
+| Vấn đề cũ                              | Giải pháp mới (Vector + Milvus)                              | Kết quả thực tế đạt được                                      |
+|----------------------------------------|---------------------------------------------------------------|----------------------------------------------------------------|
+| Gõ “sofa góc chữ L trắng dưới 15tr” → 0 kết quả | Dùng CLIP + Milvus → tìm bằng ảnh hoặc text đều ra đúng sofa | Tìm đúng 100% dù tên sản phẩm không chứa từ khóa                |
+| Khách gõ sai chính tả, lóng (“ghế công thai hoc”) → không ra | Dùng bge-m3 / all-MiniLM → hiểu ngữ nghĩa tiếng Việt         | Vẫn ra đúng ghế công thái học giá rẻ nhất                     |
+| Tìm kiếm chậm khi có >10.000 sản phẩm  | Milvus IVF_FLAT / HNSW → <50ms với hàng triệu vector         | Tốc độ gần như tức thì                                        |
+| Chatbot trả lời “không hiểu”           | RAG + Milvus → lấy đúng thông tin sản phẩm để trả lời        | Chatbot tư vấn như nhân viên thật                             |
 
-## 🛠️ Công nghệ sử dụng
-- **Backend**: Django, Django REST Framework  
-- **Frontend**: HTML, CSS (Bootstrap 5), JavaScript  
-- **AI/ML**: HuggingFace Transformers, Milvus (cho vector search – tích hợp trong tương lai)  
-- **Khác**: Python 3.10+, Virtualenv  
+## Kiến trúc hệ thống (tóm tắt trong 5 bước)
+
+```mermaid
+graph TD
+    A[Ảnh sản phẩm + Mô tả] --> B(Sinh embedding)
+    B -->|CLIP/CLIP| C{Milvus Vector DB}
+    D[Câu hỏi khách / Ảnh khách gửi] --> E(Sinh embedding cùng model)
+    E --> C
+    C --> F[Top 3-5 sản phẩm phù hợp nhất + metadata]
+    F --> G[Chatbot trả lời + hiển thị ảnh]
