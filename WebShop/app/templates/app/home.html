@@ -1,0 +1,143 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block banner_slider %}
+<link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+<!-- ✅ Carousel Bootstrap -->
+<div id="carouselExampleDark" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+  <!-- 🔹 Nút điều hướng nhỏ bên dưới -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+  </div>
+
+  <!-- 🔹 Nội dung của từng slide -->
+  <div class="carousel-inner">
+    <!-- Slide 1 -->
+    <div class="carousel-item active" data-bs-interval="6000">
+      <img src="{% static 'app/image/banner/Gemini_Generated_2.png' %}" 
+          class="d-block w-100 img-fluid" 
+          alt="Thời đại hải tặc mới" 
+          style="height: 955px; object-fit: cover;">
+      <!-- 🔹 Caption căn giữa, màu đen -->
+      <div class="carousel-caption d-none d-md-block text-animate text-dark" 
+          style="top: 30%; transform: translateY(-30%);">
+        <h1 class="fw-bold display-2">Không gian tập trung</h1>
+        <p class="fs-3">Trí tuệ nhân tạo - Trợ lý cá nhân của bạn</p>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item" data-bs-interval="6000">
+      <img src="{% static 'app/image/banner/Gemini_Generated.png' %}" 
+          class="d-block w-100 img-fluid" 
+          alt="Thời đại mới" 
+          style="height: 955px; object-fit: cover;">
+      <!-- 🔹 Caption đặt trên cao bên trái -->
+      <div class="carousel-caption d-none d-md-block text-start text-animate"
+          style="position: absolute; top: 1%; left: 20%; right: auto; max-width: 600px; text-align: left;">
+        <h1 class="fw-bold display-3" style="color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); white-space: nowrap;"> 
+          Thế giới trong tầm tay
+        </h1>
+        <p class="fs-4" style="color: #ffffff; text-shadow: 1px 1px 6px rgba(0,0,0,0.6);">
+          Khám phá không gian làm việc hiện đại, năng động, 
+          nơi công nghệ và sự sáng tạo hòa quyện cùng tầm nhìn đô thị đầy cảm hứng. 
+          Bắt đầu hành trình của bạn ngay tại đây!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Nút qua lại -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+{% endblock banner_slider %}
+
+{% block main-content %}
+<!-- ✅ Phần nội dung chính -->
+<div class="container-fluid my-5 px-5"> <!-- Đổi container my-5 -> container-fluid + padding -->
+  <div class="row text-center">
+    {% for item in product %}
+    <!-- 🔹 Card sản phẩm -->
+    <div class="col-md-4 col-lg-3 mb-5"> <!--đổi col-md-4 mb-5 sangggg col-lg-3: hiển thị 4 cột trên màn hình lớn -->
+      <div class="card shadow-lg border-0 h-100">
+        
+        <!-- 🔹 Khi hover vào ảnh sẽ phóng to -->
+        <a href="{% url 'product_detail' item.id %}" class="img-hover">
+          <img src="{{ item.ImageURL }}" class="card-img-top product-img" alt="{{ item.name }}">
+        </a>
+
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold">{{item.name}}</h5>
+          <p class="card-text">{{ item.description|default:"(Chưa có mô tả)" }}</p>
+
+
+          <!-- 🔹 Nút mua hàng + giá -->
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <a  data-product="{{ item.id }}" data-action="add" 
+                href="#" class="btn btn-success update-cart">🛒 Thêm vào giỏ hàng
+            </a> 
+            <h4 class="text-danger m-0"><strong>$ {{item.price | floatformat:0}}</strong></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Bong bóng chatbot -->
+<div id="chatbot-bubble" onclick="toggleChat()">💬</div>
+
+<!-- Khung chat -->
+<div id="chatbot-box">
+  <div id="chatbot-header">
+    🤖 Chatbot AI
+    <button onclick="toggleChat()">✖</button>
+  </div>
+  <div id="chatbot-messages"></div>
+  <div id="chatbot-input">
+    <textarea id="chatbot-text" placeholder="Nhập câu hỏi..."></textarea>
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+
+<!-- ✅ Import CSS + JS -->
+<link rel="stylesheet" href="{% static 'app/css/chatbot.css' %}">
+<script src="{% static 'app/js/chatbot.js' %}"></script>
+
+
+<!-- ✅ CSS cho ảnh sản phẩm -->
+<style>
+  /* Hiệu ứng hover */
+  .img-hover img {
+    transition: transform 0.4s ease;
+  }
+  .img-hover img:hover {
+    transform: scale(1.08);
+  }
+
+  /* Cố định kích thước ảnh để đồng đều */
+  .product-img {
+    height: 250px;       /* chỉnh cao thấp tùy ý, ví dụ 250px */
+    object-fit: cover;   /* giữ tỉ lệ, cắt phần dư */
+    width: 100%;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+</style>
+{% endblock main-content %}
+
+
+

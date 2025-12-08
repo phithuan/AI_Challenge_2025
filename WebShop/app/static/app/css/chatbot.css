@@ -1,0 +1,134 @@
+/* Bong bóng nổi */
+#chatbot-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0084ff;
+  color: white;
+  font-size: 24px;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+  z-index: 9999;
+}
+#chatbot-bubble:hover { transform: scale(1.1); }
+
+/* Khung chat */
+#chatbot-box {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 340px;
+  height: 420px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  overflow: hidden;
+  z-index: 10000;
+}
+#chatbot-header {
+  background: #0084ff;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#chatbot-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Tin nhắn */
+.message {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.message.user {
+  background: #0084ff;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+}
+.message.bot {
+  background: #f1f0f0;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+}
+
+/* Separator giữa user và bot */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #aaa;
+  font-size: 12px;
+}
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+.separator:not(:empty)::before {
+  margin-right: 0.5em;
+}
+.separator:not(:empty)::after {
+  margin-left: 0.5em;
+}
+
+/* Input */
+#chatbot-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+#chatbot-input textarea {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  outline: none;
+  resize: none;
+  height: 40px;
+  font-size: 14px;
+}
+#chatbot-input button {
+  background: #0084ff;
+  border: none;
+  color: white;
+  padding: 0 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+#chatbot-input button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+/* Cuộn tin nhắn */
+#chatbot-messages {
+  scroll-behavior: smooth;
+}
+#chatbot-messages::-webkit-scrollbar {
+  width: 6px;
+}
+#chatbot-messages::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 3px;
+}
+#chatbot-messages::-webkit-scrollbar-track {
+  background: transparent;
+}

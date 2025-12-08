@@ -1,0 +1,83 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main-content %}
+<div class="container my-5">
+  <h1 class="fw-bold text-center mb-4">🌐 WebShop – Demo Hệ thống Bán hàng</h1>
+
+  <!-- Giới thiệu -->
+  <section class="mb-5">
+    <h3 class="text-primary fw-bold">📌 Giới thiệu</h3>
+    <p>
+      Đây là một dự án demo cơ bản xây dựng hệ thống bán hàng trực tuyến bằng 
+      <strong>Django</strong> + <strong>Bootstrap</strong>.
+      Mục tiêu chính không phải thương mại hóa mà là thử nghiệm các tính năng AI như:
+    </p>
+    <ul>
+      <li>🤖 Chatbot hỗ trợ khách hàng.</li>
+      <li>🔍 Tìm kiếm sản phẩm thông minh.</li>
+      <li>🖼️ Gợi ý sản phẩm tương đồng dựa trên ảnh.</li>
+    </ul>
+  </section>
+
+  <!-- Tính năng đã có -->
+  <section class="mb-5">
+    <h3 class="text-success fw-bold">✅ Tính năng đã có</h3>
+    <ul>
+      <li><strong>Trang chủ</strong>
+        <ul>
+          <li>Banner động (carousel slider) với hiệu ứng chữ.</li>
+          <li>Hiển thị sản phẩm dạng card (ảnh, tên, mô tả, giá).</li>
+          <li>Hiệu ứng hover zoom ảnh sản phẩm.</li>
+        </ul>
+      </li>
+      <li><strong>Người dùng</strong>
+        <ul>
+          <li>Đăng ký tài khoản & Đăng nhập hệ thống.</li>
+        </ul>
+      </li>
+      <li><strong>Giỏ hàng & Thanh toán</strong>
+        <ul>
+          <li>Thêm sản phẩm vào giỏ hàng.</li>
+          <li>Xem chi tiết giỏ hàng.</li>
+          <li>Tiến hành thanh toán.</li>
+        </ul>
+      </li>
+      <li><strong>Sản phẩm</strong>
+        <ul>
+          <li>Xem chi tiết sản phẩm.</li>
+          <li>Phân loại sản phẩm theo danh mục.</li>
+          <li>Tìm kiếm sản phẩm theo tên.</li>
+        </ul>
+      </li>
+      <li><strong>Chatbot AI</strong>
+        <ul>
+          <li>Bong bóng chatbot hiển thị trên mọi trang.</li>
+          <li>Người dùng có thể trò chuyện trực tiếp với chatbot.</li>
+        </ul>
+      </li>
+      <li><strong>Hệ thống quản lý dữ liệu</strong>
+        <ul>
+          <li>Quản lý người dùng, sản phẩm, danh mục, đơn hàng.</li>
+          <li>CSDL: SQLite3.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Định hướng phát triển -->
+  <section class="mb-5">
+    <h3 class="text-warning fw-bold">🚀 Định hướng phát triển</h3>
+    <ul>
+      <li>🤖 Chatbot nâng cao (dùng LLM, gợi ý sản phẩm cá nhân hóa).</li>
+      <li>🖼️ Tìm kiếm sản phẩm dựa trên ảnh tương đồng AI.</li>
+      <li>🛍️ Quản lý giỏ hàng, thanh toán nâng cao.</li>
+      <li>📊 Hệ thống gợi ý sản phẩm thông minh.</li>
+    </ul>
+  </section>
+
+  <div class="text-center">
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">⬅️ Quay lại Trang chủ</a>
+  </div>
+</div>
+{% endblock main-content %}

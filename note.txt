@@ -1,0 +1,27 @@
+pip install django
+django-admin startproject name # tạo project buoi1 á
+    python manage.py startapp nameapp   # tạo app
+
+python manage.py migrate # khởi tạo mấy cái mặt định ban đầu...
+    
+
+python manage.py runserver 8888
+
+python manage.py createsuperuser # tạo account
+
+python manage.py makemigrations # tạo file migration thêm cái gì mới
+python manage.py migrate # áp dụng file migration vào db
+
+==============================================================================
+Mở terminal, chạy:
+
+docker compose up -d
+
+
+Truy cập:
+Milvus API ở localhost:19530
+Attu UI ở http://localhost:8000 (quản lý collection, xem vector, tìm kiếm thử)
+
+Đăng nhập Attu:
+Milvus address: milvus-standalone:19530
+Username/password: (để trống, vì Milvus chưa bật auth)

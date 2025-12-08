@@ -1,0 +1,90 @@
+{% extends 'app/base.html' %}
+<title>{% block title %}Search Results{% endblock %}</title>
+{% load widget_tweaks %}
+{% load static %}
+
+{% block Register %}
+<div class="container-fluid my-5 px-5">
+  <h4 class="mb-4">
+    🔎 Kết quả tìm kiếm cho: 
+    <span class="text-primary">"{{ searched }}"</span>
+  </h4>
+
+  {% if keys %}
+    <div class="row text-center">
+      {% for item in keys %}
+      <!-- 🔹 Card sản phẩm -->
+      <div class="col-md-6 col-lg-3 mb-5">
+        <div class="card shadow-lg border-0 h-100 rounded-4 overflow-hidden">
+          
+          <!-- 🔹 Ảnh sản phẩm (có hiệu ứng hover) -->
+          <a href="{% url 'product_detail' item.id %}" class="img-hover">
+            <img src="{{ item.ImageURL }}" class="product-img" alt="{{ item.name }}">
+          </a>
+
+          <!-- 🔹 Nội dung sản phẩm -->
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold text-truncate">{{ item.name }}</h5>
+            <p class="card-text">{{ item.description|default:"(Chưa có mô tả)" }}</p>
+
+            <!-- 🔹 Nút mua hàng + Giá -->
+            <div class="d-flex justify-content-between align-items-center mt-auto">
+              <a href="#"
+                 class="btn btn-success update-cart px-3"
+                 data-product="{{ item.id }}"
+                 data-action="add">
+                 🛒 Thêm vào giỏ
+              </a>
+              <h5 class="text-danger fw-bold m-0">
+                ${{ item.price|floatformat:0 }}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- 🔹 Không tìm thấy sản phẩm -->
+    <div class="alert alert-warning text-center rounded-4 shadow-sm">
+      😥 Không tìm thấy sản phẩm nào khớp với từ khóa 
+      <strong>"{{ searched }}"</strong>.
+    </div>
+  {% endif %}
+
+  {% if image_results %} <!-- Kiểm tra nếu có kết quả từ Milvus -->
+  <hr class="my-5">
+  <h4 class="mb-4">🖼 Gợi ý sản phẩm tương tự bằng Milvus vector search:</h4>
+  <div class="row text-center">
+    {% for hit in image_results %} 
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm border-0 rounded-3">
+        <img src="{% static hit.filepath %}" class="product-img" alt="Similar product"> <!-- Sử dụng static cho ảnh tĩnh -->
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- ✅ CSS cho ảnh sản phẩm -->
+<style>
+  /* Hiệu ứng hover */
+  .img-hover img {
+    transition: transform 0.4s ease;
+  }
+  .img-hover img:hover {
+    transform: scale(1.08);
+  }
+
+  /* Cố định kích thước ảnh để đồng đều */
+  .product-img {
+    height: 250px;       /* chỉnh cao thấp tùy ý, ví dụ 250px */
+    object-fit: cover;   /* giữ tỉ lệ, cắt phần dư */
+    width: 100%;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+</style>
+
+{% endblock Register %}

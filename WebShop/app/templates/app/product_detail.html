@@ -1,0 +1,79 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main-content %}
+<div class="container my-5">
+  <div class="row g-5">
+
+    <!-- Hình ảnh sản phẩm -->
+    <div class="col-md-6 text-center">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+           class="img-fluid rounded shadow-lg" 
+           style="max-height: 450px; object-fit: cover;">
+    </div>
+
+    <!-- Thông tin sản phẩm -->
+    <div class="col-md-6">
+      <h2 class="fw-bold text-dark">{{ product.name }}</h2>
+      <p class="text-danger fs-3 fw-bold">$ {{ product.price|floatformat:0 }}</p>
+
+      <!-- ✅ Thông số chi tiết -->
+      <table class="table table-bordered mt-3">
+        <tbody>
+          {% if product.material %}
+          <tr>
+            <th>Chất liệu</th>
+            <td>{{ product.material }}</td>
+          </tr>
+          {% endif %}
+
+          {% if product.size %}
+          <tr>
+            <th>Kích thước</th>
+            <td>{{ product.size }}</td>
+          </tr>
+          {% endif %}
+
+          {% if product.origin %}
+          <tr>
+            <th>Xuất xứ</th>
+            <td>{{ product.origin }}</td>
+          </tr>
+          {% endif %}
+
+          {% if product.quality %}
+          <tr>
+            <th>Chất lượng</th>
+            <td>{{ product.quality }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+
+      <!-- ✅ Mô tả / lịch sử -->
+      <div class="mt-4">
+        <h5 class="fw-bold">📜 Mô tả sản phẩm</h5>
+        <p class="text-muted fs-6">{{ product.description|linebreaks }}</p>
+
+        {% if product.history %}
+        <h6 class="fw-bold mt-3">🕒 Lịch sử / Thông tin thêm</h6>
+        <p class="text-secondary">{{ product.history|linebreaks }}</p>
+        {% endif %}
+      </div>
+
+      <!-- ✅ Nút hành động -->
+      <div class="d-flex gap-3 mt-4">
+        <a href="#"
+           data-product="{{ product.id }}"
+           data-action="add"
+           class="btn btn-success btn-lg px-4 shadow update-cart">
+          🛒 Thêm vào giỏ
+        </a>
+        <a href="{% url 'checkout' %}" class="btn btn-outline-primary btn-lg px-4 shadow">
+          💳 Mua ngay
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

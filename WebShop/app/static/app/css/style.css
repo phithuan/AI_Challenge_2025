@@ -1,0 +1,88 @@
+/* Transition để chuyển đổi mượt mà */
+body, .header, .product, .footer, .navbar, .form-control, .btn, .dropdown-menu, .nav-link, .navbar-brand, .dropdown-item {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Header */
+.header {
+    background: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Sản phẩm */
+.product {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
+}
+.product:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.product-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.product-price {
+    color: #dc3545;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+
+/* Dark mode styles */
+/* Light mode (giữ mặc định) */
+.cart-table {
+  background-color: #3b2626;
+}
+.cart-table th,
+.cart-table td {
+  color: #122130; /* chữ tối */
+}
+
+/* Dark mode */
+body.dark-mode .cart-table {
+  background-color: #1c1c1c; /* nền tối nhẹ */
+}
+
+body.dark-mode .cart-table th {
+  background-color: #2a2a2a; /* header đậm hơn */
+  color: #f8f9fa; /* chữ sáng */
+}
+
+body.dark-mode .cart-table td {
+  background-color: #1c1c1c;
+  color: #eaeaea; /* chữ sáng hơn */
+  border-color: #333; /* viền mờ */
+}
+
+/* Giữ nút nổi bật */
+body.dark-mode .btn-outline-secondary {
+  border-color: #666;
+  color: #eaeaea;
+}
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Nút Xóa vẫn đỏ nhưng sáng hơn */
+body.dark-mode .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+body.dark-mode .btn-danger:hover {
+  background-color: #e55361;
+  border-color: #e55361;
+  color: #fff;
+}

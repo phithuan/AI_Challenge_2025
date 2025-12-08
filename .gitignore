@@ -1,0 +1,29 @@
+# Bỏ các file/dataset nặng
+*.zip
+*.rar
+*.7z
+*.mp4
+*.avi
+*.mkv
+*.pkl
+*.h5
+*.csv
+*.xlsx
+
+# Bỏ thư mục dataset
+dataset/
+data/
+Text-to-Image/images_folder/
+
+# Bỏ HuggingFace cache
+huggingface_cache/
+
+models--BAAI--bge-m3/
+.locks/
+__pycache__/
+*.pt
+*.onnx
+*.bin
+*.h5
+*.pkl
+.ipynb_checkpoints/

@@ -1,0 +1,69 @@
+{% extends 'app/base.html' %}
+ <!-- ✅ Dynamic title -->
+<title>{% block title %}Shopping Cart{% endblock %}</title>
+{% load static %}
+{% block cart_content %}
+
+<div class="container-fluid my-5 px-5">
+  <h2 class="fw-bold cart-title">🛒Your Shopping Cart</h2>
+  <div class="card shadow border-0 w-100auto cart-card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2">
+          ← Continue Shopping
+        </a>
+        <a href="{% url 'checkout' %}" class="btn btn-success mb-2">
+          Checkout
+        </a>
+      </div>
+
+      <!-- Bảng sản phẩm -->
+      <div class="table-responsive">
+        <table class="table align-middle text-center cart-table">
+          <thead class="cart-thead">
+            <tr>
+              <th scope="col" class="text-start ps-4">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td class="text-start ps-4">
+                <div class="d-flex align-items-center">
+                  <img src="{{ item.product.ImageURL }}" 
+                       class="rounded me-3 shadow-sm" 
+                       style="width:60px; height:60px; object-fit:cover;" 
+                       alt="Product">
+                  <span class="fw-semibold">{{ item.product.name }}</span>
+                </div>
+              </td>
+              <td class="price-text fw-bold">{{ item.product.price|floatformat:0 }}</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <button data-product="{{ item.product.id }}" data-action="remove" class="btn btn-sm btn-outline-secondary update-cart">-</button>
+                  <span class="mx-2">{{ item.quantity }}</span>
+                  <button data-product="{{ item.product.id }}" data-action="add" class="btn btn-sm btn-outline-secondary update-cart">+</button>
+                </div>
+              </td>
+              <td class="subtotal-text fw-bold">${{ item.get_price_quantity|floatformat:0 }}</td>
+              <td>
+                <button data-product="{{ item.product.id }}" data-action="delete" class="btn btn-sm btn-danger update-cart">Delete</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tổng tiền -->
+      <div class="d-flex justify-content-end mt-4 pe-4">
+        <h4 class="fw-bold">Total: <span class="total-text fw-bold">${{ order.get_cart_total|floatformat:0 }}</span></h4>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock cart_content %}
