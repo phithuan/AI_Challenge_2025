@@ -55,30 +55,46 @@ def search(request):
             {"searched": searched, "keys": keys, "image_results": image_results}
         )
 
+# Đăng ký
+def registerPage(request):
+    if request.user.is_authenticated:
+        return redirect('home')
 
-def register(request):
     form = CreateUserForm()
+
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()   # 🔥 DÒNG QUAN TRỌNG NHẤT
+            messages.success(request, 'Tạo tài khoản thành công')
             return redirect('login')
+        else:
+            messages.error(request, 'Đăng ký thất bại, kiểm tra lại thông tin')
+
     context = {'form': form}
     return render(request, 'app/register.html', context)
 
-def loginPage(request): # tạo hàm để đăng nhập
+
+# Đăng nhập
+def loginPage(request):
+    # Nếu đã login rồi thì không cho vào lại trang login
     if request.user.is_authenticated:
         return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username ,password=password)
+
+        user = authenticate(request, username=username, password=password)
+
         if user is not None:
-            login(request, user)
-            return redirect('home') #
-        else: messages.info(request,'user or password not correct')
-    context = {}
-    return render(request, 'app/login.html', context)
+            login(request, user)              # 🔥 dòng quan trọng
+            return redirect('home')           # home phải tồn tại trong urls
+        else:
+            messages.error(request, 'Sai username hoặc password')
+
+    return render(request, 'app/login.html')
+
 
 def logoutPage(request):
     logout(request)
@@ -86,7 +102,7 @@ def logoutPage(request):
 
 # Trang chủ: liệt kê sản phẩm
 def home(request):
-    products = Product.objects.all()  # lấy tất cả sản phẩm
+    products = Product.objects.all()[:8]  # lấy 8 sản phẩm
     context = { # đưa products và categorys vào context
         'product': products,
     }
@@ -221,24 +237,24 @@ def introduce(request):
     return render(request, 'app/introduce.html')
 
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn
+from django.http import JsonResponse # để trả JSON response
+from django.views.decorators.csrf import csrf_exempt # để bỏ qua CSRF (nếu cần). cho phép frontend JS gọi API mà không cần CSRF token
+import json # để parse JSON - đọc dữ liệu gửi từ chatbot.js
+from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\RAG_Milvus\rag_utils.py
 
 @csrf_exempt
 def chatbot_api(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body.decode("utf-8"))
-            question = data.get("question", "")
+            data = json.loads(request.body.decode("utf-8")) # Đọc dữ liệu gửi từ chatbot.js 
+            question = data.get("question", "") # Lấy câu hỏi từ data 
             if not question:
                 return JsonResponse({"answer": "❌ Bạn chưa nhập câu hỏi"}, status=400)
 
             # Gọi Milvus RAG
             answer = search_text(question, top_k=1)
 
-            return JsonResponse({"answer": answer})
+            return JsonResponse({"answer": answer}) # { "answer": "nội dung tìm được từ Milvus" }
         except Exception as e:
             return JsonResponse({"answer": f"❌ Lỗi server: {str(e)}"}, status=500)
     return JsonResponse({"answer": "❌ Chỉ hỗ trợ POST"}, status=405)

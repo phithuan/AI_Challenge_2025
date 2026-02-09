@@ -1,6 +1,6 @@
 from pymilvus import MilvusClient
 import os
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer # dùng mô hình NLP để sinh text embedding
 
 # chỉ định chỗ lưu cache
 os.environ["HF_HOME"] = r"D:\Big_project_2025\huggingface_cache"

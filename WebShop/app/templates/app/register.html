@@ -53,6 +53,12 @@
                   <label class="form-label fw-semibold"><i class="fas fa-key me-2 text-primary"></i>Confirm Password</label>
                   {{ form.password2|add_class:"form-control form-control-lg" }}
                 </div>
+                
+                {% if form.errors %}
+                <div class="alert alert-danger"> <!-- Hiển thị lỗi nếu có -->
+                  {{ form.errors }}
+                </div>
+                {% endif %}
 
                 <!-- Terms -->
                 <div class="form-check mb-4">

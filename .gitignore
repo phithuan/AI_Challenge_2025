@@ -27,3 +27,7 @@ __pycache__/
 *.h5
 *.pkl
 .ipynb_checkpoints/
+
+# Django local database
+*.sqlite3
+db.sqlite3

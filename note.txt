@@ -9,7 +9,7 @@ python manage.py runserver 8888
 
 python manage.py createsuperuser # tạo account
 
-python manage.py makemigrations # tạo file migration thêm cái gì mới
+python manage.py makemigrations # tạo file migration thêm cái gì mới - cấu hình lại model
 python manage.py migrate # áp dụng file migration vào db
 
 ==============================================================================
@@ -25,3 +25,118 @@ Attu UI ở http://localhost:8000 (quản lý collection, xem vector, tìm kiế
 Đăng nhập Attu:
 Milvus address: milvus-standalone:19530
 Username/password: (để trống, vì Milvus chưa bật auth)
+
+====
+Tuyệt vời 🎉 Web đã chạy rồi. Giờ mình tóm tắt lại **TOÀN BỘ QUY TRÌNH CHUẨN** để bạn lưu vào note, sau này quên mở ra làm lại y chang.
+
+Bạn copy nguyên khối này lưu vào `note_django_rag.txt` nhé:
+
+---
+
+# ====== KHỞI ĐỘNG LẠI PROJECT DJANGO + RAG + MILVUS ======
+
+# 1. Mở Terminal (PowerShell)
+
+# Cách nhanh: Win + R → gõ cmd hoặc powershell → Enter
+
+# 2. Vào đúng thư mục project Django (nơi có manage.py)
+
+cd D:\Big_project_2025\WebShop
+
+# Vì: python manage.py chỉ chạy được khi đứng cùng thư mục với file manage.py
+
+# 3. Nếu báo thiếu Django
+
+pip install django
+
+# Vì: Django là framework chính để chạy web
+
+# 4. Nếu báo thiếu widget_tweaks
+
+pip install django-widget-tweaks
+
+# Vì: project dùng thư viện hỗ trợ render form trong template
+
+# 5. Cài PyTorch CPU (để chạy AI, CLIP, sentence-transformer)
+
+pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
+
+# Vì: torch là nền tảng cho tất cả model embedding
+
+# 6. Cài OpenAI CLIP (TUYỆT ĐỐI KHÔNG cài "pip install clip")
+
+pip install git+[https://github.com/openai/CLIP.git](https://github.com/openai/CLIP.git)
+
+# Vì: chỉ bản này mới có clip.load("ViT-B/32")
+
+# 7. Test CLIP
+
+python
+import clip
+model, preprocess = clip.load("ViT-B/32")
+print("CLIP OK")
+exit()
+
+# 8. Cài Sentence Transformer (tạo vector text)
+
+pip install sentence-transformers
+
+# Vì: dùng để encode câu hỏi thành embedding đưa vào Milvus
+
+# 9. Fix lỗi Keras 3 không tương thích Transformers
+
+pip install tf-keras
+
+# Vì: transformers chưa support Keras 3, phải dùng keras 2.x tương thích
+
+# 10. Chạy Milvus (Vector Database)
+
+cd D:\Big_project_2025\RAG_Milvus
+docker compose up -d
+
+# Vì: Milvus lưu vector embedding để search semantic
+
+# Truy cập Attu quản lý Milvus:
+
+# [http://localhost:8000](http://localhost:8000)
+
+# Milvus API: localhost:19530
+
+# 11. Chạy Web Django
+
+cd D:\Big_project_2025\WebShop
+python manage.py runserver 8888
+
+# Vì: khởi động server web
+
+# 12. Mở trình duyệt
+
+[http://127.0.0.1:8888/](http://127.0.0.1:8888/)
+
+# Đây là web RAG Search của bạn
+
+---
+
+# ====== TƯ DUY HỆ THỐNG ======
+
+# Django: giao diện web + API
+
+# CLIP: encode hình ảnh (nếu có)
+
+# SentenceTransformer: encode văn bản thành vector
+
+# Milvus: lưu vector + tìm kiếm semantic
+
+# RAG: search vector → lấy context → trả lời
+
+---
+
+Sau này chỉ cần nhớ 3 lệnh sống còn:
+
+```bash
+cd D:\Big_project_2025\RAG_Milvus
+docker compose up -d   # bật vector DB
+
+cd D:\Big_project_2025\WebShop
+python manage.py runserver 8888  # bật web
+```

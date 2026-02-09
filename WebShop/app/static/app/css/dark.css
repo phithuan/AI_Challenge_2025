@@ -82,14 +82,18 @@ body.dark-mode .btn-danger:hover {
   background-color: #c74d4d !important;
 }
 
-/* Nút Thanh toán */
+/* Dark mode - Thanh toán (Luxury Gold) */
 body.dark-mode .btn-success {
-  background-color: #2d7d46 !important;
+  background: linear-gradient(135deg, #9c7c38, #bfa14a);
+  color: #1a1a1a !important;
   border: none !important;
+  font-weight: 600;
 }
+
 body.dark-mode .btn-success:hover {
-  background-color: #379857 !important;
+  background: linear-gradient(135deg, #bfa14a, #d4b55f);
 }
+
 
 /* Tổng cộng */
 body.dark-mode .card h4 {
@@ -97,4 +101,32 @@ body.dark-mode .card h4 {
 }
 body.dark-mode .card h4 .text-danger {
   color: #ff6b6b !important;  /* đỏ dịu hơn */
+}
+
+
+/* 🌙 DARK MODE – BẢNG THÔNG SỐ SẢN PHẨM */
+body.dark-mode .table {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+}
+
+/* Header cột (th) */
+body.dark-mode .table th {
+  background-color: #2f2f2f !important;
+  color: #ffffff !important;
+  border-color: #444 !important;
+  font-weight: 600;
+  width: 35%;
+}
+
+/* Nội dung (td) */
+body.dark-mode .table td {
+  background-color: #1f1f1f !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+/* Hover từng dòng cho dễ đọc */
+body.dark-mode .table tbody tr:hover {
+  background-color: #333 !important;
 }

@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),  # đặt luôn name để dễ gọi {% url 'home' %}
-    path('register/', views.register, name='register'), # trang đăng ký
+    path('register/', views.registerPage, name='register'), # trang đăng ký
     path('login/', views.loginPage, name='login'), # trang login
     path('logout/', views.logoutPage, name='logout'), 
     path('search/', views.search, name='search'), 
@@ -28,4 +28,5 @@ urlpatterns = [
 
     # ✅ Xử lý thanh toán + thông báo
     path('process_order/', views.process_order, name='process_order'), # xử lý đơn hàng
+
 ]

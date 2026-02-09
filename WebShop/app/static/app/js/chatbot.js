@@ -34,13 +34,14 @@ async function sendMessage() { // gửi tin nhắn và nhận phản hồi từ 
   // Gửi request lên API Django
   try {
     const res = await fetch("/chatbot_api/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: text })
+      method: "POST", // phương thức POST
+      headers: { "Content-Type": "application/json" }, // định dạng JSON
+      body: JSON.stringify({ question: text }) // gửi câu hỏi dưới dạng JSON 
     });
-    const data = await res.json();
+    const data = await res.json(); // chờ phản hồi và parse JSON
 
-    let botMsg = document.createElement("div");
+    // Tin nhắn từ bot
+    let botMsg = document.createElement("div"); 
     botMsg.className = "message bot";
     botMsg.textContent = data.answer;
     messages.appendChild(botMsg);

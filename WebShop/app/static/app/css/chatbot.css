@@ -132,3 +132,45 @@
 #chatbot-messages::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ===== TOOLTIP ===== */
+#chatbot-tooltip {
+  position: absolute;
+  right: 70px;
+  bottom: 50%;
+  transform: translateY(50%);
+  background: white;
+  color: #333;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10001;
+}
+
+/* Mũi tên */
+#chatbot-tooltip::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent white;
+}
+
+/* Animation nhấp nháy */
+@keyframes tooltipPulse {
+  0% { opacity: 0; transform: translateY(50%) scale(0.95); }
+  10% { opacity: 1; transform: translateY(50%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.tooltip-show {
+  animation: tooltipPulse 2s ease-in-out;
+}

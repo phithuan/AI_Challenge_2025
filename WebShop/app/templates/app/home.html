@@ -81,13 +81,12 @@
           <h5 class="card-title fw-bold">{{item.name}}</h5>
           <p class="card-text">{{ item.description|default:"(Chưa có mô tả)" }}</p>
 
-
           <!-- 🔹 Nút mua hàng + giá -->
           <div class="d-flex justify-content-between align-items-center mt-auto">
             <a  data-product="{{ item.id }}" data-action="add" 
-                href="#" class="btn btn-success update-cart">🛒 Thêm vào giỏ hàng
+                href="#" class="btn btn-success update-cart">Thêm vào giỏ hàng
             </a> 
-            <h4 class="text-danger m-0"><strong>$ {{item.price | floatformat:0}}</strong></h4>
+            <h4 class="text-secondary m-0 fw-semibold"><strong>$ {{item.price | floatformat:0}}</strong></h4>
           </div>
         </div>
       </div>
@@ -97,7 +96,12 @@
 </div>
 
 <!-- Bong bóng chatbot -->
-<div id="chatbot-bubble" onclick="toggleChat()">💬</div>
+<div id="chatbot-bubble" onclick="toggleChat()">💬
+  <div id="chatbot-tooltip">
+    🤖 Tôi là <b>ChatRAG</b><br>
+    bạn cần hỏi gì không?
+  </div>
+</div>
 
 <!-- Khung chat -->
 <div id="chatbot-box">
@@ -111,6 +115,25 @@
     <button onclick="sendMessage()">➤</button>
   </div>
 </div>
+
+<script>
+const tooltip = document.getElementById("chatbot-tooltip");
+
+// Tooltip nhấp nháy mỗi 2 giây
+function showTooltip() {
+  tooltip.classList.remove("tooltip-show");
+  void tooltip.offsetWidth;
+  tooltip.classList.add("tooltip-show");
+}
+setInterval(showTooltip, 3000);
+
+// Toggle chatbot (logic cũ – chắc chắn hoạt động)
+function toggleChat() {
+  const box = document.getElementById("chatbot-box");
+  box.style.display = box.style.display === "flex" ? "none" : "flex";
+  tooltip.style.display = "none";
+}
+</script>
 
 
 <!-- ✅ Import CSS + JS -->

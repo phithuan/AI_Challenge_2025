@@ -8,6 +8,9 @@
     <!-- ✅ CSS Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
     <!-- ✅ CSS custom -->
     <link id="darkModeCSS" rel="stylesheet" href="">
     <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
@@ -24,7 +27,6 @@
               const cookies = document.cookie.split(';');
               for (let i = 0; i < cookies.length; i++) {
                   const cookie = cookies[i].trim();
-                  // Cookie bắt đầu bằng tên cần tìm
                   if (cookie.substring(0, name.length + 1) === (name + '=')) {
                       cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                       break;
@@ -33,109 +35,152 @@
           }
           return cookieValue;
       }
-      const csrftoken = getCookie('csrftoken'); // 🔹 tạo biến global csrftoken
-    </script> <!-- Biến user để kiểm tra đăng nhập trong cart.js -->
-
-    <!-- ✅ Dark mode toggle -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const toggle = document.getElementById('darkModeToggle');
-          const darkModeCSS = document.getElementById('darkModeCSS');
-
-          // Hàm bật dark mode
-          function enableDarkMode() {
-              document.body.classList.add("dark-mode");
-              darkModeCSS.href = "{% static 'app/css/dark.css' %}";
-              localStorage.setItem("darkMode", "enabled");
-              if (toggle) toggle.textContent = '☀';
-          }
-
-          // Hàm tắt dark mode
-          function disableDarkMode() {
-              document.body.classList.remove("dark-mode");
-              darkModeCSS.href = "";
-              localStorage.setItem("darkMode", "disabled");
-              if (toggle) toggle.textContent = '🌙';
-          }
-
-          // Kiểm tra trạng thái khi load
-          if (localStorage.getItem("darkMode") === "enabled") {
-              enableDarkMode();
-          } else {
-              disableDarkMode();
-          }
-
-          // Sự kiện click
-          if (toggle) {
-              toggle.addEventListener("click", function () {
-                  if (document.body.classList.contains("dark-mode")) {
-                      disableDarkMode();
-                  } else {
-                      enableDarkMode();
-                  }
-              });
-          }
-      });
+      const csrftoken = getCookie('csrftoken');
     </script>
 
+    <!-- Dark mode toggle script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const body = document.body;
+        const toggle = document.getElementById('themeToggle');
+        const darkModeCSS = document.getElementById('darkModeCSS');
 
-    <!-- ✅ Dynamic title -->
-    <title>{% block title %}MyProject - Home{% endblock %}</title>
+        const sunIcon = toggle.querySelectorAll('.material-symbols-outlined')[0];
+        const moonIcon = toggle.querySelectorAll('.material-symbols-outlined')[1];
+
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            darkModeCSS.href = "{% static 'app/css/dark.css' %}";
+
+            sunIcon.classList.add('d-none');
+            moonIcon.classList.remove('d-none');
+
+            localStorage.setItem('darkMode', 'enabled');
+        }
+
+        function disableDarkMode() {
+            body.classList.remove('dark-mode');
+            darkModeCSS.href = "";
+
+            moonIcon.classList.add('d-none');
+            sunIcon.classList.remove('d-none');
+
+            localStorage.setItem('darkMode', 'disabled');
+        }
+
+        // Load trạng thái cũ
+        const savedMode = localStorage.getItem('darkMode');
+        if (savedMode === 'enabled') {
+            enableDarkMode();
+        } else {
+            disableDarkMode();
+        }
+
+        // Click toggle
+        toggle.addEventListener('click', () => {
+            body.classList.contains('dark-mode')
+                ? disableDarkMode()
+                : enableDarkMode();
+        });
+    });
+    </script>
+
+    <!-- Dynamic title -->
+    <title>{% block title %}PT_Project - Home{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Style cho nút dark mode tròn trong suốt -->
+    <style>
+      .theme-toggle-btn {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: transparent;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+      }
+      .theme-toggle-btn:hover {
+          background: rgba(0, 0, 0, 0.07);
+      }
+      .dark .theme-toggle-btn:hover {
+          background: rgba(255, 255, 255, 0.12);
+      }
+      .theme-toggle-btn .material-symbols-outlined {
+          font-size: 24px;
+          color: #495057;
+          transition: color 0.25s ease;
+      }
+      .dark .theme-toggle-btn .material-symbols-outlined {
+          color: #e9ecef;
+      }
+      .theme-toggle-btn:hover .material-symbols-outlined {
+          color: #343a40;
+      }
+      .dark .theme-toggle-btn:hover .material-symbols-outlined {
+          color: #f8f9fa;
+      }
+    </style>
 </head>
-<!-- ✅ Dùng flexbox để giữ footer ở đáy -->
+
 <body class="bg-light d-flex flex-column min-vh-100">
 
-<!-- ✅ Navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container-fluid">
     
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center fw-bold text-danger" href="{% url 'home' %}">
-      <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2" href="{% url 'home' %}">
-      MyProject
+      <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+      PT_Project
     </a>
 
-    <!-- Nút toggle khi màn hình nhỏ -->
+    <!-- Toggle mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Menu -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-      <!-- Bên trái -->
+      <!-- Menu trái -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active fw-semibold" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active fw-semibold" href="{% url 'home' %}">Trang chủ</a></li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">Products</a>
+          <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
           <ul class="dropdown-menu shadow">
             {% for c in categories %}
               <li><a class="dropdown-item" href="{% url 'category' c.slug %}">{{ c.name }}</a></li>
             {% endfor %}
           </ul>
         </li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="{% url 'introduce' %}">Introduce</a></li>
-        <li class="nav-item"><a class="nav-link disabled">Contact</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="{% url 'introduce' %}">Giới thiệu</a></li>
+        <li class="nav-item"><a class="nav-link disabled">Liên hệ</a></li>
       </ul>
 
       <!-- Dark mode + Search -->
       <div class="d-flex align-items-center">
-        <button id="darkModeToggle" class="btn btn-outline-secondary me-3">🌙</button>
-        <form class="d-flex" method= POST action = "{% url 'search' %}">
+        <!-- Nút dark mode tròn trong suốt -->
+        <button id="themeToggle" class="theme-toggle-btn me-3">
+          <span class="material-symbols-outlined">light_mode</span>
+          <span class="material-symbols-outlined d-none">nightlight</span>
+        </button>
+
+        <form class="d-flex" method="POST" action="{% url 'search' %}">
           {% csrf_token %}
-          <input class="form-control me-2 rounded-pill" type="search" placeholder="Search" name="searched">
-          <button class="btn btn-success rounded-pill">Search</button>
+          <input class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm" name="searched">
+          <button class="btn btn-success rounded-pill">Tìm</button>
         </form>
       </div>
     </div>
 
     <!-- User menu -->
     <ul class="navbar-nav ms-3">
-      <!-- Giỏ hàng luôn hiển thị -->
-      <li class="nav-item me-3">
+      <li class="nav-item me-3"> 
         <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
-          🛒 Shopping Cart
+          🛒 Giỏ hàng
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {{ cart_items }}
           </span>
@@ -143,7 +188,6 @@
       </li>
 
       {% if request.user.is_authenticated %}
-        <!-- Nếu đã đăng nhập -> chỉ hiện menu tài khoản -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">
             <i class="fas fa-user-circle me-1"></i> {{ request.user.username }}
@@ -153,20 +197,19 @@
               👋 Xin chào, <strong>{{ request.user }}</strong>
             </li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Security</a></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+            <li><a class="dropdown-item" href="#">Bảo mật</a></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Đăng xuất</a></li>
           </ul>
         </li>
       {% else %}
-        <!-- Nếu chưa đăng nhập -> hiện Login / Register -->
         <li class="nav-item">
-          <a class="nav-link fw-semibold text-primary" href="{% url 'login' %}">
-            <i class="fas fa-sign-in-alt me-1"></i> Login
+          <a class="nav-link fw-semibold" href="{% url 'login' %}">
+            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fw-semibold text-success" href="{% url 'register' %}">
-            <i class="fas fa-user-plus me-1"></i> Register
+          <a class="nav-link fw-semibold" href="{% url 'register' %}">
+            <i class="fas fa-user-plus me-1"></i> Đăng ký
           </a>
         </li>
       {% endif %}
@@ -174,21 +217,18 @@
   </div>
 </nav>
 
-<!-- ✅ Nội dung chính -->
 <main class="flex-grow-1">
     {% block banner_slider %}{% endblock banner_slider %}
     {% block main-content %}{% endblock main-content %}
-    {% block cart_content %}{% endblock cart_content %} <!-- giao diện trang cart -->
-    {% block content_checkout %}{% endblock content_checkout %} <!-- giao diện trang checkout -->
-    {% block Register %}{% endblock Register %} <!-- giao diện trang đăng ký -->
-    {% block Login %}{% endblock Login %} <!-- giao diện trang đăng nhập -->
-
+    {% block cart_content %}{% endblock cart_content %}
+    {% block content_checkout %}{% endblock content_checkout %}
+    {% block Register %}{% endblock Register %}
+    {% block Login %}{% endblock Login %}
 </main>
 
-<!-- ✅ Footer -->
 <footer class="bg-dark text-white py-1 mt-5">
   <div class="container text-center">
-    <p class="mb-1">© 2025 <span class="fw-bold text-warning">MyProject</span> - All rights reserved</p>
+    <p class="mb-1">© 2025 <span class="fw-bold text-warning">PT_Project</span> - All rights reserved</p>
     <div class="d-flex justify-content-center gap-3">
       <a href="#" class="text-light text-decoration-none">Policy</a>
       <a href="#" class="text-light text-decoration-none">Terms</a>

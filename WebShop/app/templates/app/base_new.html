@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <!-- ================= META & TITLE ================= -->
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Trang chủ Nội thất Gỗ Cao cấp Elite</title>
+
+    <!-- ================= TAILWIND CDN ================= -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- ================= ICON & FONT ================= -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+    <!-- ================= TAILWIND CONFIG ================= -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b85814",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#211811",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- ================= CUSTOM TAILWIND STYLE ================= -->
+    <style type="text/tailwindcss">
+        /* Icon Material */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Font toàn trang */
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        /* Glass effect cho navbar */
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Glass effect khi dark mode */
+        .dark .glass-nav {
+            background-color: rgba(33, 24, 17, 0.85);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#181411] dark:text-white antialiased">
+
+<!-- ================= HEADER / NAVBAR ================= -->
+<header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-[#e5e0dc] dark:border-[#3a2d24] transition-colors duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-20 h-20 flex items-center justify-between">
+
+        <!-- Logo + Menu -->
+        <div class="flex items-center gap-10">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <div class="text-primary">
+                    <!-- SVG Logo -->
+                    <svg class="size-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M39.998 35.764C39.9944 35.7463 39.9875 35.7155 39.9748 35.6706C39.9436 35.5601 39.8949 35.4259 39.8346 35.2825C39.8168 35.2403 39.7989 35.1993 39.7813 35.1602C38.5103 34.2887 35.9788 33.0607 33.7095 32.5189C30.9875 31.8691 27.6413 31.4783 24 31.4783C20.3587 31.4783 17.0125 31.8691 14.2905 32.5189C12.0012 33.0654 9.44505 34.3104 8.18538 35.1832C8.17384 35.2075 8.16216 35.233 8.15052 35.2592Z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-widest uppercase">Elite</span>
+            </div>
+
+            <!-- Menu Desktop -->
+            <nav class="hidden xl:flex items-center gap-6">
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Trang chủ</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Sản phẩm</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Bộ sưu tập</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Liên hệ</a>
+            </nav>
+        </div>
+
+        <!-- Search + Action -->
+        <div class="flex items-center gap-6">
+
+            <!-- Search -->
+            <div class="relative hidden lg:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#887263] text-lg">search</span>
+                <input class="pl-10 pr-4 py-2 bg-[#f4f2f0] dark:bg-[#2d241d] rounded-lg focus:ring-1 focus:ring-primary w-48 text-sm" placeholder="Tìm kiếm..." type="text"/>
+            </div>
+
+            <!-- Cart & Account -->
+            <div class="flex items-center gap-4">
+                <button class="hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    <span class="text-xs font-bold uppercase hidden sm:inline">Giỏ hàng</span>
+                </button>
+                <button class="hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="text-xs font-bold uppercase hidden sm:inline">Tài khoản</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <button class="xl:hidden">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="pt-20">
+
+    <!-- HERO SECTION -->
+    <!-- Banner lớn với background + CTA -->
+    <!-- (giữ nguyên toàn bộ nội dung bên trong) -->
+
+    <!-- CÁC SECTION PHÍA DƯỚI -->
+    <!-- Bộ sưu tập -->
+    <!-- Triết lý thương hiệu -->
+    <!-- Đăng ký Elite Circle -->
+    <!-- Footer -->
+
+</main>
+
+<!-- ================= FLOATING CHAT BUTTON ================= -->
+<div class="fixed bottom-8 right-8 z-[100]">
+    <button class="w-14 h-14 bg-[#181411] dark:bg-primary text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+        <span class="material-symbols-outlined">chat_bubble</span>
+    </button>
+</div>
+
+</body>
+</html>

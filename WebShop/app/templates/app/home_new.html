@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Trang chủ Nội thất Gỗ Cao cấp Elite</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b85814",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#211811",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+        .dark .glass-nav {
+            background-color: rgba(33, 24, 17, 0.85);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#181411] dark:text-white antialiased">
+
+<header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-[#e5e0dc] dark:border-[#3a2d24] transition-colors duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-20 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <div class="text-primary">
+                    <svg class="size-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+                        <path clip-rule="evenodd" d="M39.998 35.764C39.9944 35.7463 39.9875 35.7155 39.9748 35.6706C39.9436 35.5601 39.8949 35.4259 39.8346 35.2825C39.8168 35.2403 39.7989 35.1993 39.7813 35.1602C38.5103 34.2887 35.9788 33.0607 33.7095 32.5189C30.9875 31.8691 27.6413 31.4783 24 31.4783C20.3587 31.4783 17.0125 31.8691 14.2905 32.5189C12.0012 33.0654 9.44505 34.3104 8.18538 35.1832C8.17384 35.2075 8.16216 35.233 8.15052 35.2592C8.09919 35.3751 8.05721 35.4886 8.02977 35.589C8.00331 35.6848 8.00039 35.7333 8.00004 35.7388C8.00004 35.739 8 35.7393 8.00004 35.7388C8.00004 35.7641 8.0104 36.0767 8.68485 36.6314C9.34546 37.1746 10.4222 37.7531 11.9291 38.2772C14.9242 39.319 19.1919 40 24 40C28.8081 40 33.0758 39.319 36.0709 38.2772C37.5778 37.7531 38.6545 37.1746 39.3151 36.6314C39.9006 36.1499 39.9857 35.8511 39.998 35.764ZM4.95178 32.7688L21.4543 6.30267C22.6288 4.4191 25.3712 4.41909 26.5457 6.30267L43.0534 32.777C43.0709 32.8052 43.0878 32.8338 43.104 32.8629L41.3563 33.8352C43.104 32.8629 43.1038 32.8626 43.104 32.8629L43.1051 32.865L43.1065 32.8675L43.1101 32.8739L43.1199 32.8918C43.1276 32.906 43.1377 32.9246 43.1497 32.9473C43.1738 32.9925 43.2062 33.0545 43.244 33.1299C43.319 33.2792 43.4196 33.489 43.5217 33.7317C43.6901 34.1321 44 34.9311 44 35.7391C44 37.4427 43.003 38.7775 41.8558 39.7209C40.6947 40.6757 39.1354 41.4464 37.385 42.0552C33.8654 43.2794 29.133 44 24 44C18.867 44 14.1346 43.2794 10.615 42.0552C8.86463 41.4464 7.30529 40.6757 6.14419 39.7209C4.99695 38.7775 3.99999 37.4427 3.99999 35.7391C3.99999 34.8725 4.29264 34.0922 4.49321 33.6393C4.60375 33.3898 4.71348 33.1804 4.79687 33.0311C4.83898 32.9556 4.87547 32.8935 4.9035 32.8471C4.91754 32.8238 4.92954 32.8043 4.93916 32.7889L4.94662 32.777L4.95178 32.7688ZM35.9868 29.004L24 9.77997L12.0131 29.004C12.4661 28.8609 12.9179 28.7342 13.3617 28.6282C16.4281 27.8961 20.0901 27.4783 24 27.4783C27.9099 27.4783 31.5719 27.8961 34.6383 28.6282C35.082 28.7342 35.5339 28.8609 35.9868 29.004Z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-widest text-[#181411] dark:text-white uppercase">Elite</span>
+            </div>
+            <nav class="hidden xl:flex items-center gap-6">
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Trang chủ</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Sản phẩm</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Bộ sưu tập</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+                <a class="text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Liên hệ</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="relative hidden lg:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#887263] text-lg">search</span>
+                <input class="pl-10 pr-4 py-2 bg-[#f4f2f0] dark:bg-[#2d241d] border-none rounded-lg focus:ring-1 focus:ring-primary w-48 text-sm" placeholder="Tìm kiếm..." type="text"/>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="hover:text-primary transition-colors flex items-center gap-1 group">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Giỏ hàng</span>
+                </button>
+                <button class="hover:text-primary transition-colors flex items-center gap-1 group">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Tài khoản</span>
+                </button>
+            </div>
+            <button class="xl:hidden"><span class="material-symbols-outlined">menu</span></button>
+        </div>
+    </div>
+</header>
+
+<main class="pt-20">
+
+    <section class="relative h-[85vh] w-full overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style='background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMy3MOhEfpGU0N95Qdb8L142npmbF_HoaCb8ZTpAguUTWRQCiVdV_wgq4Q97dFN2CPB97S-NMWCZ1ud7dt-pZCbe07rVIarqSQdnyQ1w7gIYR339Vs5dwV5u_Dtob2IEC-esL_GbdjMD_teha2OqQ9kPrSweBeQJAAz056NPb_cs8g2Tv-JzMZygZuwMtEyZ63tD4n7uQS9S_sEnK4CFqO7NNHMtssv7138hcm7_Xy9sZNvl6rjHZTB84hYgQmYmLTw2R4HHNQdUch");'>
+        </div>
+        <div class="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight max-w-4xl">Nghệ thuật vượt thời gian, Linh hồn Ý</h1>
+            <p class="text-lg md:text-xl font-light mb-10 max-w-2xl opacity-90">Trải nghiệm đỉnh cao của thiết kế tối giản và nghệ thuật thủ công tinh xảo từ trái tim nước Ý.</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="bg-primary hover:bg-[#a34e12] text-white px-10 py-4 rounded-lg font-bold transition-all transform hover:scale-105">
+                    Khám phá bộ sưu tập
+                </button>
+                <button class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white px-10 py-4 rounded-lg font-bold transition-all">
+                    Xem Lookbook
+                </button>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3">
+            <div class="w-12 h-1 bg-white rounded-full"></div>
+            <div class="w-12 h-1 bg-white/30 rounded-full"></div>
+            <div class="w-12 h-1 bg-white/30 rounded-full"></div>
+        </div>
+    </section>
+
+    <section class="max-w-[1440px] mx-auto py-20 px-6 lg:px-20">
+        <div class="flex flex-col md:flex-row items-baseline justify-between mb-12 border-b border-[#e5e0dc] dark:border-[#3a2d24] pb-6">
+            <div>
+                <span class="text-primary font-bold uppercase tracking-[0.2em] text-xs mb-2 block">Nổi bật</span>
+                <h2 class="text-3xl font-bold text-[#181411] dark:text-white">Bộ sưu tập Chữ ký</h2>
+            </div>
+            <div class="flex flex-wrap gap-6 mt-6 md:mt-0">
+                <a class="text-sm font-bold border-b-2 border-primary pb-2" href="#">Tất cả</a>
+                <a class="text-sm font-bold text-[#887263] border-b-2 border-transparent pb-2 hover:text-[#181411] dark:hover:text-white transition-colors" href="#">Phòng ăn</a>
+                <a class="text-sm font-bold text-[#887263] border-b-2 border-transparent pb-2 hover:text-[#181411] dark:hover:text-white transition-colors" href="#">Phòng khách</a>
+                <a class="text-sm font-bold text-[#887263] border-b-2 border-transparent pb-2 hover:text-[#181411] dark:hover:text-white transition-colors" href="#">Phòng ngủ</a>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="group cursor-pointer">
+                <div class="relative overflow-hidden rounded-xl bg-[#f4f2f0] dark:bg-[#2d241d] aspect-[3/4] mb-4">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCF27yKL8L5fPs1DZddWhqtyZM4iBOohRBlk6bB-2FwLMpLjwOVLwO5f9E7y_Ht2sKy50v484im0u45o0Gz4EUSSgtTjehAD_CTh0icBcWz4c_iXSpbEYr7PckNR17V3_0MwmGr7jtR7mEoyQPpIeyecDuAkmAMuyl0WrDIM_TIe6-g-OieQ_ANbaAJgzlerZ9zuC2mni5NMexiJrM98OaMOD9p5V6dLTc9xVVd9QqwDnUcpIn5lyjzMzGZ9TUg7A6Xw2CpNjghYdA0");'>
+                    </div>
+                    <div class="absolute bottom-4 left-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <button class="w-full bg-white dark:bg-[#181411] py-3 text-sm font-bold rounded-lg shadow-lg">Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-lg">Bàn gỗ Walnut Verona</h3>
+                        <p class="text-[#887263] text-sm">Gỗ Óc chó tự nhiên</p>
+                    </div>
+                    <p class="font-bold text-primary">60.000.000 VNĐ</p>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer">
+                <div class="relative overflow-hidden rounded-xl bg-[#f4f2f0] dark:bg-[#2d241d] aspect-[3/4] mb-4">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC8TsrUpJ_agw9OaYi22ufmZg_EPwaBnoBl4qusuoIKOx2pBzLUtxj0gHE6tH6PI0rWScAQAibLFEKm86k2_strpwCOMH5zH0xz0Ed_TGYuAfQtWsdBVAXufrAZr7JR3CN3T0u8GHg7cPMq3mCUj8Xpymrvy3sIeulUQJYxoPldpGfd9x-EjHwlQIT-GeQP-q6Ji0xrCzP4fZNQqLpIqUBdtBIN_qDWmq-Z6EhYdXKb5Ji77UJn32T7VXckOAsIYzzfuzU10SUGVwUW");'>
+                    </div>
+                    <div class="absolute bottom-4 left-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <button class="w-full bg-white dark:bg-[#181411] py-3 text-sm font-bold rounded-lg shadow-lg">Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-lg">Ghế sồi Milan</h3>
+                        <p class="text-[#887263] text-sm">Gỗ Sồi trắng FSC</p>
+                    </div>
+                    <p class="font-bold text-primary">21.500.000 VNĐ</p>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer">
+                <div class="relative overflow-hidden rounded-xl bg-[#f4f2f0] dark:bg-[#2d241d] aspect-[3/4] mb-4">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAnjS80k37fQ0TS3AqpMHmcUA2Ei3d2Wr72VvNbElsDbK3I2Y_TRIW-PB8OfL0HN8HxkWkfDTLjVtlKgt19ql9q0QdVGWxTebyk1idpfuVObcTUZLPjkRSZyHXRaRybivsXhjKxWAaYCd_42dHG4RsaWyb9OkQgwey7pr5fyFyXWrGa3psxlA9jQsqdmzYXqMaVytjq5dUp3Tmd7528i-Jsd95JhtXN7JnEspyTy33penR92qtXKxkCr27N08jZajkFmieXk4ww6jSl");'>
+                    </div>
+                    <div class="absolute bottom-4 left-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <button class="w-full bg-white dark:bg-[#181411] py-3 text-sm font-bold rounded-lg shadow-lg">Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-lg">Tủ trang trí Turin</h3>
+                        <p class="text-[#887263] text-sm">Gỗ Óc chó & Phụ kiện Đồng</p>
+                    </div>
+                    <p class="font-bold text-primary">45.000.000 VNĐ</p>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer">
+                <div class="relative overflow-hidden rounded-xl bg-[#f4f2f0] dark:bg-[#2d241d] aspect-[3/4] mb-4">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA3i-0MzqiAxUak0Q9KjP1PK5Gw-DgQ8wqeGRiOOVulrIl3ITf66hfJ_adOsv41hKejMMDBEJWxsFPSBtDUTsd5tXUCX_B2iaGabTQdt3YPhEJ_ApjQgRAomXfQs5rni_gbXNfaw5_b9FFuG4pE27iYaiM6d5Owr0P7VVA47r6To4cg93qfRtH3QLTjsf7dE7ws4dCpcnaaURMKLZgcF1u8r6V_cyf1gzX1bIdOEHNIk3Te89vLJmOXZFfqQb8UN1JOwn36Ws1TSU-i");'>
+                    </div>
+                    <div class="absolute bottom-4 left-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <button class="w-full bg-white dark:bg-[#181411] py-3 text-sm font-bold rounded-lg shadow-lg">Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-lg">Bàn trà Naples</h3>
+                        <p class="text-[#887263] text-sm">Gỗ Sồi tự nhiên & Kính cường lực</p>
+                    </div>
+                    <p class="font-bold text-primary">30.000.000 VNĐ</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#2d241d] text-white py-24">
+        <div class="max-w-[1440px] mx-auto px-6 lg:px-20 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="relative group">
+                <div class="aspect-square rounded-xl bg-center bg-cover border-[12px] border-[#3a2d24] shadow-2xl transition-transform duration-500 group-hover:-rotate-1" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRc3OJNj_Ol2ZPQ_0k740ddXjjSpMeay1bp82jZnyqiq2tpVgqhrDayuy0ZIH5DalnKqh8HSRfgHYM9l6FnegsFphwJHnJhGfUbFRwWFndHdEmDR3i-bNKnRdW6u_jwgdXZmrRexubsKFWQb2JpbyypU7aNjS1PIOP-aD0jxKoqVxW647osLvQEclPOo3WRqM-e-77hNp8T9SntIoXGpLp7EzwwjPUyB3vHOVC5InB6eljrDClbEafKrPZGGGy_WsyweDaqi70XKKq");'>
+                </div>
+                <div class="absolute -bottom-6 -right-6 bg-primary p-8 rounded-lg max-w-[200px] hidden lg:block">
+                    <p class="text-3xl font-bold">1974</p>
+                    <p class="text-sm opacity-80 uppercase tracking-wider">Di sản lâu đời</p>
+                </div>
+            </div>
+            <div>
+                <span class="text-primary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Triết lý của chúng tôi</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 leading-tight">Bậc thầy trong từng vân gỗ</h2>
+                <p class="text-lg opacity-80 mb-8 leading-relaxed">Hành trình của chúng tôi bắt đầu từ một xưởng nhỏ ở miền Bắc nước Ý, nơi niềm đam mê vẻ đẹp tự nhiên của gỗ gặp gỡ sự chuẩn xác trong thiết kế kiến trúc. Ngày nay, Elite tiếp tục di sản đó bằng cách kết hợp nguồn nguyên liệu bền vững với đôi bàn tay nghệ nhân.</p>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span>Gỗ Óc chó và gỗ Sồi Mỹ được tuyển chọn bền vững</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span>Lớp phủ không VOC an toàn cho sức khỏe gia đình</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span>Kỹ thuật ghép mộng truyền thống (không dùng vít kim loại)</span>
+                    </li>
+                </ul>
+                <button class="border-b-2 border-primary pb-1 font-bold text-lg hover:text-primary transition-colors">Đọc toàn bộ câu chuyện</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1440px] mx-auto py-24 px-6 lg:px-20">
+        <div class="bg-[#f4f2f0] dark:bg-[#2d241d] rounded-2xl p-12 md:p-20 text-center relative overflow-hidden">
+            <div class="relative z-10 max-w-2xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Tham gia Elite Circle</h2>
+                <p class="text-[#887263] mb-10">Hãy là người đầu tiên nhận được những lời mời độc quyền xem trước bộ sưu tập mới và những câu chuyện về nghệ thuật chế tác.</p>
+                <form class="flex flex-col sm:flex-row gap-4">
+                    <input class="flex-1 px-6 py-4 rounded-lg bg-white dark:bg-[#181411] border-none focus:ring-1 focus:ring-primary text-sm" placeholder="Địa chỉ email của bạn" type="email"/>
+                    <button class="bg-primary hover:bg-[#a34e12] text-white px-10 py-4 rounded-lg font-bold transition-all">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-white dark:bg-[#181411] border-t border-[#e5e0dc] dark:border-[#3a2d24] pt-20 pb-10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+            <div class="col-span-1 lg:col-span-1">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="text-primary">
+                        <svg class="size-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold tracking-widest">ELITE</span>
+                </div>
+                <p class="text-[#887263] text-sm leading-relaxed mb-6">Định nghĩa lại không gian sống hiện đại thông qua sự tối giản lấy cảm hứng từ Ý và vẻ đẹp thô mộc của gỗ tự nhiên.</p>
+                <div class="flex gap-4">
+                    <a class="w-10 h-10 rounded-full bg-[#f4f2f0] dark:bg-[#2d241d] flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="#"><span class="material-symbols-outlined text-sm">public</span></a>
+                    <a class="w-10 h-10 rounded-full bg-[#f4f2f0] dark:bg-[#2d241d] flex items-center justify-center hover:bg-primary hover:text-white transition-all" href="#"><span class="material-symbols-outlined text-sm">camera</span></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Mua sắm</h4>
+                <ul class="space-y-4 text-sm text-[#887263]">
+                    <li><a class="hover:text-primary transition-colors" href="#">Bộ sưu tập Phòng ăn</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Nội thất Phòng khách</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Combo Phòng ngủ</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Văn phòng tại gia</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Hỗ trợ</h4>
+                <ul class="space-y-4 text-sm text-[#887263]">
+                    <li><a class="hover:text-primary transition-colors" href="#">Hướng dẫn bảo quản</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Giao hàng & Trả hàng</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Tính bền vững</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="#">Liên hệ chúng tôi</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Showroom</h4>
+                <p class="text-sm text-[#887263] leading-relaxed mb-4">
+                    27 Đường Montenapoleone<br/>
+                    20121 Milano MI, Italy
+                </p>
+                <p class="text-sm text-[#887263]">Thứ Hai – Thứ Bảy: 10:00 – 19:00</p>
+            </div>
+        </div>
+
+        <div class="border-t border-[#e5e0dc] dark:border-[#3a2d24] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-[#887263]">© 2024 ELITE Wood Furnishings. Bảo lưu mọi quyền.</p>
+            <div class="flex gap-6 text-xs text-[#887263]">
+                <a class="hover:text-primary transition-colors" href="#">Chính sách Bảo mật</a>
+                <a class="hover:text-primary transition-colors" href="#">Điều khoản Dịch vụ</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="fixed bottom-8 right-8 z-[100]">
+    <button class="w-14 h-14 bg-[#181411] dark:bg-primary text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+        <span class="material-symbols-outlined">chat_bubble</span>
+    </button>
+</div>
+
+</body>
+</html>
