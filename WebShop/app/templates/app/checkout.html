@@ -52,7 +52,15 @@
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
-              <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ...">
+              <input 
+                class="form-control" 
+                type="text" 
+                name="address" 
+                placeholder="Nhập địa chỉ..."
+                required
+                oninvalid="this.setCustomValidity('Hãy nhập địa chỉ chi tiết để đơn hàng giao đúng địa chỉ')"
+                oninput="this.setCustomValidity('')"
+              >
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Mã bưu điện</label>
@@ -88,9 +96,9 @@
             <img class="img-fluid rounded me-3" src="{{ item.product.ImageURL }}" alt="{{ item.product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
             <div class="flex-grow-1">
               <h6 class="mb-1">{{ item.product.name }}</h6> <!-- Tên sản phẩm -->
-              <p class="mb-0 text-muted">${{ item.product.price|floatformat:0 }} x {{ item.quantity }}</p> <!-- Giá và số lượng -->
+              <p class="mb-0 text-muted">{{ item.product.price|floatformat:0 }} x {{ item.quantity }}</p> <!-- Giá và số lượng -->
             </div>
-            <span class="fw-bold">${{ item.get_price_quantity|floatformat:0 }}</span> <!-- Thành tiền -->
+            <span class="fw-bold">{{ item.get_price_quantity|floatformat:0 }} VNĐ</span> <!-- Thành tiền -->
           </div>
           {% endfor %}
         {% else %}
@@ -105,7 +113,7 @@
         </div>
         <div class="d-flex justify-content-between">
           <span class="fw-bold text-success">Tổng cộng:</span>
-          <span class="fw-bold text-danger">${{ order.get_cart_total|floatformat:0 }}</span> <!-- Tổng tiền -->
+          <span class="fw-bold text-danger">{{ order.get_cart_total|floatformat:0 }} VNĐ</span> <!-- Tổng tiền -->
         </div>
         {% endif %}
       </div>

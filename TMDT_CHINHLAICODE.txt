@@ -1,0 +1,17 @@
+XÁC NHẬN ĐƠN HÀNG: checkout
+ - Chọn phương thức thanh toán (chuyển khoảng các bank khác nhau, tiền mặt...)
+ - gửi email xác nhận dơn hang 
+ - Địa chỉ chi tiết chỉnh lại nhập vô không được de trống
+
+ - lưu thông tin dia chỉ người mua... (sau nay k can nhap nếu mua lại)
+
+THEO DÕI ĐƠN HÀNG: KHI NGƯỜI DÙNG ĐÃ DAT (LÀ DƠN MUA)
+
+
+LÀM LADING PAGE TRÊN EB ĐỂ QUẢNG CÁO
+- Landing page không phải trang giới thiệu dài dòng, mà phải:
+- Một mục tiêu duy nhất: đăng ký, mua hàng, để lại số điện thoại, nhận tư vấn…
+	Nút kêu gọi hành động (CTA) rõ ràng:
+	👉 “Mua ngay”, “Đăng ký ngay”, “Nhận ưu đãi”, “Xem chi tiết”
+
+LÀM LẠI BỘ LỌC SẢN PHẨM, THEO LOẠI, MỨC GIÁ...

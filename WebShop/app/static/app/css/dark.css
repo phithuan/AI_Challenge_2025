@@ -1,132 +1,201 @@
-/* dark.css */
+/* =====================================
+   🌙 GLOBAL DARK MODE
+===================================== */
 
-/* Toàn bộ body */
-body.dark-mode {
-  background-color: #121212 !important;
-  color: #f1f1f1 !important;
+/* Full page */
+html, body {
+  height: 100%;
 }
 
-/* Navbar */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dark mode base */
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #f1f1f1;
+}
+
+/* Main auto stretch */
+main.flex-grow-1 {
+  flex: 1;
+  background: transparent;
+}
+
+
+/* =====================================
+   🌙 NAVBAR + FOOTER
+===================================== */
+
 body.dark-mode .navbar {
   background-color: #1f1f1f !important;
 }
 
-/* Footer */
 body.dark-mode footer {
-  background-color: #222 !important;
+  background-color: #1a1a1a !important;
+  color: #f1f1f1;
 }
 
-/* Card */
-body.dark-mode .card {
-  background-color: #1e1e1e !important;
-  color: #f1f1f1 !important;
-}
-body.dark-mode .card .card-body {
-  background-color: #2a2a2a !important;
-}
 
-/* Các link hover */
+/* =====================================
+   🌙 LINKS
+===================================== */
+
 body.dark-mode .nav-link:hover {
   color: #0dcaf0 !important;
   transition: 0.3s;
 }
 
 
-/* 🌙 DARK MODE CHO CART */
-/* 🌙 DARK MODE CHO CART */
+/* =====================================
+   🌙 CARD (GLOBAL)
+===================================== */
+
 body.dark-mode .card {
-  background-color: #1e1e1e !important;
-  border: 1px solid #333 !important;
+  background-color: #1b1b1b !important;
+  color: #f1f1f1;
+  border: 1px solid #333;
 }
 
 body.dark-mode .card .card-body {
-  background-color: #262626 !important;
-  color: #f0f0f0 !important;
-}
-
-/* Header bảng */
-body.dark-mode table thead {
-  background-color: #333a46 !important; /* xám xanh đậm */
-  color: #e8e8e8 !important;
-  border-bottom: 2px solid #444 !important;
-}
-
-/* Bảng - các dòng */
-body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
-  background-color: #2a2a2a !important;
-}
-body.dark-mode .table-striped tbody tr:nth-of-type(even) {
-  background-color: #242424 !important;
-}
-body.dark-mode table td, 
-body.dark-mode table th {
-  border-color: #444 !important;
-}
-
-/* Nút thao tác */
-body.dark-mode .btn-outline-secondary {
-  color: #ddd !important;
-  border-color: #666 !important;
-  background-color: #2f2f2f !important;
-}
-body.dark-mode .btn-outline-secondary:hover {
-  background-color: #444 !important;
-}
-
-body.dark-mode .btn-danger {
-  background-color: #a93d3d !important;
-  border: none !important;
-  color: #fff !important;
-}
-body.dark-mode .btn-danger:hover {
-  background-color: #c74d4d !important;
-}
-
-/* Dark mode - Thanh toán (Luxury Gold) */
-body.dark-mode .btn-success {
-  background: linear-gradient(135deg, #9c7c38, #bfa14a);
-  color: #1a1a1a !important;
-  border: none !important;
-  font-weight: 600;
-}
-
-body.dark-mode .btn-success:hover {
-  background: linear-gradient(135deg, #bfa14a, #d4b55f);
-}
-
-
-/* Tổng cộng */
-body.dark-mode .card h4 {
-  color: #f1f1f1 !important;
-}
-body.dark-mode .card h4 .text-danger {
-  color: #ff6b6b !important;  /* đỏ dịu hơn */
-}
-
-
-/* 🌙 DARK MODE – BẢNG THÔNG SỐ SẢN PHẨM */
-body.dark-mode .table {
   background-color: #1e1e1e !important;
-  color: #f1f1f1 !important;
 }
 
-/* Header cột (th) */
-body.dark-mode .table th {
-  background-color: #2f2f2f !important;
-  color: #ffffff !important;
-  border-color: #444 !important;
+
+/* =====================================
+   🌙 CART TABLE
+===================================== */
+
+body.dark-mode .cart-table {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1;
+}
+
+/* header */
+body.dark-mode .cart-table thead {
+  background-color: #212529;
+  color: #fff;
+}
+
+/* borders */
+body.dark-mode .cart-table th,
+body.dark-mode .cart-table td {
+  border-color: #343a40;
+}
+
+/* striped rows */
+body.dark-mode
+.cart-table.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(255,255,255,0.03);
+}
+
+/* hover */
+body.dark-mode .cart-table tbody tr:hover {
+  background-color: rgba(255,255,255,0.06);
+  transition: 0.2s;
+}
+
+
+/* =====================================
+   🌙 TABLE WRAPPER
+===================================== */
+
+body.dark-mode .table-responsive {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+}
+
+
+/* =====================================
+   🛒 CART +/- BUTTON — TEXT-ONLY, NO BOX
+===================================== */
+
+.cart-btn.update-cart {
+  /* Xóa hết style nút bootstrap */
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 10px !important;
+  margin: 0;
+  
+  /* Font & kích thước */
+  font-size: 1.5rem;           /* ≈ 24px */
   font-weight: 600;
-  width: 35%;
+  line-height: 1;
+  
+  /* Màu mặc định (light mode) */
+  color: #555 !important;
+  background: none;
+  
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
 }
 
-/* Nội dung (td) */
-body.dark-mode .table td {
-  background-color: #1f1f1f !important;
-  color: #e0e0e0 !important;
-  border-color: #444 !important;
+/* Hover */
+.cart-btn.update-cart:hover {
+  color: #0d6efd !important;     /* xanh bootstrap primary */
+  transform: scale(1.25);
 }
 
-/* Hover từng dòng cho dễ đọc */
-body.dark-mode .table tbody tr:hover {
-  background-color: #333 !important;
+/* Active / Click */
+.cart-btn.update-cart:active,
+.cart-btn.update-cart:focus-visible {
+  transform: scale(0.92);
+  color: #0b5ed7 !important;
 }
+
+/* Dark mode */
+body.dark-mode .cart-btn.update-cart {
+  color: #adb5bd !important;      /* xám nhạt */
+}
+
+body.dark-mode .cart-btn.update-cart:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+body.dark-mode .cart-btn.update-cart:active,
+body.dark-mode .cart-btn.update-cart:focus-visible {
+  color: #c9d1ff !important;
+  transform: scale(0.92);
+}
+
+/* Optional: làm dấu trừ và cộng đậm hơn một chút nếu muốn */
+.cart-btn.update-cart::before {
+  content: attr(data-before);     /* có thể dùng sau nếu cần */
+}
+
+/* Đảm bảo không bị ảnh hưởng bởi .btn class */
+.cart-btn.btn,
+.cart-btn.btn-sm {
+  /* phòng trường hợp bootstrap vẫn apply */
+  padding: 0 !important;
+  min-width: auto !important;
+}
+
+
+/* ===== DARK MODE ===== */
+body.dark-mode .cart-btn{
+    color: #adb5bd !important;
+}
+
+body.dark-mode .cart-btn:hover{
+    color: #ffffff !important;
+}
+
+
+/* =====================================
+   🌙 TOTAL PRICE
+===================================== */
+
+body.dark-mode .total-text {
+  color: #f1f1f1;
+}
+

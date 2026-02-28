@@ -169,51 +169,85 @@
         </button>
 
         <form class="d-flex" method="POST" action="{% url 'search' %}">
-          {% csrf_token %}
-          <input class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm" name="searched">
-          <button class="btn btn-success rounded-pill">Tìm</button>
-        </form>
+  {% csrf_token %}
+  
+  <input class="form-control me-2 rounded-pill" 
+         type="search" 
+         placeholder="Tìm kiếm" 
+         name="searched">
+
+  <button class="btn btn-dark rounded-pill">
+    Tìm
+  </button>
+</form>
       </div>
     </div>
 
     <!-- User menu -->
-    <ul class="navbar-nav ms-3">
-      <li class="nav-item me-3"> 
-        <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
-          🛒 Giỏ hàng
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ cart_items }}
-          </span>
-        </a>
-      </li>
+<ul class="navbar-nav ms-3">
+  
+  <!-- Giỏ hàng -->
+  <li class="nav-item me-3"> 
+    <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
+      🛒 Giỏ hàng
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ cart_items }}
+      </span>
+    </a>
+  </li>
 
-      {% if request.user.is_authenticated %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">
-            <i class="fas fa-user-circle me-1"></i> {{ request.user.username }}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
-            <li class="dropdown-header text-muted small">
-              👋 Xin chào, <strong>{{ request.user }}</strong>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Bảo mật</a></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Đăng xuất</a></li>
-          </ul>
+  {% if request.user.is_authenticated %}
+  
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">
+        <i class="fas fa-user-circle me-1"></i> {{ request.user.username }}
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
+
+        <!-- Header -->
+        <li class="dropdown-header text-muted small">
+          Xin chào, <strong>{{ request.user }}</strong>
         </li>
-      {% else %}
-        <li class="nav-item">
-          <a class="nav-link fw-semibold" href="{% url 'login' %}">
-            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-semibold" href="{% url 'register' %}">
-            <i class="fas fa-user-plus me-1"></i> Đăng ký
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- ✅ Chỉ admin mới thấy -->
+        {% if request.user.is_staff %}
+        <li>
+          <a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+            Trang quản lý
           </a>
         </li>
-      {% endif %}
-    </ul>
+        <li><hr class="dropdown-divider"></li>
+        {% endif %}
+
+        <!-- Đăng xuất -->
+        <li>
+          <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+            Đăng xuất
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+  {% else %}
+
+    <li class="nav-item">
+      <a class="nav-link fw-semibold" href="{% url 'login' %}">
+        <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link fw-semibold" href="{% url 'register' %}">
+        <i class="fas fa-user-plus me-1"></i> Đăng ký
+      </a>
+    </li>
+
+  {% endif %}
+</ul>
   </div>
 </nav>
 

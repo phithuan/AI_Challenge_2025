@@ -1,6 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% block banner_slider %}
+{% load humanize %}
 <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
 <!-- ✅ Carousel Bootstrap -->
 <div id="carouselExampleDark" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -84,9 +85,9 @@
           <!-- 🔹 Nút mua hàng + giá -->
           <div class="d-flex justify-content-between align-items-center mt-auto">
             <a  data-product="{{ item.id }}" data-action="add" 
-                href="#" class="btn btn-success update-cart">Thêm vào giỏ hàng
+                href="#" class="btn btn-dark update-cart">Thêm vào giỏ hàng
             </a> 
-            <h4 class="text-secondary m-0 fw-semibold"><strong>$ {{item.price | floatformat:0}}</strong></h4>
+            <h4 class="card-text"><strong>{{ item.price|floatformat:0|intcomma }} VNĐ</strong></h4>
           </div>
         </div>
       </div>

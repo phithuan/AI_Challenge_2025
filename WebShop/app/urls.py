@@ -29,4 +29,8 @@ urlpatterns = [
     # ✅ Xử lý thanh toán + thông báo
     path('process_order/', views.process_order, name='process_order'), # xử lý đơn hàng
 
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'), # trang dashboard admin
+    path('admin-products/', views.admin_products, name='admin_products'), # Thêm route quản lý sản phẩm
+    path('admin-orders/', views.admin_orders, name='admin_orders'), # Thêm route quản lý đơn hàng
+    path('admin-categories/', views.admin_categories, name='admin_categories'), # Thêm route quản lý danh mục
 ]

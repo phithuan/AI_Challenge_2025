@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',  # Replace 'app' with your actual app name
     "widget_tweaks", # thêm widget_tweaks để tùy chỉnh form trong templates
+    'django.contrib.humanize', # Thêm humanize để sử dụng các filter như intcomma trong templates
 ]
 
 MIDDLEWARE = [

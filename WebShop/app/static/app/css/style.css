@@ -86,3 +86,7 @@ body.dark-mode .btn-danger:hover {
   border-color: #e55361;
   color: #fff;
 }
+
+.cart-btn{
+    border: 0px;
+}
