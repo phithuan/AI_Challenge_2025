@@ -1,8 +1,10 @@
 {% load static %}
 <!-- Tailwind config & Google Fonts (nên đưa lên base.html nếu dùng chung toàn site) -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
 
 <script>
     tailwind.config = {
@@ -29,8 +31,13 @@
 </script>
 
 <style>
-    body { font-family: 'Public Sans', sans-serif; }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body {
+        font-family: 'Public Sans', sans-serif;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
 </style>
 
 <div class="flex min-h-screen overflow-x-hidden">
@@ -52,32 +59,39 @@
                 </div>
             </a>
             <nav class="flex flex-col gap-2">
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20" href="#">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20"
+                    href="#">
                     <span class="material-symbols-outlined">dashboard</span>
                     <span class="text-sm font-medium">Dashboard</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_products' %}">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="{% url 'admin_products' %}">
                     <span class="material-symbols-outlined">inventory_2</span>
                     <span class="text-sm font-medium">Products</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_categories' %}">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="{% url 'admin_categories' %}">
                     <span class="material-symbols-outlined">category</span>
                     <span class="text-sm font-medium">Categories</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_orders' %}">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="{% url 'admin_orders' %}">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <span class="text-sm font-medium">Orders</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="#">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="#">
                     <span class="material-symbols-outlined">group</span>
                     <span class="text-sm font-medium">Users</span>
                 </a>
                 <div class="my-4 border-t border-slate-800"></div>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="#">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="#">
                     <span class="material-symbols-outlined">analytics</span>
                     <span class="text-sm font-medium">Reports</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="#">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    href="#">
                     <span class="material-symbols-outlined">settings</span>
                     <span class="text-sm font-medium">Settings</span>
                 </a>
@@ -87,7 +101,7 @@
         <div class="mt-auto p-6">
             <div class="bg-slate-800/50 rounded-xl p-4 flex items-center gap-3">
                 <div class="size-10 rounded-full bg-slate-700 overflow-hidden"
-                     style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQtgI3P70SuyetdcxuLm1bGVGUDCSD5BavuMUlynlQk2xPtRbLIe68AAM2d9k0-3fj1d1vKRdkTg7lj5k8HP1AO560BpON_hjcp5k__mxkK8qwfFSjOs1h-PrzvTOPtYlRODZ-hxSyD10O_kJPUCJ2JbNWGIqsGZ6pFfLaSt2lcHUSYVM03ClrKjwOLyUQVe0e7ADQuHdJdmYrX9flehbxe4Xto5XSLRDAvdfSw7faJVnMGpzr96-NP26ojrEq7UnJsm-nb74IWL8m')">
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQtgI3P70SuyetdcxuLm1bGVGUDCSD5BavuMUlynlQk2xPtRbLIe68AAM2d9k0-3fj1d1vKRdkTg7lj5k8HP1AO560BpON_hjcp5k__mxkK8qwfFSjOs1h-PrzvTOPtYlRODZ-hxSyD10O_kJPUCJ2JbNWGIqsGZ6pFfLaSt2lcHUSYVM03ClrKjwOLyUQVe0e7ADQuHdJdmYrX9flehbxe4Xto5XSLRDAvdfSw7faJVnMGpzr96-NP26ojrEq7UnJsm-nb74IWL8m')">
                 </div>
                 <div class="overflow-hidden">
                     <p class="text-sm font-bold truncate">Julian Thorne</p>
@@ -98,24 +112,32 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 ml-64 min-h-screen bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+    <main
+        class="flex-1 ml-64 min-h-screen bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
         <!-- Header -->
-        <header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between z-40">
+        <header
+            class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between z-40">
             <div class="flex items-center gap-4 flex-1">
                 <div class="relative max-w-md w-full">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                    <input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Search orders, products, customers..." type="text"/>
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input
+                        class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400"
+                        placeholder="Search orders, products, customers..." type="text" />
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button class="size-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-colors">
+                <button
+                    class="size-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
-                <button class="size-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-colors">
+                <button
+                    class="size-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined">dark_mode</span>
                 </button>
                 <div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
-                <button class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all">
+                <button
+                    class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all">
                     <span class="material-symbols-outlined text-xl">add</span>
                     New Product
                 </button>
@@ -125,18 +147,21 @@
         <!-- Page Content -->
         <div class="p-8">
             <div class="mb-8">
-                <h2 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Dashboard Overview</h2>
+                <h2 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Dashboard Overview
+                </h2>
                 <p class="text-slate-500 dark:text-slate-400">Here's what's happening at Elite Wood today.</p>
             </div>
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div
+                    class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex justify-between items-start mb-4">
                         <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                             <span class="material-symbols-outlined">payments</span>
                         </div>
-                        <span class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
+                        <span
+                            class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">trending_up</span>
                             12.5%
                         </span>
@@ -145,12 +170,14 @@
                     <p class="text-2xl font-black mt-1">$128,430.00</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div
+                    class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex justify-between items-start mb-4">
                         <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                             <span class="material-symbols-outlined">shopping_bag</span>
                         </div>
-                        <span class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
+                        <span
+                            class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">trending_up</span>
                             8.2%
                         </span>
@@ -159,12 +186,14 @@
                     <p class="text-2xl font-black mt-1">1,240</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div
+                    class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex justify-between items-start mb-4">
                         <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                             <span class="material-symbols-outlined">person_celebrate</span>
                         </div>
-                        <span class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
+                        <span
+                            class="text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">trending_up</span>
                             5.4%
                         </span>
@@ -176,13 +205,15 @@
 
             <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div
+                    class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h3 class="font-bold text-lg">Sales Performance</h3>
                             <p class="text-sm text-slate-500">Revenue growth over the last 7 days</p>
                         </div>
-                        <select class="bg-slate-100 dark:bg-slate-800 border-none text-xs font-bold rounded-lg focus:ring-primary/20">
+                        <select
+                            class="bg-slate-100 dark:bg-slate-800 border-none text-xs font-bold rounded-lg focus:ring-primary/20">
                             <option>Last 7 Days</option>
                             <option>Last 30 Days</option>
                         </select>
@@ -196,13 +227,18 @@
                                 </linearGradient>
                             </defs>
                             <!-- Grid lines -->
-                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500" y1="50" y2="50"></line>
-                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500" y1="100" y2="100"></line>
-                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500" y1="150" y2="150"></line>
+                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500"
+                                y1="50" y2="50"></line>
+                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500"
+                                y1="100" y2="100"></line>
+                            <line class="dark:stroke-slate-800" stroke="#f1f5f9" stroke-width="1" x1="0" x2="500"
+                                y1="150" y2="150"></line>
                             <!-- Area -->
-                            <path d="M0 160 C 50 140, 100 170, 150 100 S 250 40, 300 80 S 400 20, 500 50 V 200 H 0 Z" fill="url(#chartGradient)"></path>
+                            <path d="M0 160 C 50 140, 100 170, 150 100 S 250 40, 300 80 S 400 20, 500 50 V 200 H 0 Z"
+                                fill="url(#chartGradient)"></path>
                             <!-- Line -->
-                            <path d="M0 160 C 50 140, 100 170, 150 100 S 250 40, 300 80 S 400 20, 500 50" fill="none" stroke="#ec5b13" stroke-linecap="round" stroke-width="3"></path>
+                            <path d="M0 160 C 50 140, 100 170, 150 100 S 250 40, 300 80 S 400 20, 500 50" fill="none"
+                                stroke="#ec5b13" stroke-linecap="round" stroke-width="3"></path>
                             <!-- Dots -->
                             <circle cx="150" cy="100" fill="#ec5b13" r="5"></circle>
                             <circle cx="300" cy="80" fill="#ec5b13" r="5"></circle>
@@ -220,7 +256,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                <div
+                    class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
                     <h3 class="font-bold text-lg mb-6">Top Categories</h3>
                     <div class="flex-1 flex flex-col gap-5">
                         <div class="space-y-2">
@@ -261,14 +298,16 @@
                             </div>
                         </div>
                     </div>
-                    <button class="w-full mt-6 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <button
+                        class="w-full mt-6 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                         View Detailed Report
                     </button>
                 </div>
             </div>
 
             <!-- Recent Orders Table -->
-            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div
+                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                     <h3 class="font-bold text-lg">Recent Orders</h3>
                     <button class="text-primary text-sm font-bold hover:underline">View All</button>
@@ -276,7 +315,8 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+                            <tr
+                                class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
                                 <th class="px-6 py-4 font-semibold">Order ID</th>
                                 <th class="px-6 py-4 font-semibold">Customer</th>
                                 <th class="px-6 py-4 font-semibold">Product</th>
@@ -291,7 +331,9 @@
                                 <td class="px-6 py-4 text-sm font-bold">#EW-8942</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">ES</div>
+                                        <div
+                                            class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">
+                                            ES</div>
                                         <span class="text-sm font-medium">Eleanor Shellstrop</span>
                                     </div>
                                 </td>
@@ -299,10 +341,12 @@
                                 <td class="px-6 py-4 text-sm text-slate-500">Oct 24, 2023</td>
                                 <td class="px-6 py-4 text-sm font-bold">$2,450.00</td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Processing</span>
+                                    <span
+                                        class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Processing</span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">more_horiz</button>
+                                    <button
+                                        class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">more_horiz</button>
                                 </td>
                             </tr>
                             <!-- Các hàng khác giữ nguyên như code gốc của bạn -->
