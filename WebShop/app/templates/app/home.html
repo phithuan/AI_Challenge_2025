@@ -4,48 +4,27 @@
 {% load humanize %}
 <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
 <!-- ✅ Carousel Bootstrap -->
-<div id="carouselExampleDark" class="carousel slide carousel-fade" data-bs-ride="carousel">
-
+<div id="carouselExampleDark" class="carousel slide carousel-fade banner-shadow" data-bs-ride="carousel">
   <!-- 🔹 Nút điều hướng nhỏ bên dưới -->
   <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true"
+      aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
   </div>
 
   <!-- 🔹 Nội dung của từng slide -->
-  <div class="carousel-inner">
+  <div class="carousel-inner ">
     <!-- Slide 1 -->
     <div class="carousel-item active" data-bs-interval="6000">
-      <img src="{% static 'app/image/banner/Gemini_Generated_2.png' %}" 
-          class="d-block w-100 img-fluid" 
-          alt="Thời đại hải tặc mới" 
-          style="height: 955px; object-fit: cover;">
-      <!-- 🔹 Caption căn giữa, màu đen -->
-      <div class="carousel-caption d-none d-md-block text-animate text-dark" 
-          style="top: 30%; transform: translateY(-30%);">
-        <h1 class="fw-bold display-2">Không gian tập trung</h1>
-        <p class="fs-3">Trí tuệ nhân tạo - Trợ lý cá nhân của bạn</p>
-      </div>
+      <video class="d-block w-100 img-fluid" style="height: 750px; object-fit: cover;" autoplay muted loop>
+        <source src="{% static 'app/image/banner/panner.mp4' %}" type="video/mp4">
+      </video>
     </div>
 
     <!-- Slide 2 -->
     <div class="carousel-item" data-bs-interval="6000">
-      <img src="{% static 'app/image/banner/Gemini_Generated.png' %}" 
-          class="d-block w-100 img-fluid" 
-          alt="Thời đại mới" 
-          style="height: 955px; object-fit: cover;">
-      <!-- 🔹 Caption đặt trên cao bên trái -->
-      <div class="carousel-caption d-none d-md-block text-start text-animate"
-          style="position: absolute; top: 1%; left: 20%; right: auto; max-width: 600px; text-align: left;">
-        <h1 class="fw-bold display-3" style="color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); white-space: nowrap;"> 
-          Thế giới trong tầm tay
-        </h1>
-        <p class="fs-4" style="color: #ffffff; text-shadow: 1px 1px 6px rgba(0,0,0,0.6);">
-          Khám phá không gian làm việc hiện đại, năng động, 
-          nơi công nghệ và sự sáng tạo hòa quyện cùng tầm nhìn đô thị đầy cảm hứng. 
-          Bắt đầu hành trình của bạn ngay tại đây!
-        </p>
-      </div>
+      <img src="{% static 'app/image/banner/anh2.png' %}" class="d-block w-100 img-fluid" alt="Thời đại mới"
+        style="height: 750px; object-fit: cover;">
     </div>
   </div>
 
@@ -67,32 +46,92 @@
 <!-- ✅ Phần nội dung chính -->
 <div class="container-fluid my-5 px-5"> <!-- Đổi container my-5 -> container-fluid + padding -->
   <div class="row text-center">
-    {% for item in product %}
-    <!-- 🔹 Card sản phẩm -->
-    <div class="col-md-4 col-lg-3 mb-5"> <!--đổi col-md-4 mb-5 sangggg col-lg-3: hiển thị 4 cột trên màn hình lớn -->
-      <div class="card shadow-lg border-0 h-100">
-        
-        <!-- 🔹 Khi hover vào ảnh sẽ phóng to -->
-        <a href="{% url 'product_detail' item.id %}" class="img-hover">
-          <img src="{{ item.ImageURL }}" class="card-img-top product-img" alt="{{ item.name }}">
-        </a>
-
-
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title fw-bold">{{item.name}}</h5>
-          <p class="card-text">{{ item.description|default:"(Chưa có mô tả)" }}</p>
-
-          <!-- 🔹 Nút mua hàng + giá -->
-          <div class="d-flex justify-content-between align-items-center mt-auto">
-            <a  data-product="{{ item.id }}" data-action="add" 
-                href="#" class="btn btn-dark update-cart">Thêm vào giỏ hàng
-            </a> 
-            <h4 class="card-text"><strong>{{ item.price|floatformat:0|intcomma }} VNĐ</strong></h4>
-          </div>
+    <section class="py-5 py-lg-5 px-3 px-lg-5 mx-auto" style="max-width: 1440px;">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-baseline mb-5 pb-4 border-bottom">
+        <div>
+          <span class="text-uppercase fw-bold small mb-2 d-block">Nội thất TTH</span>
+          <h2 class="title">Sản phẩm nổi bật</h2>
+        </div>
+        <div class="d-flex flex-wrap gap-4 mt-4 mt-md-0">
+          <a href="#" class="nav-link">Phòng ăn</a>
+          <a href="#" class="nav-link">Phòng khách</a>
+          <a href="#" class="nav-link">Phòng ngủ</a>
         </div>
       </div>
-    </div>
-    {% endfor %}
+
+      <!-- Grid 4 cột lớn, responsive -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for item in product %}
+        <div class="col">
+          <div class="product-card h-100">
+            <div class="card-img-container">
+              <a href="{% url 'product_detail' item.id %}">
+                <img src="{{ item.ImageURL }}" class="card-img" alt="{{ item.name|default:'Sản phẩm' }}">
+              </a>
+              <button class="btn">Xem chi tiết</button>
+            </div>
+            <div class="p-3 card-body d-flex flex-column justify-content-between">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 class="mb-1 fw-medium text-dark">{{ item.name|default:'Chưa đặt tên' }}</h5>
+                  <p class="mb-0 text-muted-custom small">
+                    {{ item.material|default:"Gỗ tự nhiên" }}
+                    {% if item.origin %} · {{ item.origin }}{% endif %}
+                  </p>
+                </div>
+                <p class="price mb-0 text-dark">{{ item.price|floatformat:0|intcomma }} VNĐ</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+          <p class="text-muted fs-5">Hiện chưa có sản phẩm nào trong bộ sưu tập nổi bật.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Nếu muốn giới hạn chỉ hiển thị tối đa 16 sản phẩm (4 hàng × 4 cột) -->
+      <!-- Cách 1: Giới hạn ngay trong template (không khuyến khích nếu có phân trang) -->
+      <!-- {% for item in product|slice:":16" %} ... {% endfor %} -->
+
+      <!-- Cách tốt hơn: Giới hạn trong view.py -->
+      <!-- Ví dụ: products = Product.objects.filter(is_featured=True)[:16] -->
+    </section>
+      <div class="container">
+        <div class="text-center mb-5">
+          <p class="section-label" style="color:var(--accent)">Đánh Giá</p>
+          <h2 class="section-title" style="color:var(--cream)">Khách Hàng Nói Gì?</h2>
+        </div>
+        <div class="row g-4 text-dark">
+          <div class="col-lg-4">
+            <div class="testimonial-card" style="background-color: #ddeaeb;">
+              <div class="stars">★★★★★</div>
+              <p>"Bộ sofa Oslo thực sự làm thay đổi hoàn toàn phòng khách của tôi. Chất liệu vải cao cấp, khung gỗ chắc
+                chắn, màu sắc đúng như hình. Rất hài lòng!"</p>
+              <div class="author">Nguyễn Minh Anh</div>
+              <div class="author-job">Kiến Trúc Sư · Hà Nội</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="testimonial-card" style="background-color: #ddeaeb;">
+              <div class="stars">★★★★★</div>
+              <p>"Dịch vụ giao hàng và lắp đặt rất chuyên nghiệp. Nhân viên tư vấn nhiệt tình, giúp tôi chọn được bộ nội
+                thất phù hợp cho căn hộ nhỏ."</p>
+              <div class="author">Trần Phương Linh</div>
+              <div class="author-job">Bác Sĩ · TP.HCM</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="testimonial-card" style="background-color: #ddeaeb;">
+              <div class="stars">★★★★★</div>
+              <p>"Đã mua 3 lần tại MAISON, lần nào cũng hài lòng. Sản phẩm bền đẹp, giá cả hợp lý so với chất lượng. Sẽ
+                tiếp tục ủng hộ hahahahahahahahahahahahahah!"</p>
+              <div class="author">Lê Hoàng Nam</div>
+              <div class="author-job">Bác Sĩ · TP.HCM</div>
+            </div>
+          </div>
+        </div>
   </div>
 </div>
 
@@ -118,22 +157,22 @@
 </div>
 
 <script>
-const tooltip = document.getElementById("chatbot-tooltip");
+  const tooltip = document.getElementById("chatbot-tooltip");
 
-// Tooltip nhấp nháy mỗi 2 giây
-function showTooltip() {
-  tooltip.classList.remove("tooltip-show");
-  void tooltip.offsetWidth;
-  tooltip.classList.add("tooltip-show");
-}
-setInterval(showTooltip, 3000);
+  // Tooltip nhấp nháy mỗi 2 giây
+  function showTooltip() {
+    tooltip.classList.remove("tooltip-show");
+    void tooltip.offsetWidth;
+    tooltip.classList.add("tooltip-show");
+  }
+  setInterval(showTooltip, 3000);
 
-// Toggle chatbot (logic cũ – chắc chắn hoạt động)
-function toggleChat() {
-  const box = document.getElementById("chatbot-box");
-  box.style.display = box.style.display === "flex" ? "none" : "flex";
-  tooltip.style.display = "none";
-}
+  // Toggle chatbot (logic cũ – chắc chắn hoạt động)
+  function toggleChat() {
+    const box = document.getElementById("chatbot-box");
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+    tooltip.style.display = "none";
+  }
 </script>
 
 
@@ -141,27 +180,4 @@ function toggleChat() {
 <link rel="stylesheet" href="{% static 'app/css/chatbot.css' %}">
 <script src="{% static 'app/js/chatbot.js' %}"></script>
 
-
-<!-- ✅ CSS cho ảnh sản phẩm -->
-<style>
-  /* Hiệu ứng hover */
-  .img-hover img {
-    transition: transform 0.4s ease;
-  }
-  .img-hover img:hover {
-    transform: scale(1.08);
-  }
-
-  /* Cố định kích thước ảnh để đồng đều */
-  .product-img {
-    height: 250px;       /* chỉnh cao thấp tùy ý, ví dụ 250px */
-    object-fit: cover;   /* giữ tỉ lệ, cắt phần dư */
-    width: 100%;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-  }
-</style>
 {% endblock main-content %}
-
-
-

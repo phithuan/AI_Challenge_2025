@@ -102,7 +102,7 @@ def logoutPage(request):
 
 # Trang chủ: liệt kê sản phẩm
 def home(request):
-    products = Product.objects.all()[:8]  # lấy 8 sản phẩm
+    products = Product.objects.all()[:12]  # lấy 12 sản phẩm
     context = { # đưa products và categorys vào context
         'product': products,
     }

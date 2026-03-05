@@ -26,8 +26,13 @@ class Category(models.Model): # Mỗi danh mục có các thuộc tính sau
 class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
     name = models.CharField(max_length=200, null=True)  # Tên sản phẩm
     price = models.FloatField()  # Giá sản phẩm
+    # ✅ THÊM GIÁ KHUYẾN MÃI
+    sale_price = models.FloatField(null=True, blank=True)
+
     digital = models.BooleanField(default=False, null=True, blank=True)  # digital=True nghĩa là sản phẩm số (ví dụ: Ebook, phần mềm), không cần shipping
-    image = models.ImageField(null=True, blank=True)  # Ảnh sản phẩm
+    
+    image = models.ImageField(upload_to='products/', null=True, blank=True)  # ảnh chính của sản phẩm
+
     category = models.ManyToManyField(Category, related_name='products')  # Danh mục cha
     description = models.TextField(null=True, blank=True)  # ✅ Thêm trường mô tả
 
@@ -46,7 +51,25 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
         except:
             url = ''
         return url
+    
+    # ✅ TÍNH PHẦN TRĂM GIẢM
+    @property
+    def discount_percent(self):
+        if self.sale_price and self.price:
+            return round(100 - (self.sale_price / self.price * 100))
+        return 0
 
+    # ✅ GIÁ HIỂN THỊ (ưu tiên giá sale)
+    @property
+    def final_price(self):
+        return self.sale_price if self.sale_price else self.price
+
+class ProductImage(models.Model): # Mỗi ảnh phụ thuộc vào 1 sản phẩm
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='products/multiple/')
+    
+    def __str__(self):
+        return f"Image of {self.product.name}"
 
 # Đơn hàng
 class Order(models.Model):

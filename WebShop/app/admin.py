@@ -1,11 +1,24 @@
 from django.contrib import admin
-from .models import *  # Import all models
+from .models import *
 
-# Register your models here.
-# admin.site.register(Customer)
-admin.site.register(Category) 
-admin.site.register(Product)
+# =========================
+# Inline ảnh phụ cho Product
+# =========================
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 3   # Hiển thị sẵn 3 ô upload ảnh phụ
+
+# =========================
+# Custom Product Admin
+# =========================
+class ProductAdmin(admin.ModelAdmin):
+    inlines = [ProductImageInline]
+
+# =========================
+# Register Models
+# =========================
+admin.site.register(Category)
+admin.site.register(Product, ProductAdmin)  # 👈 Quan trọng
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(ShippingAddress)
-# Đăng ký các model để quản lý qua trang admin của Django
