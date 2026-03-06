@@ -33,4 +33,13 @@ urlpatterns = [
     path('admin-products/', views.admin_products, name='admin_products'), # Thêm route quản lý sản phẩm
     path('admin-orders/', views.admin_orders, name='admin_orders'), # Thêm route quản lý đơn hàng
     path('admin-categories/', views.admin_categories, name='admin_categories'), # Thêm route quản lý danh mục
+
+    path('bank-payment/<int:order_id>/', views.bank_payment, name='bank_payment'), # Thêm route xử lý thanh toán qua ngân hàng
+
+    
+    path('bank-payment/<int:order_id>/', views.bank_payment, name='bank_payment'),
+
+    path('payment-webhook/', views.payment_webhook, name="payment_webhook"),
+
+    path('check-order/<int:order_id>/', views.check_order_status, name='check_order_status'),
 ]

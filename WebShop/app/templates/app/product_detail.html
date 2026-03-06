@@ -58,7 +58,7 @@
         </span>
 
         <span class="h3 fw-bold">
-          {{ product.sale_price|floatformat:0|intcomma }} 
+          {{ product.sale_price|floatformat:0|intcomma }}
         </span>
 
         <span class="text-muted ms-2">
@@ -66,7 +66,7 @@
         </span>
         {% else %}
         <span class="h3 fw-bold">
-          {{ product.price|floatformat:0|intcomma }} 
+          {{ product.price|floatformat:0|intcomma }}
         </span>
         {% endif %}
       </div>
@@ -85,10 +85,10 @@
       <p class="mb-4">{{ product.description }}</p>
 
       <!-- Số lượng -->
-      <div class="mb-4">
+      <!-- <div class="mb-4">
         <label class="form-label">Số lượng:</label>
-        <input type="number" class="form-control" value="1" min="1" style="width: 90px;">
-      </div>
+        <input type="number" id="quantityInput" class="form-control" value="1" min="1" style="width: 90px;">
+      </div> -->
 
       <!-- ✅ Nút -->
       <button data-product="{{ product.id }}" data-action="add"
@@ -106,6 +106,7 @@
         <p>✔ Miễn phí giao hàng toàn quốc</p>
         <p>✔ Bảo hành 12 tháng</p>
         <p>✔ Đổi trả trong 7 ngày</p>
+        <p>✔ Đổi trả trong 7 ngày có cái qq á mà đổi</p>
       </div>
 
     </div>
@@ -168,12 +169,6 @@
     event.target.classList.add('active');
   }
 
-  function changeImage(event, src) {
-    document.getElementById('mainImage').src = src;
-    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
-    event.target.classList.add('active');
-  }
-
   // ===== Zoom khi click ảnh chính =====
   const mainImage = document.getElementById("mainImage");
   const modal = document.getElementById("imageModal");
@@ -194,7 +189,6 @@
       modal.style.display = "none";
     }
   }
-
 </script>
 
 {% endblock main-content %}

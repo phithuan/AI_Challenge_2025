@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
-<title>{% block title %}Checkout{% endblock %}</title>
-{% load static %}
+{% block title %}Thanh toán - Đặt hàng{% endblock %}{% load static %}
 {% block content_checkout %}
+{% load humanize %}
 
 <div class="container my-5">
   <div class="row g-4">
@@ -9,7 +9,7 @@
     <!-- ✅ Cột trái: Form nhập thông tin -->
     <div class="col-lg-6">
       <div class="card shadow-sm p-4">
-        <h4 class="mb-3 text-success">Thông tin đặt hàng</h4>
+        <h4 class="mb-3 text" style="color: rgb(5, 9, 245);">Thông tin đặt hàng</h4>
 
         <!-- Form Checkout -->
         <form method="POST" action="{% url 'process_order' %}" id="form">
@@ -19,17 +19,20 @@
           <div id="user-info">
             <div class="mb-3">
               <label class="form-label fw-semibold">Họ và tên</label>
-              <input required class="form-control" type="text" name="name" placeholder="Nhập họ tên..." value="{{ request.user.get_full_name }}">
+              <input required class="form-control" type="text" name="name" placeholder="Nhập họ tên..."
+                value="{{ request.user.get_full_name }}">
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">Email</label>
-              <input required class="form-control" type="email" name="email" placeholder="Nhập email..." value="{{ request.user.email }}">
+              <input required class="form-control" type="email" name="email" placeholder="Nhập email..."
+                value="{{ request.user.email }}">
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">Số điện thoại</label>
-              <input required class="form-control" type="tel" name="phone" placeholder="Nhập số điện thoại..." pattern="[0-9]{10,12}">
+              <input required class="form-control" type="tel" name="phone" placeholder="Nhập số điện thoại..."
+                pattern="[0-9]{10,12}">
               <small class="text-muted">Ví dụ: 0912345678</small>
             </div>
           </div>
@@ -52,15 +55,9 @@
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
-              <input 
-                class="form-control" 
-                type="text" 
-                name="address" 
-                placeholder="Nhập địa chỉ..."
-                required
+              <input class="form-control" type="text" name="address" placeholder="Nhập địa chỉ..." required
                 oninvalid="this.setCustomValidity('Hãy nhập địa chỉ chi tiết để đơn hàng giao đúng địa chỉ')"
-                oninput="this.setCustomValidity('')"
-              >
+                oninput="this.setCustomValidity('')">
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Mã bưu điện</label>
@@ -68,12 +65,31 @@
             </div>
           </div>
 
-          <!-- Nút tiếp tục -->
+          <!-- Nút tiếp -->
           <div class="d-grid">
-            <input id="form-button" class="btn btn-success" type="submit" value="Thanh toán">
+            <input id="form-button" class="btn btn-success" type="submit" value="Đặt hàng">
+          </div>
+
+          <!-- ========================= -->
+          <!-- PHƯƠNG THỨC THANH TOÁN -->
+          <!-- ========================= -->
+          <hr>
+          <h5 class="mb-3 text-primary">Phương thức thanh toán</h5>
+          <div class="form-check mb-2">
+            <!-- COD -->
+            <input class="form-check-input" type="radio" name="payment_method" value="cod" checked>
+            <label class="form-check-label">
+              Thanh toán khi nhận hàng (COD)
+            </label>
+          </div>
+          <div class="form-check">
+            <!-- BANK -->
+            <input class="form-check-input" type="radio" name="payment_method" value="bank">
+            <label class="form-check-label">
+              Chuyển khoản ngân hàng
+            </label>
           </div>
         </form>
-
       </div>
 
       <!-- ✅ Thông tin thanh toán -->
@@ -86,23 +102,26 @@
     <!-- ✅ Cột phải: Order Summary -->
     <div class="col-lg-6">
       <div class="card shadow-sm p-4">
-        <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a> <!-- Nút quay lại giỏ hàng -->
-        <h4 class="mb-3 text-success">Tóm tắt đơn hàng</h4>
+        <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
+        <!-- Nút quay lại giỏ hàng -->
+        <h4 class="mb-3 text" style="color: rgb(5, 9, 245);"> Tóm tắt đơn hàng</h4>
 
         <!-- Danh sách sản phẩm trong giỏ -->
         {% if items %}
-          {% for item in items %}
-          <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-            <img class="img-fluid rounded me-3" src="{{ item.product.ImageURL }}" alt="{{ item.product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
-            <div class="flex-grow-1">
-              <h6 class="mb-1">{{ item.product.name }}</h6> <!-- Tên sản phẩm -->
-              <p class="mb-0 text-muted">{{ item.product.price|floatformat:0 }} x {{ item.quantity }}</p> <!-- Giá và số lượng -->
-            </div>
-            <span class="fw-bold">{{ item.get_price_quantity|floatformat:0 }} VNĐ</span> <!-- Thành tiền -->
+        {% for item in items %}
+        <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+          <img class="img-fluid rounded me-3" src="{{ item.product.ImageURL }}" alt="{{ item.product.name }}"
+            style="width: 80px; height: 80px; object-fit: cover;">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">{{ item.product.name }}</h6> <!-- Tên sản phẩm -->
+            <p class="mb-0 text-muted">{{ item.product.price|floatformat:0 }} x {{ item.quantity }}</p>
+            <!-- Giá và số lượng -->
           </div>
-          {% endfor %}
+          <span class="fw-bold">{{ item.get_price_quantity|floatformat:0 |intcomma}} VNĐ</span> <!-- Thành tiền -->
+        </div>
+        {% endfor %}
         {% else %}
-          <p class="text-muted">Giỏ hàng trống.</p>
+        <p class="text-muted">Giỏ hàng trống.</p>
         {% endif %}
 
         <!-- Tổng kết -->
@@ -112,8 +131,9 @@
           <span>{{ order.get_cart_items }}</span> <!-- Số lượng sản phẩm -->
         </div>
         <div class="d-flex justify-content-between">
-          <span class="fw-bold text-success">Tổng cộng:</span>
-          <span class="fw-bold text-danger">{{ order.get_cart_total|floatformat:0 }} VNĐ</span> <!-- Tổng tiền -->
+          <span class="fw-bold text fs-3" style="color: rgb(1, 1, 19);">Tổng cộng:</span>
+          <span class="fw-bold text fs-3">{{ order.get_cart_total|floatformat:0 |intcomma}} VNĐ</span>
+          <!-- Tổng tiền -->
         </div>
         {% endif %}
       </div>

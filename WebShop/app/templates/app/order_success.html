@@ -1,14 +1,14 @@
 {% extends 'app/base.html' %}
 <title>{% block title %}Order Success{% endblock %}</title>
 {% load static %}
-
 {% block content_checkout %}
+{% load humanize %}
 <div class="container my-5">
   <div class="card shadow-lg p-5 text-center">
 
     <!-- Thông báo thành công -->
     <h2 class="text-success fw-bold mb-4">🎉 Đặt hàng thành công!</h2>
-    <p class="text-muted mb-5">Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi. Đơn hàng của bạn đã được xác nhận</p>
+    <p class="text-muted mb-5">Cảm ơn {{ shipping.customer}} đã mua sắm tại cửa hàng của chúng tôi. Đơn hàng của bạn đã được xác nhận</p>
 
     <!-- Thông tin sản phẩm -->
     <h5 class="text-start mb-3">🛒 Sản phẩm đã mua:</h5>
@@ -16,7 +16,7 @@
       {% for item in items %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <span>{{ item.product.name }} (x{{ item.quantity }})</span>
-        <strong>${{ item.get_price_quantity|floatformat:0 }}</strong>
+        <strong>{{ item.get_price_quantity|floatformat:0|intcomma }} VNĐ</strong>
       </li>
       {% endfor %}
     </ul>
@@ -24,7 +24,7 @@
     <!-- Tổng tiền -->
     <div class="d-flex justify-content-between border-top pt-3 mb-4">
       <span class="fw-bold text-success">Tổng cộng:</span>
-      <span class="fw-bold text-danger">${{ order.get_cart_total|floatformat:0 }}</span>
+      <span class="fw-bold text">{{ order.get_cart_total|floatformat:0|intcomma }} VNĐ</span>
     </div>
 
     <!-- Địa chỉ giao hàng -->
@@ -36,7 +36,8 @@
         {{ shipping.state }}, {{ shipping.city }}<br>
         {{ shipping.country }} - {{ shipping.zipcode }}
       </p>
-      <small>📞 {{ shipping.mobile }}</small>
+      <p>Tên người nhận: {{ shipping.customer}}</p>
+      <p>Số điện thoại người nhận: {{ shipping.mobile }}</p>
     </div>
     {% endif %}
 

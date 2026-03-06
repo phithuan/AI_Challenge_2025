@@ -123,7 +123,7 @@ def cart(request):
 
 
 # Trang checkout
-def checkout(request):
+def checkout(request): # trang thanh toán, hiển thị thông tin đơn hàng trước khi đặt hàng
     # Kiểm tra user đã đăng nhập hay chưa
     if request.user.is_authenticated:
         order, created = Order.objects.get_or_create(customer=request.user, complete=False)
@@ -192,15 +192,23 @@ def add_to_cart(request, pk):
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Order, OrderItem, ShippingAddress
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required # để đảm bảo chỉ user đã đăng nhập mới được gọi
 
 @login_required # đảm bảo chỉ user đã đăng nhập mới được gọi
-def process_order(request): # xử lý đơn hàng
+def process_order(request):
     if request.method == "POST":
-        # Lấy đơn hàng chưa hoàn tất của user
-        order, created = Order.objects.get_or_create(customer=request.user, complete=False) # lấy hoặc tạo đơn hàng chưa hoàn tất
-
-        # Lưu ShippingAddress
+        # Lấy order chưa hoàn tất của user
+        order, created = Order.objects.get_or_create(
+            customer=request.user,
+            complete=False
+        )
+        # =========================
+        # LẤY PHƯƠNG THỨC THANH TOÁN
+        # =========================
+        payment_method = request.POST.get("payment_method")
+        # =========================
+        # LƯU ĐỊA CHỈ GIAO HÀNG
+        # =========================
         ShippingAddress.objects.create(
             customer=request.user,
             order=order,
@@ -209,29 +217,143 @@ def process_order(request): # xử lý đơn hàng
             state=request.POST.get('state'),
             mobile=request.POST.get('phone'),
         )
-
-        # Đánh dấu đơn hàng đã hoàn tất
-        order.complete = True
-        order.save()
-
-        return redirect('order_success', order_id=order.id) # chuyển đến trang thông báo thành công
-
+        # =========================
+        # NẾU THANH TOÁN COD
+        # =========================
+        if payment_method == "cod":
+            order.complete = True
+            order.save()
+            return redirect('order_success', order_id=order.id)
+        # =========================
+        # NẾU CHUYỂN KHOẢN
+        # =========================
+        if payment_method == "bank":
+            return redirect('bank_payment', order_id=order.id)
     return redirect('checkout')
 
-
 @login_required
-def order_success(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer=request.user, complete=True)
+def order_success(request, order_id): # nhận order_id từ URL để hiển thị thông tin đơn hàng vừa đặt thạnh công
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
     items = order.orderitem_set.all()
-
     shipping = ShippingAddress.objects.filter(order=order).first()
-
     context = {
         "order": order,
         "items": items,
         "shipping": shipping,
     }
     return render(request, "app/order_success.html", context)
+
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Order  # đảm bảo import Order từ models.py
+
+@csrf_exempt
+def payment_webhook(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "method not allowed"}, status=405)
+
+    try:
+        # In ra toàn bộ request để debug (xem terminal Django khi test)
+        print("=== WEBHOOK NHẬN ĐƯỢC TỪ SEPAY ===")
+        print("Headers:", request.headers)
+        print("Body raw:", request.body)
+
+        data = json.loads(request.body.decode('utf-8'))  # decode để tránh lỗi encoding
+        print("Parsed JSON:", data)  # In JSON để xem fields thực tế
+
+        # Lấy nội dung chuyển khoản – SePay dùng 'content' cho nội dung CK khách nhập
+        content = data.get('content') or data.get('description') or ""
+        content_upper = content.upper()
+
+        # Chỉ xử lý nếu là giao dịch vào tiền ("in")
+        if data.get('transferType') != 'in':
+            print("Không phải giao dịch vào tiền, bỏ qua.")
+            return JsonResponse({"status": "ignored_not_in"}, status=200)
+
+        # Tìm "ORDER" trong nội dung
+        if "ORDER" in content_upper:
+            # Tách order_id: giả sử "ORDER123 abc" hoặc "Chuyen ORDER123"
+            # Lấy phần sau "ORDER" đầu tiên, lấy số đầu tiên
+            parts = content_upper.split("ORDER")
+            if len(parts) > 1:
+                # Lấy chuỗi sau ORDER, loại bỏ khoảng trắng, lấy phần số đầu
+                after_order = parts[1].strip()
+                order_id_str = ''.join([c for c in after_order.split()[0] if c.isdigit()])  # chỉ lấy số
+
+                if order_id_str:
+                    try:
+                        order_id = int(order_id_str)
+                        print(f"Phát hiện ORDER ID: {order_id}")
+
+                        order = Order.objects.get(id=order_id)
+
+                        # Kiểm tra số tiền khớp (tùy chọn nhưng rất khuyến khích để tránh fake)
+                        transferred_amount = float(data.get('transferAmount') or data.get('amount') or 0)
+                        cart_total = float(order.get_cart_total)
+
+                        if abs(transferred_amount - cart_total) <= 1000:  # dung sai ±1000đ
+                            if not order.complete:
+                                order.complete = True
+                                order.save()
+                                print(f"ĐƠN HÀNG {order_id} ĐÃ COMPLETE THÀNH CÔNG!")
+                                # Optional: gửi email xác nhận ở đây (dùng Django mail)
+                        else:
+                            print(f"Số tiền không khớp: chuyển {transferred_amount} nhưng đơn cần {cart_total}")
+
+                    except ValueError:
+                        print("Không parse được order_id thành số nguyên.")
+                    except Order.DoesNotExist:
+                        print(f"Không tìm thấy Order ID {order_id}")
+                else:
+                    print("Không tìm thấy số sau ORDER.")
+            else:
+                print("Không có 'ORDER' hợp lệ trong content.")
+        else:
+            print("Không có 'ORDER' trong nội dung chuyển khoản.")
+
+        # Luôn trả 200 OK để SePay không retry
+        return JsonResponse({"status": "ok"})
+
+    except json.JSONDecodeError as e:
+        print("Lỗi parse JSON:", str(e))
+        return JsonResponse({"status": "invalid json"}, status=400)
+    except Exception as e:
+        print("Lỗi webhook:", str(e))
+        return JsonResponse({"status": "error"}, status=500)
+
+
+@login_required
+def bank_payment(request, order_id): # nhận order_id để hiển thị thông tin đơn hàng trên trang thanh toán ngân hàng
+    # Lấy order theo id
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        customer=request.user
+    )
+    context = {
+        "order": order
+    }
+    return render(
+        request,
+        "app/bank_payment.html", # bạn cần tạo template này để hiển thị thông tin đơn hàng và hướng dẫn thanh toán
+        context
+    )
+
+
+def check_order_status(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        return JsonResponse({
+            "complete": order.complete
+        })
+    except Order.DoesNotExist:
+        return JsonResponse({
+            "complete": False
+        })
+
 
 def introduce(request):
     return render(request, 'app/introduce.html')

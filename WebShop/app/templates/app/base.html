@@ -226,7 +226,7 @@
     </div>
   </nav>
 
-  <main class="flex-grow-1">
+  <main class="flex-grow-1"> <!-- để cho các trang con chèn nội dung vào layout chung. khung website chung (navbar + footer + layout) -->
     {% block banner_slider %}{% endblock %}
     {% block main-content %}{% endblock %}
     {% block cart_content %}{% endblock %}
@@ -236,7 +236,7 @@
   </main>
 
   <!-- Footer Main -->
-  <div class="footer-container" style="background-color: #c7c7c7;">
+  <div class="footer-container" style="background-color: #f0f0f0;">
     <div class="container text-dark py-5">
       <div class="row g-4 footer-container--content">
         <!-- About + Logo + Certifications -->
@@ -331,6 +331,42 @@
   </div>
 
   <script src="{% static 'app/js/cart.js' %}"></script>
+
+  <script>
+
+var updateBtns = document.getElementsByClassName('update-cart')
+
+for (var i = 0; i < updateBtns.length; i++) {
+
+    updateBtns[i].addEventListener('click', function(){
+        var productId = this.dataset.product
+        var action = this.dataset.action
+
+        updateUserOrder(productId, action)
+    })
+}
+
+function updateUserOrder(productId, action){
+    fetch('/update_item/', {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body:JSON.stringify({
+            'productId':productId,
+            'action':action
+        })
+    })
+    .then((response) => {
+        return response.json()
+    })
+    .then((data) => {
+        location.reload()
+    })
+}
+</script>
+
 </body>
 
 </html>
