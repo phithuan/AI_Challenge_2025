@@ -1,5 +1,6 @@
 # app/context_processors.py
-from .models import Order
+from .models import Order, Category
+
 
 def cart_data(request):
     """
@@ -10,13 +11,15 @@ def cart_data(request):
     cart_items = 0
 
     if request.user.is_authenticated:
-        # Lấy hoặc tạo giỏ hàng chưa hoàn tất cho user
-        order, created = Order.objects.get_or_create(
-            customer=request.user,
-            complete=False
-        )
-        # Gọi property trong model Order (ví dụ get_cart_items)
-        cart_items = order.get_cart_items  
+        # 1. Lấy danh sách các giỏ hàng chưa hoàn tất, chọn cái đầu tiên tìm được
+        order = Order.objects.filter(customer=request.user, complete=False).first()
+
+        # 2. Nếu không tìm thấy giỏ hàng nào thì mới tạo mới
+        if not order:
+            order = Order.objects.create(customer=request.user, complete=False)
+
+        # Gọi property trong model Order (tính tổng số lượng item trong giỏ)
+        cart_items = order.get_cart_items
 
     return {
         'order': order,
@@ -24,8 +27,9 @@ def cart_data(request):
     }
 
 
-from .models import Category
 def categories_processor(request):
+    """
+    Context processor để lấy danh sách Category cha (is_sub=False)
+    """
     categories = Category.objects.filter(is_sub=False)  # chỉ lấy danh mục cha
     return {'categories': categories}
-

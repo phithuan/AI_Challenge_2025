@@ -1,401 +1,247 @@
 {% load static %}
+{% load humanize %}
 
 <!DOCTYPE html>
-
-<html class="light" lang="en">
-
+<html class="light" lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>LuxeFurnish Admin | Inventory Management</title>
+    <title>Quản lý Sản phẩm | PT Admin</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <script id="tailwind-config">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: {
-                        "primary": "#ec5b13",
-                        "background-light": "#f8f6f6",
-                        "background-dark": "#221610",
-                    },
-                    fontFamily: {
-                        "display": ["Public Sans"]
-                    },
-                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    colors: { "primary": "#ec5b13", "background-light": "#f8f6f6", "background-dark": "#221610" },
+                    fontFamily: { "display": ["Public Sans"] },
                 },
             },
         }
     </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .group:hover .group-hover\:block { display: block; }
+    </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
-    <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="flex min-h-screen overflow-x-hidden">
 
-        <!-- Sidebar Navigation -->
         <aside class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col fixed h-full z-50">
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
                         <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
                     </div>
-
                     <div class="flex flex-col">
-                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">
-                            VỀ TRANG CHỦ
-                        </h1>
-                        <p class="text-slate-400 text-xs font-normal">
-                            PT_Project
-                        </p>
+                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
+                        <p class="text-slate-400 text-xs font-normal">HTT_Project</p>
                     </div>
                 </a>
                 <nav class="flex flex-col gap-2">
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_dashboard' %}">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_dashboard' %}">
                         <span class="material-symbols-outlined">dashboard</span>
-                        <span class="text-sm font-medium">Dashboard</span>
+                        <span class="text-sm font-medium">Tổng quan</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20"
-                        href="{% url 'admin_products' %}">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20" href="{% url 'admin_products' %}">
                         <span class="material-symbols-outlined">inventory_2</span>
-                        <span class="text-sm font-medium">Products</span>
+                        <span class="text-sm font-medium">Sản phẩm</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_categories' %}">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_categories' %}">
                         <span class="material-symbols-outlined">category</span>
-                        <span class="text-sm font-medium">Categories</span>
+                        <span class="text-sm font-medium">Danh mục</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_orders' %}">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_orders' %}">
                         <span class="material-symbols-outlined">shopping_cart</span>
-                        <span class="text-sm font-medium">Orders</span>
+                        <span class="text-sm font-medium">Đơn hàng</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">group</span>
-                        <span class="text-sm font-medium">Users</span>
+
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_users' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all"
+                    href="{% url 'admin_users' %}">
+                    <span class="material-symbols-outlined">group</span>
+                    <span class="text-sm font-medium">Người dùng</span>
                     </a>
-                    <div class="my-4 border-t border-slate-800"></div>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">analytics</span>
-                        <span class="text-sm font-medium">Reports</span>
+
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_contact' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all"
+                        href="{% url 'admin_contact' %}">
+                        <span class="material-symbols-outlined">mail</span>
+                        <span class="text-sm font-medium">Liên hệ</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">settings</span>
-                        <span class="text-sm font-medium">Settings</span>
-                    </a>
+
                 </nav>
             </div>
             <div class="mt-auto p-6">
                 <div class="bg-slate-800/50 rounded-xl p-4 flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-slate-700 overflow-hidden"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQtgI3P70SuyetdcxuLm1bGVGUDCSD5BavuMUlynlQk2xPtRbLIe68AAM2d9k0-3fj1d1vKRdkTg7lj5k8HP1AO560BpON_hjcp5k__mxkK8qwfFSjOs1h-PrzvTOPtYlRODZ-hxSyD10O_kJPUCJ2JbNWGIqsGZ6pFfLaSt2lcHUSYVM03ClrKjwOLyUQVe0e7ADQuHdJdmYrX9flehbxe4Xto5XSLRDAvdfSw7faJVnMGpzr96-NP26ojrEq7UnJsm-nb74IWL8m')">
+                    <div class="size-10 rounded-full bg-slate-700 overflow-hidden flex items-center justify-center font-bold text-white text-lg uppercase">
+                        {{ request.user.username|make_list|first }}
                     </div>
                     <div class="overflow-hidden">
-                        <p class="text-sm font-bold truncate">Julian Thorne</p>
-                        <p class="text-xs text-slate-500 truncate">Store Manager</p>
+                        <p class="text-sm font-bold truncate">{{ request.user.username }}</p>
+                        <p class="text-xs text-slate-500 truncate">Quản lý cửa hàng</p>
                     </div>
                 </div>
             </div>
         </aside>
-        <!-- Main Content Area -->
-        <main class="flex flex-1 flex-col overflow-x-hidden p-6 lg:p-10 lg:ml-64">
-            <!-- Header Actions -->
-            <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
-                <div class="flex flex-col gap-2">
-                    <h1 class="text-slate-900 dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">
-                        Product Inventory</h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-base font-normal">Manage your high-end furniture
-                        catalog and real-time stock levels.</p>
+
+        <main class="flex-1 ml-64 min-h-screen flex flex-col">
+            <header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between z-40">
+                <div class="flex items-center gap-4 flex-1">
+                    <form action="{% url 'admin_products' %}" method="GET" class="relative max-w-md w-full">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input name="q" value="{{ query|default:'' }}" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Tìm kiếm tên sản phẩm..." type="text" />
+                    </form>
                 </div>
-                <div class="flex gap-3">
-                    <button
-                        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold tracking-[0.015em] hover:opacity-90 transition-all">
-                        <span class="material-symbols-outlined text-lg">file_download</span>
-                        <span>Export</span>
-                    </button>
-                    <button
-                        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-primary text-white text-sm font-bold tracking-[0.015em] hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all">
-                        <span class="material-symbols-outlined text-lg">add</span>
-                        <span>Add New Product</span>
-                    </button>
+                <div class="flex items-center gap-4">
+                    <a href="?action=add" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-md">
+                        <span class="material-symbols-outlined text-xl">add</span>
+                        Thêm sản phẩm
+                    </a>
                 </div>
-            </div>
-            <!-- Filters Bar -->
-            <div class="flex flex-wrap gap-3 mb-6 items-center">
-                <button
-                    class="flex h-10 items-center justify-center gap-x-2 rounded-xl bg-primary text-white px-4 text-sm font-medium transition-colors">
-                    All Products
-                </button>
-                <button
-                    class="flex h-10 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 transition-colors">
-                    Living Room
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                </button>
-                <button
-                    class="flex h-10 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 transition-colors">
-                    Bedroom
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                </button>
-                <button
-                    class="flex h-10 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 transition-colors">
-                    Dining
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                </button>
-                <div class="flex-1"></div>
-                <div class="flex items-center gap-2 text-slate-500 text-sm font-medium">
-                    <span class="material-symbols-outlined text-lg">sort</span>
-                    Sort by: Latest
-                </div>
-            </div>
-            <!-- Inventory Table -->
-            <div
-                class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr
-                                class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider w-16 text-center">
-                                    Image</th>
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    Product Name</th>
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    Category</th>
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                    Price</th>
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider w-48">
-                                    Stock Levels</th>
-                                <th
-                                    class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider text-right">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <!-- Row 1 -->
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="px-6 py-4 text-center">
-                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner"
-                                        data-alt="Emerald tufted velvet sofa"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2dDWScGjhmLHt0gnVpne1pYVE1OhDm2kr3arqvTNVtPS6cxOWrqENZ2k3FST0jseAFEMSBK8293W4L4Xukk2mv-PrwRp8omB3oIO4SyoZ0RMapO0NI7H6--r_bZwC9bJLpfDVq1wza3rhQFxso7xm_EvtfX3U1bVVPnMvexKPLqmsbUjLRV6K7THFQKT0d-ri3ojvKkYCIwH6TvAzRXqaaiw9gqvopf3ObBRPKGQFjzkz_SodRZSqnLBIi0d6Jk1kKZ8Kg4iy3Nyo");'>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-slate-900 dark:text-white font-bold text-sm">Emerald Tufted
-                                            Sofa</span>
-                                        <span class="text-slate-400 text-xs">SKU: FUR-EM-012</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Living
-                                        Room</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-semibold text-sm">$2,400.00
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div
-                                            class="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
-                                            <span>85 in stock</span>
-                                            <span class="text-emerald-500">Good</span>
-                                        </div>
-                                        <div
-                                            class="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                            <div class="h-full bg-emerald-500 rounded-full" style="width: 85%;"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-xl">edit</span>
-                                        </button>
-                                        <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                            <span class="material-symbols-outlined text-xl">delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 2 -->
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="px-6 py-4 text-center">
-                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner"
-                                        data-alt="Solid white oak dining table"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDdS3MA0CWm0Qak5Xq0N8DxIoCUAtGyaQAuTNR8yxBHjGX6DiflgvLdNljj9Lwy3GTm7etx-2gkMBbtFJC6TujlJuqFkQwPM9SINJbTU9Dmdah9EzLzveqa8CtyCoM0mKaPLD57qtgN68zZeqvYPFtix9I7U6fy2AfLuovc0Q9dDttpzTHKXkGPlTz7OQGrM-3cWuYXFRhDp7W5Uql0eRIBFhm7l7WzklE1o02Ci6Mb-FPRMf5qTlzoNTj9k0iU0EIGtxbu_wf5xvWG");'>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-slate-900 dark:text-white font-bold text-sm">Solid White Oak
-                                            Dining</span>
-                                        <span class="text-slate-400 text-xs">SKU: FUR-OW-459</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Dining</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-semibold text-sm">$1,850.00
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div
-                                            class="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
-                                            <span>40 in stock</span>
-                                            <span class="text-orange-500">Medium</span>
-                                        </div>
-                                        <div
-                                            class="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                            <div class="h-full bg-orange-500 rounded-full" style="width: 40%;"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-xl">edit</span>
-                                        </button>
-                                        <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                            <span class="material-symbols-outlined text-xl">delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 3 -->
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="px-6 py-4 text-center">
-                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner"
-                                        data-alt="Italian marble floor lamp"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAc6975Rb7UqVhu-K_tLt-CizUlECYWphmTM3KQJIbP-a6lz-oRt_RgzEuuVDGUHfyU7lbad-hwT87VLVoONqSlGOX9DVQA3pIL6pgFN4Cj17rb7fRJuClLW5WpCjpDvXPuB3TQh_d9U2WO2hkO_Mok6mRt5_erHxGIO-sbspo2HUXOxgYG59IeFoLZXikEqjsFd_T6hhoFM0mO5xIdU-0qhSnV7HCH8HNu_ieUVrb9k6xKEUzEx5MUkFHnFbVWObjw9D70_-R7loI7");'>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-slate-900 dark:text-white font-bold text-sm">Italian Marble
-                                            Lamp</span>
-                                        <span class="text-slate-400 text-xs">SKU: LGH-MB-221</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Lighting</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-semibold text-sm">$600.00
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div
-                                            class="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
-                                            <span>120 in stock</span>
-                                            <span class="text-emerald-500">High</span>
-                                        </div>
-                                        <div
-                                            class="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                            <div class="h-full bg-emerald-500 rounded-full" style="width: 100%;"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-xl">edit</span>
-                                        </button>
-                                        <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                            <span class="material-symbols-outlined text-xl">delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 4 -->
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="px-6 py-4 text-center">
-                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner"
-                                        data-alt="Cognac leather lounge chair"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBLLwVa9Cq2zE0QSKIx_tUfnfK2tUsJN_2nY2BnACP_xsZJ5UwpXhHNzWPQ1J80yBqcBNGneI_sc_aTL0JqwFsCebuAUvghF4BssYOWeRZ8j09YGnIUDIhWRhzQq_0bn4UH_OfVEjLJGHzGRTXLQTxOB_p22zvJKLwCVKRAd1bbMssQ7t3yA8Uf38VOANBWKXmXU-uK2waln1ftVMvvJXTXTR0Zn6rUQUfr5P50E-tzTYKyhzmmM2l1rqWadKS957dAZlCCGSEX0ML0");'>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-slate-900 dark:text-white font-bold text-sm">Cognac Lounge
-                                            Chair</span>
-                                        <span class="text-slate-400 text-xs">SKU: CHR-CO-882</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Bedroom</span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-semibold text-sm">$1,200.00
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div
-                                            class="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
-                                            <span>12 in stock</span>
-                                            <span class="text-red-500">Low Stock</span>
-                                        </div>
-                                        <div
-                                            class="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                            <div class="h-full bg-red-500 rounded-full" style="width: 15%;"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-xl">edit</span>
-                                        </button>
-                                        <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                            <span class="material-symbols-outlined text-xl">delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Table Footer / Pagination -->
-                <div
-                    class="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-                    <span class="text-sm text-slate-500">Showing 4 of 128 products</span>
-                    <div class="flex gap-2">
-                        <button
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50">
-                            <span class="material-symbols-outlined text-lg">chevron_left</span>
-                        </button>
-                        <button
-                            class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white text-sm font-bold">1</button>
-                        <button
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 text-sm font-bold">2</button>
-                        <button
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 text-sm font-bold">3</button>
-                        <button
-                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50">
-                            <span class="material-symbols-outlined text-lg">chevron_right</span>
-                        </button>
+            </header>
+
+            <div class="p-8">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 mb-6 rounded shadow-sm">
+                            <p class="font-bold">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
+                    <div class="flex flex-col gap-2">
+                        <h1 class="text-slate-900 dark:text-white text-3xl font-black leading-tight">Quản lý Kho hàng</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-base font-normal">Quản lý danh mục sản phẩm và theo dõi trạng thái của cửa hàng.</p>
                     </div>
+                    <div class="flex gap-3">
+                        <a href="?export=excel{% if query %}&q={{ query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold hover:opacity-90 transition-all">
+                            <span class="material-symbols-outlined text-lg">file_download</span>
+                            <span>Xuất Excel</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mb-6 items-center">
+                    <a href="{% url 'admin_products' %}" class="flex h-10 items-center justify-center gap-x-2 rounded-xl px-4 text-sm font-medium transition-colors {% if not current_category %}bg-primary text-white{% else %}bg-white border border-slate-200 text-slate-700 hover:bg-slate-50{% endif %}">
+                        Tất cả SP
+                    </a>
+
+                    {% for cat in categories|slice:":3" %}
+                    <a href="?category={{ cat.slug }}" class="flex h-10 items-center justify-center gap-x-2 rounded-xl px-4 text-sm font-medium transition-colors {% if current_category == cat.slug %}bg-primary text-white border-primary{% else %}bg-white border border-slate-200 text-slate-700 hover:bg-slate-50{% endif %}">
+                        {{ cat.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider w-16 text-center">Hình ảnh</th>
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Tên sản phẩm</th>
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Danh mục</th>
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Giá bán</th>
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider w-48">Trạng thái</th>
+                                    <th class="px-6 py-4 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider text-right">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+
+                                {% for item in products %}
+                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner border border-slate-200"
+                                            style='background-image: url("{% if item.image %}{{ item.image.url }}{% else %}{% static "app/image/placeholder.png" %}{% endif %}");'>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-900 dark:text-white font-bold text-sm">{{ item.name }}</span>
+                                            <span class="text-slate-400 text-xs">
+                                                {% if item.material %}{{ item.material }}{% else %}Không rõ chất liệu{% endif %}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {% for cat in item.category.all %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1">
+                                                {{ cat.name }}
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-bold text-sm">
+                                        ${{ item.price|floatformat:2|intcomma }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
+                                                <span>Kho hàng</span>
+                                                <span class="text-emerald-500">Có sẵn</span>
+                                            </div>
+                                            <div class="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                                                <div class="h-full bg-emerald-500 rounded-full" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex justify-end gap-2">
+                                            <a href="?action=edit&id={{ item.id }}" class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                                <span class="material-symbols-outlined text-xl">edit</span>
+                                            </a>
+                                            <a href="?action=delete&id={{ item.id }}" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');" class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                                                <span class="material-symbols-outlined text-xl">delete</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                                        Không tìm thấy sản phẩm nào.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if products.has_other_pages %}
+                    <div class="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                        <span class="text-sm text-slate-500">Trang {{ products.number }} / {{ products.paginator.num_pages }}</span>
+                        <div class="flex gap-2">
+
+                            {% if products.has_previous %}
+                            <a href="?page={{ products.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition">
+                                <span class="material-symbols-outlined text-lg">chevron_left</span>
+                            </a>
+                            {% endif %}
+
+                            {% for i in products.paginator.page_range %}
+                                {% if products.number == i %}
+                                    <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white text-sm font-bold">{{ i }}</button>
+                                {% else %}
+                                    <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-sm font-bold transition">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}{% if query %}&q={{ query }}{% endif %}" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition">
+                                <span class="material-symbols-outlined text-lg">chevron_right</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
                 </div>
             </div>
         </main>
     </div>
-    </div>
 </body>
-
 </html>
