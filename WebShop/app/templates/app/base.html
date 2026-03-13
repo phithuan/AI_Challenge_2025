@@ -1,276 +1,372 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- ✅ CSS Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap CSS + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <!-- Material Symbols -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
 
-    <!-- ✅ CSS custom -->
-    <link id="darkModeCSS" rel="stylesheet" href="">
-    <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/all.min.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/owl.carousel.min.css' %}" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link id="darkModeCSS" rel="stylesheet" href="">
+  <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/all.min.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/owl.carousel.min.css' %}" rel="stylesheet">
 
-    <!-- ✅ JS Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript">
-      var user = '{{ request.user }}'
-      function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- CSRF Token -->
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
           }
-          return cookieValue;
+        }
       }
-      const csrftoken = getCookie('csrftoken');
-    </script>
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+  </script>
 
-    <!-- Dark mode toggle script -->
-    <script>
+  <!-- Dark Mode Toggle -->
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const body = document.body;
-        const toggle = document.getElementById('themeToggle');
-        const darkModeCSS = document.getElementById('darkModeCSS');
+      const body = document.body;
+      const toggle = document.getElementById('themeToggle');
+      const darkModeCSS = document.getElementById('darkModeCSS');
+      const sunIcon = toggle.querySelectorAll('.material-symbols-outlined')[0];
+      const moonIcon = toggle.querySelectorAll('.material-symbols-outlined')[1];
 
-        const sunIcon = toggle.querySelectorAll('.material-symbols-outlined')[0];
-        const moonIcon = toggle.querySelectorAll('.material-symbols-outlined')[1];
+      const enableDarkMode = () => {
+        body.classList.add('dark-mode');
+        darkModeCSS.href = "{% static 'app/css/dark.css' %}";
+        sunIcon.classList.add('d-none');
+        moonIcon.classList.remove('d-none');
+        localStorage.setItem('darkMode', 'enabled');
+      };
 
-        function enableDarkMode() {
-            body.classList.add('dark-mode');
-            darkModeCSS.href = "{% static 'app/css/dark.css' %}";
+      const disableDarkMode = () => {
+        body.classList.remove('dark-mode');
+        darkModeCSS.href = "";
+        moonIcon.classList.add('d-none');
+        sunIcon.classList.remove('d-none');
+        localStorage.setItem('darkMode', 'disabled');
+      };
 
-            sunIcon.classList.add('d-none');
-            moonIcon.classList.remove('d-none');
+      // Load saved preference
+      localStorage.getItem('darkMode') === 'enabled' ? enableDarkMode() : disableDarkMode();
 
-            localStorage.setItem('darkMode', 'enabled');
-        }
-
-        function disableDarkMode() {
-            body.classList.remove('dark-mode');
-            darkModeCSS.href = "";
-
-            moonIcon.classList.add('d-none');
-            sunIcon.classList.remove('d-none');
-
-            localStorage.setItem('darkMode', 'disabled');
-        }
-
-        // Load trạng thái cũ
-        const savedMode = localStorage.getItem('darkMode');
-        if (savedMode === 'enabled') {
-            enableDarkMode();
-        } else {
-            disableDarkMode();
-        }
-
-        // Click toggle
-        toggle.addEventListener('click', () => {
-            body.classList.contains('dark-mode')
-                ? disableDarkMode()
-                : enableDarkMode();
-        });
+      // Toggle on click
+      toggle.addEventListener('click', () =>
+        body.classList.contains('dark-mode') ? disableDarkMode() : enableDarkMode()
+      );
     });
-    </script>
+  </script>
 
-    <!-- Dynamic title -->
-    <title>{% block title %}PT_Project - Home{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PT_Project - Home{% endblock %}</title>
 
-    <!-- Style cho nút dark mode tròn trong suốt -->
-    <style>
-      .theme-toggle-btn {
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: transparent;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s ease;
-      }
-      .theme-toggle-btn:hover {
-          background: rgba(0, 0, 0, 0.07);
-      }
-      .dark .theme-toggle-btn:hover {
-          background: rgba(255, 255, 255, 0.12);
-      }
-      .theme-toggle-btn .material-symbols-outlined {
-          font-size: 24px;
-          color: #495057;
-          transition: color 0.25s ease;
-      }
-      .dark .theme-toggle-btn .material-symbols-outlined {
-          color: #e9ecef;
-      }
-      .theme-toggle-btn:hover .material-symbols-outlined {
-          color: #343a40;
-      }
-      .dark .theme-toggle-btn:hover .material-symbols-outlined {
-          color: #f8f9fa;
-      }
-    </style>
+  <!-- Theme toggle button style -->
+  <style>
+    .theme-toggle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: rgba(0, 0, 0, 0.07);
+    }
+
+    .dark .theme-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .theme-toggle-btn .material-symbols-outlined {
+      font-size: 24px;
+      color: #495057;
+      transition: color 0.25s ease;
+    }
+
+    .dark .theme-toggle-btn .material-symbols-outlined {
+      color: #e9ecef;
+    }
+
+    .theme-toggle-btn:hover .material-symbols-outlined {
+      color: #343a40;
+    }
+
+    .dark .theme-toggle-btn:hover .material-symbols-outlined {
+      color: #f8f9fa;
+    }
+  </style>
 </head>
 
 <body class="bg-light d-flex flex-column min-vh-100">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid">
-    
-    <!-- Logo -->
-    <a class="navbar-brand d-flex align-items-center fw-bold text-danger" href="{% url 'home' %}">
-      <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
-      PT_Project
-    </a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container-fluid px-5">
 
-    <!-- Toggle mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <!-- Logo -->
+      <a class="navbar-brand d-flex align-items-center fw-bold fs-4" href="{% url 'home' %}">
+        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="45" height="45"
+          class="me-2 rounded-circle shadow-sm">
+        PT_Project
+      </a>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- Toggle mobile -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <!-- Menu trái -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active fw-semibold" href="{% url 'home' %}">Trang chủ</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
-          <ul class="dropdown-menu shadow">
-            {% for c in categories %}
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Left menu -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Trang chủ</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
+            <ul class="dropdown-menu shadow">
+              {% for c in categories %}
               <li><a class="dropdown-item" href="{% url 'category' c.slug %}">{{ c.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="{% url 'introduce' %}">Giới thiệu</a></li>
-        <li class="nav-item"><a class="nav-link disabled">Liên hệ</a></li>
-      </ul>
+              {% endfor %}
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link active" href="{% url 'introduce' %}">Giới thiệu</a></li>
+          <li class="nav-item"><a class="nav-link active">Liên hệ</a></li>
+        </ul>
 
-      <!-- Dark mode + Search -->
-      <div class="d-flex align-items-center">
-        <!-- Nút dark mode tròn trong suốt -->
-        <button id="themeToggle" class="theme-toggle-btn me-3">
-          <span class="material-symbols-outlined">light_mode</span>
-          <span class="material-symbols-outlined d-none">nightlight</span>
-        </button>
+        <!-- Search + Dark mode toggle -->
+        <div class="d-flex align-items-center">
+          <button id="themeToggle" class="theme-toggle-btn me-3">
+            <span class="material-symbols-outlined">light_mode</span>
+            <span class="material-symbols-outlined d-none">nightlight</span>
+          </button>
 
-        <form class="d-flex" method="POST" action="{% url 'search' %}">
-  {% csrf_token %}
-  
-  <input class="form-control me-2 rounded-pill" 
-         type="search" 
-         placeholder="Tìm kiếm" 
-         name="searched">
+          <form class="d-flex" method="POST" action="{% url 'search' %}">
+            {% csrf_token %}
+            <input class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm" name="searched">
+            <button class="btn btn-dark rounded-pill">Tìm</button>
+          </form>
+        </div>
 
-  <button class="btn btn-dark rounded-pill">
-    Tìm
-  </button>
-</form>
+        <!-- User / Cart menu -->
+        <ul class="navbar-nav ms-3 ">
+          <!-- Cart -->
+          <li class="nav-item me-3">
+            <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
+              🛒 Giỏ hàng
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cart_items }}
+              </span>
+            </a>
+          </li>
+
+          {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown ">
+            <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i> {{ request.user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
+              <li class="dropdown-header text-muted small">
+                Xin chào, <strong>{{ request.user }}</strong>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+
+              {% if request.user.is_staff %}
+              <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Trang quản lý</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              {% endif %}
+
+              <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Đăng xuất</a></li>
+            </ul>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link fw-semibold" href="{% url 'login' %}">
+              <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold" href="{% url 'register' %}">
+              <i class="fas fa-user-plus me-1"></i> Đăng ký
+            </a>
+          </li>
+          {% endif %}
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <!-- User menu -->
-<ul class="navbar-nav ms-3">
-  
-  <!-- Giỏ hàng -->
-  <li class="nav-item me-3"> 
-    <a class="nav-link fw-semibold position-relative" href="{% url 'cart' %}">
-      🛒 Giỏ hàng
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        {{ cart_items }}
-      </span>
-    </a>
-  </li>
+  <main class="flex-grow-1"> <!-- để cho các trang con chèn nội dung vào layout chung. khung website chung (navbar + footer + layout) -->
+    {% block banner_slider %}{% endblock %}
+    {% block main-content %}{% endblock %}
+    {% block cart_content %}{% endblock %}
+    {% block content_checkout %}{% endblock %}
+    {% block Register %}{% endblock %}
+    {% block Login %}{% endblock %}
+  </main>
 
-  {% if request.user.is_authenticated %}
-  
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">
-        <i class="fas fa-user-circle me-1"></i> {{ request.user.username }}
-      </a>
+  <!-- Footer Main -->
+  <div class="footer-container" style="background-color: #f0f0f0;">
+    <div class="container text-dark py-5">
+      <div class="row g-4 footer-container--content">
+        <!-- About + Logo + Certifications -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="widget-footer">
+            <h4 class="footer-title mb-3">Nội Thất MOHO</h4>
+            <p class="text-muted">
+              Thương hiệu nội thất từ Savimex – gần 40 năm kinh nghiệm sản xuất & xuất khẩu chuẩn quốc tế.
+            </p>
+            <!-- BCT & DMCA -->
+            <div class="fBlock-logo-bct mt-3">
+              <a href="http://online.gov.vn/..." class="fade-box d-inline-block">
+                <img class="img-fluid" src="//cdn.hstatic.net/.../logo_bct.png?v=68" alt="Bộ Công Thương">
+              </a>
+            </div>
+            <div class="mt-3">
+              <a href="https://www.dmca.com/..." class="dmca-badge d-inline-block">
+                <img src="https://images.dmca.com/..." alt="DMCA Protected">
+              </a>
+            </div>
+          </div>
+        </div>
 
-      <ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
+        <!-- Thông tin -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <h4 class="footer-title mb-3">THÔNG TIN</h4>
+          <ul class="menuFooter-list list-unstyled">
+            <li class="mb-2"><a href="/pages/chinh-sach-ban-hang">Chính Sách Bán Hàng</a></li>
+            <li class="mb-2"><a href="/pages/giao-hang-va-lap-dat">Chính Sách Giao Hàng & Lắp Đặt</a></li>
+            <li class="mb-2"><a href="/pages/chinh-sach-bao-hanh">Chính Sách Bảo Hành & Bảo Trì</a></li>
+            <li class="mb-2"><a href="/pages/chinh-sach-doi-tra">Chính Sách Đổi Trả</a></li>
+            <li class="mb-2"><a href="/pages/khach-hang-than-thiet-mohomie">Khách Hàng Thân Thiết – MOHOmie</a></li>
+            <li><a href="/pages/chinh-sach-doi-tac-ban-hang">Chính Sách Đối Tác Bán Hàng</a></li>
+          </ul>
+        </div>
 
-        <!-- Header -->
-        <li class="dropdown-header text-muted small">
-          Xin chào, <strong>{{ request.user }}</strong>
-        </li>
+        <!-- Liên hệ -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <h4 class="footer-title mb-3">Thông tin liên hệ</h4>
+          <ul class="contactList list-unstyled small">
+            <li class="mb-3">
+              <strong>[Trụ sở chính]</strong><br>
+              <a href="https://g.page/noithatmoho?share" target="_blank" class="text-decoration-none">
+                162 HT17, P. Hiệp Thành, Q. 12, TP. HCM<br>
+                (Sau bến xe buýt Hiệp Thành – SAVIMEX)
+              </a><br>
+              Hotline: 0971 141 140
+            </li>
+            <li class="mb-3">
+              097 114 1140 (Hotline/Zalo)<br>
+              0902 415 359 (Giao hàng)
+            </li>
+            <li>
+              cskh@moho.com.vn<br>
+              Công Ty Cổ Phần Savimex<br>
+              STK: 0071001303667 - Vietcombank CN HCM
+            </li>
+          </ul>
+        </div>
 
-        <li><hr class="dropdown-divider"></li>
+        <!-- Fanpage -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <h4 class="footer-title mb-3">Fanpage</h4>
+          <div id="fb-root"></div>
+          <script async defer crossorigin="anonymous"
+            src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v21.0&appId=2052666068114831"></script>
+          <div class="fb-page" data-href="https://www.facebook.com/mohofurniture/" data-tabs="timeline" data-width="300"
+            data-height="200" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false"
+            data-show-facepile="true">
+          </div>
+        </div>
+      </div>
 
-        <!-- ✅ Chỉ admin mới thấy -->
-        {% if request.user.is_staff %}
-        <li>
-          <a class="dropdown-item" href="{% url 'admin_dashboard' %}">
-            Trang quản lý
-          </a>
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        {% endif %}
+      <!-- Social + Google Maps -->
+      <div class="row text-center mt-5">
+        <div class="col-12">
+          <ul class="social-icons list-inline d-flex justify-content-center gap-4 fs-4 mb-4">
+            <li><a href="https://facebook.com/mohofurniture" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+            <li><a href="https://www.youtube.com/..." target="_blank"><i class="fab fa-youtube"></i></a></li>
+            <li><a href="https://www.instagram.com/mohofurniture/" target="_blank"><i class="fab fa-instagram"></i></a>
+            </li>
+            <li><a href="https://www.tiktok.com/@mohofurniture" target="_blank"><i class="fab fa-tiktok"></i></a></li>
+          </ul>
 
-        <!-- Đăng xuất -->
-        <li>
-          <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-            Đăng xuất
-          </a>
-        </li>
-
-      </ul>
-    </li>
-
-  {% else %}
-
-    <li class="nav-item">
-      <a class="nav-link fw-semibold" href="{% url 'login' %}">
-        <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link fw-semibold" href="{% url 'register' %}">
-        <i class="fas fa-user-plus me-1"></i> Đăng ký
-      </a>
-    </li>
-
-  {% endif %}
-</ul>
-  </div>
-</nav>
-
-<main class="flex-grow-1">
-    {% block banner_slider %}{% endblock banner_slider %}
-    {% block main-content %}{% endblock main-content %}
-    {% block cart_content %}{% endblock cart_content %}
-    {% block content_checkout %}{% endblock content_checkout %}
-    {% block Register %}{% endblock Register %}
-    {% block Login %}{% endblock Login %}
-</main>
-
-<footer class="bg-dark text-white py-1 mt-5">
-  <div class="container text-center">
-    <p class="mb-1">© 2025 <span class="fw-bold text-warning">PT_Project</span> - All rights reserved</p>
-    <div class="d-flex justify-content-center gap-3">
-      <a href="#" class="text-light text-decoration-none">Policy</a>
-      <a href="#" class="text-light text-decoration-none">Terms</a>
-      <a href="#" class="text-light text-decoration-none">Support</a>
+          <ul class="menuList-footer list-inline d-flex justify-content-center gap-4 fw-bold fs-5">
+            <li><a target="_blank" href="https://www.google.com/maps/...">Chỉ đường đến showroom trên Google Maps</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
-</footer>
 
-<script src="{% static 'app/js/cart.js' %}"></script>
+  <script src="{% static 'app/js/cart.js' %}"></script>
+
+  <script>
+
+var updateBtns = document.getElementsByClassName('update-cart')
+
+for (var i = 0; i < updateBtns.length; i++) {
+
+    updateBtns[i].addEventListener('click', function(){
+        var productId = this.dataset.product
+        var action = this.dataset.action
+
+        updateUserOrder(productId, action)
+    })
+}
+
+function updateUserOrder(productId, action){
+    fetch('/update_item/', {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body:JSON.stringify({
+            'productId':productId,
+            'action':action
+        })
+    })
+    .then((response) => {
+        return response.json()
+    })
+    .then((data) => {
+        location.reload()
+    })
+}
+</script>
+
 </body>
+
 </html>

@@ -1,0 +1,127 @@
+{% extends 'app/base.html' %}
+{% load humanize %}
+
+{% block content_checkout %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 p-4">
+                <!-- TIÊU ĐỀ -->
+                <h3 class="text-primary mb-4 text-center">
+                    Thanh toán chuyển khoản ngân hàng
+                </h3>
+
+                <!-- TỔNG TIỀN -->
+                <div class="text-center mb-4">
+
+                    <h6 class="text-muted">Tổng tiền cần thanh toán</h6>
+
+                    <h2 class="text-danger fw-bold">
+                        {{ order.get_cart_total|floatformat:0|intcomma }} VNĐ
+                    </h2>
+
+                </div>
+
+                <hr>
+
+                <!-- THÔNG TIN CHUYỂN KHOẢN -->
+                <h5 class="mb-3 text-dark">Thông tin chuyển khoản</h5>
+
+                <div class="bg-light p-3 rounded">
+
+                    <p class="mb-2">
+                        <b>Ngân hàng:</b> MB Bank
+                    </p>
+
+                    <p class="mb-2">
+                        <b>Số tài khoản:</b>
+                        <span id="stk">0797818263</span>
+
+                        <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyText('stk')">
+                            Copy
+                        </button>
+                    </p>
+
+                    <p class="mb-2">
+                        <b>Chủ tài khoản:</b> HUYNH CHI PHI THUAN
+                    </p>
+
+                    <p class="mb-0">
+                        <b>Nội dung chuyển khoản:</b>
+
+                        <span id="content">
+                            ORDER{{ order.id }}
+                        </span>
+
+                        <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyText('content')">
+                            Copy
+                        </button>
+                    </p>
+
+                </div>
+
+                <hr>
+
+                <!-- QR CODE -->
+                <div class="text-center">
+
+                    <h5 class="mb-3">Quét QR để thanh toán</h5>
+
+                    <img src="https://img.vietqr.io/image/mbbank-0797818263-compact2.png?amount={{ order.get_cart_total }}&addInfo=ORDER{{ order.id }}"
+                        class="img-fluid" style="max-width:300px">
+
+                    <p class="text-muted mt-3">
+                        Mở ứng dụng ngân hàng → quét QR → xác nhận thanh toán.
+                    </p>
+
+                </div>
+
+                <div class="alert alert-warning text-center">
+
+                    ⏳ Đang chờ thanh toán...
+                    <br>
+                    Vui lòng chuyển khoản đúng nội dung.
+
+                </div>
+
+                <hr>
+
+                <!-- CẢNH BÁO -->
+                <div class="alert alert-warning">
+
+                    ⚠ Vui lòng chuyển đúng số tiền và đúng nội dung
+                    <b>ORDER{{ order.id }}</b>
+                    để hệ thống xác nhận đơn hàng.
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT COPY -->
+<script>
+    function copyText(id) {
+        const text = document.getElementById(id).innerText
+        navigator.clipboard.writeText(text)
+        alert("Đã copy: " + text)
+    }
+</script>
+
+<script>
+    let orderId = "{{ order.id }}";
+    setInterval(function () {
+        fetch(`/check-order/${orderId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.complete === true) {
+                    window.location.href = "/order_success/" + orderId + "/";
+                }
+            });
+    }, 2000); // kiểm tra mỗi 2 giây
+</script>
+
+{% endblock content_checkout %}

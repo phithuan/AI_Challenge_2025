@@ -1,20 +1,20 @@
 {% extends 'app/base.html' %}
- <!-- ✅ Dynamic title -->
+<!-- ✅ Dynamic title -->
 <title>{% block title %}Shopping Cart{% endblock %}</title>
 {% load static %}
 {% block cart_content %}
 {% load humanize %}
 
 <div class="container-fluid my-5 px-5">
-  <h2 class="fw-bold cart-title">🛒Your Shopping Cart</h2>
+  <h2 class="fw-bold cart-title">🛒Giỏ hàng của bạn</h2>
   <div class="card shadow border-0 w-100auto cart-card">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <a href="{% url 'home' %}" class="btn btn-dark rounded-pill">
-          ← Continue Shopping
+          ← Quay lại mua sắm
         </a>
         <a href="{% url 'checkout' %}" class="btn btn-dark rounded-pill">
-          Checkout
+          Thanh toán
         </a>
       </div>
 
@@ -23,11 +23,11 @@
         <table class="table table-striped align-middle text-center cart-table">
           <thead class="cart-thead">
             <tr>
-              <th scope="col" class="text-start ps-4">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-              <th scope="col">Actions</th>
+              <th scope="col" class="text-start ps-4">Sản phẩm</th>
+              <th scope="col">Giá</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col">Tổng cộng</th>
+              <th scope="col">xóa</th>
             </tr>
           </thead>
           <tbody>
@@ -35,28 +35,23 @@
             <tr>
               <td class="text-start ps-4">
                 <div class="d-flex align-items-center">
-                  <img src="{{ item.product.ImageURL }}" 
-                       class="rounded me-3 shadow-sm" 
-                       style="width:60px; height:60px; object-fit:cover;" 
-                       alt="Product">
+                  <img src="{{ item.product.ImageURL }}" class="rounded me-3 shadow-sm"
+                    style="width:60px; height:60px; object-fit:cover;" alt="Product">
                   <span class="fw-semibold">{{ item.product.name }}</span>
                 </div>
               </td>
-              <td class="price-text fw-bold">{{ item.product.price|floatformat:0 }}</td>
+              <td class="price-text fw-bold">{{ item.product.price|floatformat:0 |intcomma}}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <button data-product="{{ item.product.id }}"
-                          data-action="remove"
-                          class="cart-btn update-cart">−</button>
+                  <button data-product="{{ item.product.id }}" data-action="remove"
+                    class="cart-btn update-cart">−</button>
                   <span class="mx-2 quantity-display">{{ item.quantity }}</span>
-                  <button data-product="{{ item.product.id }}"
-                          data-action="add"
-                          class="cart-btn update-cart">+</button>
+                  <button data-product="{{ item.product.id }}" data-action="add" class="cart-btn update-cart">+</button>
                 </div>
               </td>
               <td class="subtotal-text fw-bold">{{ item.get_price_quantity|floatformat:0|intcomma }} VNĐ</td>
               <td>
-                <button data-product="{{ item.product.id }}" data-action="delete" class="btn btn-sm btn-danger update-cart">Delete</button>
+                <button data-product="{{ item.product.id }}" data-action="delete" class="btn btn-sm btn-danger update-cart bi bi-trash3"></button>
               </td>
             </tr>
             {% endfor %}
@@ -66,7 +61,8 @@
 
       <!-- Tổng tiền -->
       <div class="d-flex justify-content-end mt-4 pe-4">
-        <h4 class="fw-bold">Total: <span class="total-text fw-bold">{{ order.get_cart_total|floatformat:0|intcomma }} VNĐ</span></h4>
+        <h4 class="fw-bold">tổng tiền: <span class="total-text fw-bold">{{ order.get_cart_total|floatformat:0|intcomma }}
+            VNĐ</span></h4>
       </div>
     </div>
   </div>

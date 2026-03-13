@@ -1,79 +1,194 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block main-content %}
-<div class="container my-5">
-  <div class="row g-5">
 
-    <!-- Hình ảnh sản phẩm -->
-    <div class="col-md-6 text-center">
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
-           class="img-fluid rounded shadow-lg" 
-           style="max-height: 450px; object-fit: cover;">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+
+<div class="container mt-5">
+  <div class="row">
+
+    <!-- ================== ẢNH SẢN PHẨM ================== -->
+    <div class="col-md-6 mb-4">
+
+      <!-- Ảnh chính -->
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded mb-3 product-image"
+        id="mainImage">
+      {% elif product.images.first %}
+      <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
+        class="img-fluid rounded mb-3 product-image" id="mainImage">
+      {% endif %}
+
+      <!-- Thumbnail -->
+      <div class="d-flex gap-2 flex-wrap">
+
+        <!-- Ảnh chính -->
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="thumbnail rounded active" style="width: 80px; cursor:pointer;"
+          onclick="changeImage(event, this.src)">
+        {% endif %}
+
+        <!-- Ảnh phụ -->
+        {% for img in product.images.all %}
+        <img src="{{ img.image.url }}" class="thumbnail rounded" style="width: 98px; cursor:pointer;"
+          onclick="changeImage(event, this.src)">
+        {% endfor %}
+
+      </div>
+
+      <!-- ===== Modal Zoom ===== -->
+      <div id="imageModal" class="image-modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img class="image-modal-content" id="modalImage">
+      </div>
     </div>
 
-    <!-- Thông tin sản phẩm -->
+    <!-- ================== THÔNG TIN SẢN PHẨM ================== -->
     <div class="col-md-6">
-      <h2 class="fw-bold text-dark">{{ product.name }}</h2>
-      <h3 class="text-secondary m-0 fw-semibold">$ {{ product.price|floatformat:0 }}</h3>
+      <h2 class="mb-3">{{ product.name }}</h2>
 
-      <!-- ✅ Thông số chi tiết -->
-      <table class="table table-bordered mt-3">
-        <tbody>
-          {% if product.material %}
-          <tr>
-            <th>Chất liệu</th>
-            <td>{{ product.material }}</td>
-          </tr>
-          {% endif %}
+      <!-- ✅ GIÁ -->
+      <div class="mb-3">
+        {% if product.sale_price %}
+        <span class="badge bg-danger me-2">
+          -{{ product.discount_percent }}%
+        </span>
 
-          {% if product.size %}
-          <tr>
-            <th>Kích thước</th>
-            <td>{{ product.size }}</td>
-          </tr>
-          {% endif %}
+        <span class="h3 fw-bold">
+          {{ product.sale_price|floatformat:0|intcomma }}
+        </span>
 
-          {% if product.origin %}
-          <tr>
-            <th>Xuất xứ</th>
-            <td>{{ product.origin }}</td>
-          </tr>
-          {% endif %}
-
-          {% if product.quality %}
-          <tr>
-            <th>Chất lượng</th>
-            <td>{{ product.quality }}</td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
-
-      <!-- ✅ Mô tả / lịch sử -->
-      <div class="mt-4">
-        <h5 class="fw-bold">📜 Mô tả sản phẩm</h5>
-        <p class="text-muted fs-6">{{ product.description|linebreaks }}</p>
-
-        {% if product.history %}
-        <h6 class="fw-bold mt-3">🕒 Lịch sử / Thông tin thêm</h6>
-        <p class="text-secondary">{{ product.history|linebreaks }}</p>
+        <span class="text-muted ms-2">
+          <s>{{ product.price|floatformat:0|intcomma }} </s>
+        </span>
+        {% else %}
+        <span class="h3 fw-bold">
+          {{ product.price|floatformat:0|intcomma }}
+        </span>
         {% endif %}
       </div>
 
-      <!-- ✅ Nút hành động -->
-      <div class="d-flex gap-3 mt-4">
-        <a href="#"
-           data-product="{{ product.id }}"
-           data-action="add"
-           class="btn btn-success btn-lg px-4 shadow update-cart">
-          🛒 Thêm vào giỏ
-        </a>
-        <a href="{% url 'checkout' %}" class="btn btn-outline-primary btn-lg px-4 shadow">
-          💳 Mua ngay
-        </a>
+      <!-- Rating -->
+      <div class="mb-3">
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-half text-warning"></i>
+        <span class="ms-2">4.5 (120 reviews)</span>
       </div>
+
+      <!-- Mô tả -->
+      <p class="mb-4">{{ product.description }}</p>
+
+      <!-- Số lượng -->
+      <!-- <div class="mb-4">
+        <label class="form-label">Số lượng:</label>
+        <input type="number" id="quantityInput" class="form-control" value="1" min="1" style="width: 90px;">
+      </div> -->
+
+      <!-- ✅ Nút -->
+      <button data-product="{{ product.id }}" data-action="add"
+        class="btn btn-dark-custom btn-lg mb-3 me-2 update-cart">
+        <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+      </button>
+
+      <button class="btn btn-dark-custom btn-lg mb-3">
+        <i class="bi bi-heart"></i> Thêm vào yêu thích
+      </button>
+
+      <!-- Chính sách -->
+      <div class="mt-4">
+        <h5>Chính sách:</h5>
+        <p>✔ Miễn phí giao hàng toàn quốc</p>
+        <p>✔ Bảo hành 12 tháng</p>
+        <p>✔ Đổi trả trong 7 ngày</p>
+        <p>✔ Đổi trả trong 7 ngày có cái qq á mà đổi</p>
+      </div>
+
     </div>
   </div>
+
+  <!-- ================== BẢNG THÔNG SỐ ================== -->
+  <div class="card shadow-sm border-0 mt-5 spec-card">
+    <div class="card-body">
+      <h4 class="fw-bold mb-4">Thông số chi tiết</h4>
+
+      <div class="table-responsive">
+        <table class="table table-striped align-middle text-center cart-table">
+          <thead class="spec-thead">
+            <tr>
+              <th class="text-start ps-4">Thông số</th>
+              <th>Chi tiết</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if product.material %}
+            <tr>
+              <td class="text-start ps-4 fw-semibold">Chất liệu</td>
+              <td>{{ product.material }}</td>
+            </tr>
+            {% endif %}
+
+            {% if product.size %}
+            <tr>
+              <td class="text-start ps-4 fw-semibold">Kích thước</td>
+              <td>{{ product.size }}</td>
+            </tr>
+            {% endif %}
+
+            {% if product.origin %}
+            <tr>
+              <td class="text-start ps-4 fw-semibold">Xuất xứ</td>
+              <td>{{ product.origin }}</td>
+            </tr>
+            {% endif %}
+
+            {% if product.quality %}
+            <tr>
+              <td class="text-start ps-4 fw-semibold">Chất lượng</td>
+              <td>{{ product.quality }}</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
 </div>
+
+<script>
+  function changeImage(event, src) {
+    document.getElementById('mainImage').src = src;
+    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // ===== Zoom khi click ảnh chính =====
+  const mainImage = document.getElementById("mainImage");
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  mainImage.onclick = function () {
+    modal.style.display = "block";
+    modalImg.src = this.src;
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  // Click ra ngoài cũng đóng
+  modal.onclick = function (e) {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
+
 {% endblock main-content %}

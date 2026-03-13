@@ -5,13 +5,33 @@ django-admin startproject name # tạo project buoi1 á
 python manage.py migrate # khởi tạo mấy cái mặt định ban đầu...
     
 
-python manage.py runserver 8888
+'python manage.py runserver 8001'  -- và chạy luôn 'ngrok http 8001' cùng cổng để thanh toán tự động
 
 python manage.py createsuperuser # tạo account
 
 python manage.py makemigrations # tạo file migration thêm cái gì mới - cấu hình lại model
 python manage.py migrate # áp dụng file migration vào db
 
+PS D:\Big_project_2025> python -m django --version
+5.2.10
+
+
+
+# thanh toán tự động 
+# Khách bấm thanh toán
+#        ↓
+# Payment Gateway
+#        ↓
+# Webhook -> Django
+# /payment-webhook/
+#        ↓
+# Order.complete = True
+#        ↓
+# Frontend kiểm tra
+# /check-order/<id>
+#        ↓
+# Redirect
+# /order_success/<id>
 ==============================================================================
 Mở terminal, chạy:
 
@@ -140,3 +160,77 @@ docker compose up -d   # bật vector DB
 cd D:\Big_project_2025\WebShop
 python manage.py runserver 8888  # bật web
 ```
+
+
+
+"""
+Nó bao gồm các phần chính:
+
+1️⃣ Category
+
+sub_category (self ForeignKey để làm danh mục cha – con)
+
+is_sub
+
+name
+
+slug
+
+2️⃣ Product
+
+name, price
+
+sale_price
+
+digital
+
+image
+
+category (ManyToMany với Category)
+
+description, material, size, origin, quality, history
+
+ImageURL property
+
+discount_percent property
+
+final_price property
+
+3️⃣ ProductImage
+
+Ảnh phụ cho sản phẩm (related_name='images')
+
+4️⃣ Order
+
+customer (User)
+
+date_ordered
+
+complete
+
+transaction_id
+
+get_cart_items
+
+get_cart_total
+
+5️⃣ OrderItem
+
+product
+
+order
+
+quantity
+
+get_price_quantity
+
+6️⃣ ShippingAddress
+
+customer
+
+order
+
+address, city, state
+
+mobile (RegexValidator số điện thoại VN bắt đầu bằng 0 và 10 số)
+"""
