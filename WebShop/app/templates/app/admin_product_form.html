@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if action == 'edit' %}Sửa sản phẩm{% else %}Thêm sản phẩm mới{% endif %} | HTTA Legends</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: "#ec5b13" },
+                    fontFamily: { sans: ['Public Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { vertical-align: middle; line-height: 1; }
+        /* Tùy chỉnh thanh cuộn cho đẹp */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen py-10">
+
+    <div class="max-w-4xl mx-auto px-6">
+
+        <a href="{% url 'admin_products' %}" class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-primary transition-colors mb-6 group">
+            <span class="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
+            Quay lại danh sách
+        </a>
+
+        <div class="mb-8">
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-4xl">
+                    {% if action == 'edit' %}edit_square{% else %}add_box{% endif %}
+                </span>
+                {% if action == 'edit' %}Chỉnh sửa thông tin sản phẩm{% else %}Thêm sản phẩm mới{% endif %}
+            </h1>
+            <p class="text-slate-500 mt-2">Vui lòng điền đầy đủ các thông tin cần thiết. Các trường có dấu <span class="text-red-500 font-bold">*</span> là bắt buộc.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="p-8">
+                    {% if form.non_field_errors %}
+                    <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 flex items-start gap-3">
+                        <span class="material-symbols-outlined">error</span>
+                        <div>
+                            <h4 class="font-bold text-sm">Có lỗi xảy ra:</h4>
+                            <p class="text-sm mt-1">{{ form.non_field_errors }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        {% for field in form %}
+                            <div class="flex flex-col gap-2 {% if field.name in 'description,history,category,images,image' %}md:col-span-2{% endif %}">
+
+                                <label for="{{ field.id_for_label }}" class="text-sm font-bold text-slate-700 flex items-center justify-between">
+                                    <span>
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                                    </span>
+                                </label>
+
+                                <div class="relative">
+                                    {{ field }}
+                                </div>
+
+                                {% if field.errors %}
+                                    <p class="text-red-500 text-xs mt-1 font-semibold flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">warning</span>
+                                        {{ field.errors.as_text }}
+                                    </p>
+                                {% endif %}
+
+                                {% if field.name == 'images' %}
+                                    <p class="text-xs text-slate-400 mt-1">Giữ phím Ctrl (hoặc Shift) và click chuột để chọn nhiều ảnh cùng lúc.</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if action == 'edit' and form.instance.product_images.all %}
+                    <div class="mt-10 pt-8 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">photo_library</span>
+                            Bộ sưu tập ảnh phụ hiện tại
+                        </h3>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                            {% for p_img in form.instance.product_images.all %}
+                            <div class="group relative aspect-square rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+                                <img src="{{ p_img.image.url }}" alt="Gallery" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="bg-slate-50 px-8 py-5 border-t border-slate-200 flex items-center justify-end gap-4">
+                    <a href="{% url 'admin_products' %}" class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-bold hover:bg-slate-200 hover:text-slate-800 transition-colors focus:ring-2 focus:ring-slate-200 outline-none">
+                        Hủy bỏ
+                    </a>
+                    <button type="submit" class="px-8 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-[#d8500d] shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 focus:ring-4 focus:ring-primary/50 outline-none flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">save</span>
+                        {% if action == 'edit' %}Cập nhật thông tin{% else %}Lưu sản phẩm mới{% endif %}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="h-10"></div>
+    </div>
+
+</body>
+</html>
