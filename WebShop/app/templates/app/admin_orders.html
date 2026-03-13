@@ -1,407 +1,206 @@
 {% load static %}
+{% load humanize %}
 
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Admin Order Management</title>
+    <title>Quản Lý Đơn Hàng | PT Admin</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <script id="tailwind-config">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
-                extend: {
-                    colors: {
-                        "primary": "#ec5b13",
-                        "background-light": "#f8f6f6",
-                        "background-dark": "#221610",
-                    },
-                    fontFamily: {
-                        "display": ["Public Sans"]
-                    },
-                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-                },
+                extend: { colors: { "primary": "#ec5b13", "background-light": "#f8f6f6", "background-dark": "#221610" }, fontFamily: { "display": ["Public Sans"] } },
             },
         }
     </script>
-    <style>
-        body {
-            font-family: 'Public Sans', sans-serif;
-        }
-    </style>
+    <style>body { font-family: 'Public Sans', sans-serif; } .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }</style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display">
 
-        <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col fixed h-full z-50">
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
                         <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
                     </div>
-
                     <div class="flex flex-col">
-                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">
-                            VỀ TRANG CHỦ
-                        </h1>
-                        <p class="text-slate-400 text-xs font-normal">
-                            PT_Project
-                        </p>
+                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
+                        <p class="text-slate-400 text-xs font-normal">HTT_Project</p>
                     </div>
                 </a>
                 <nav class="flex flex-col gap-2">
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_dashboard' %}">
-                        <span class="material-symbols-outlined">dashboard</span>
-                        <span class="text-sm font-medium">Dashboard</span>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_dashboard' %}">
+                        <span class="material-symbols-outlined">dashboard</span> <span class="text-sm font-medium">Tổng quan</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_products' %}">
-                        <span class="material-symbols-outlined">inventory_2</span>
-                        <span class="text-sm font-medium">Products</span>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_products' %}">
+                        <span class="material-symbols-outlined">inventory_2</span> <span class="text-sm font-medium">Sản phẩm</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="{% url 'admin_categories' %}">
-                        <span class="material-symbols-outlined">category</span>
-                        <span class="text-sm font-medium">Categories</span>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_categories' %}">
+                        <span class="material-symbols-outlined">category</span> <span class="text-sm font-medium">Danh mục</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20"
-                        href="{% url 'admin_orders' %}">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                        <span class="text-sm font-medium">Orders</span>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20" href="{% url 'admin_orders' %}">
+                        <span class="material-symbols-outlined">shopping_cart</span> <span class="text-sm font-medium">Đơn hàng</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">group</span>
-                        <span class="text-sm font-medium">Users</span>
+
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_users' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all"
+                    href="{% url 'admin_users' %}">
+                    <span class="material-symbols-outlined">group</span>
+                    <span class="text-sm font-medium">Người dùng</span>
                     </a>
-                    <div class="my-4 border-t border-slate-800"></div>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">analytics</span>
-                        <span class="text-sm font-medium">Reports</span>
+
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_contact' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all"
+                        href="{% url 'admin_contact' %}">
+                        <span class="material-symbols-outlined">mail</span>
+                        <span class="text-sm font-medium">Liên hệ</span>
                     </a>
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                        href="#">
-                        <span class="material-symbols-outlined">settings</span>
-                        <span class="text-sm font-medium">Settings</span>
-                    </a>
+
                 </nav>
             </div>
             <div class="mt-auto p-6">
                 <div class="bg-slate-800/50 rounded-xl p-4 flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-slate-700 overflow-hidden"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQtgI3P70SuyetdcxuLm1bGVGUDCSD5BavuMUlynlQk2xPtRbLIe68AAM2d9k0-3fj1d1vKRdkTg7lj5k8HP1AO560BpON_hjcp5k__mxkK8qwfFSjOs1h-PrzvTOPtYlRODZ-hxSyD10O_kJPUCJ2JbNWGIqsGZ6pFfLaSt2lcHUSYVM03ClrKjwOLyUQVe0e7ADQuHdJdmYrX9flehbxe4Xto5XSLRDAvdfSw7faJVnMGpzr96-NP26ojrEq7UnJsm-nb74IWL8m')">
-                    </div>
+                    <div class="size-10 rounded-full bg-slate-700 overflow-hidden flex items-center justify-center font-bold text-white uppercase">{{ request.user.username|make_list|first }}</div>
                     <div class="overflow-hidden">
-                        <p class="text-sm font-bold truncate">Julian Thorne</p>
-                        <p class="text-xs text-slate-500 truncate">Store Manager</p>
+                        <p class="text-sm font-bold truncate">{{ request.user.username }}</p>
+                        <p class="text-xs text-slate-500 truncate">Quản lý cửa hàng</p>
                     </div>
                 </div>
             </div>
         </aside>
-        <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col p-4 md:p-8 gap-6 overflow-y-auto max-w-7xl mx-auto w-full lg:pl-64">
-            <!-- Page Header -->
+
+        <main class="flex-1 flex flex-col p-4 md:p-8 gap-6 overflow-y-auto w-full lg:pl-72">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded shadow-sm font-bold">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <nav class="flex text-xs font-medium text-slate-400 mb-2 gap-2">
-                        <span>Admin</span>
-                        <span>/</span>
-                        <span class="text-primary">Orders</span>
-                    </nav>
-                    <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Order Management</h1>
-                    <p class="text-slate-500 dark:text-primary/60 mt-1">Efficiently manage and track all incoming
-                        customer orders.</p>
+                    <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Quản lý Đơn hàng</h1>
+                    <p class="text-slate-500 dark:text-primary/60 mt-1">Theo dõi, cập nhật trạng thái và xuất báo cáo doanh thu.</p>
                 </div>
                 <div class="flex gap-3">
-                    <button
-                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark text-sm font-bold hover:bg-slate-50 transition-all">
-                        <span class="material-symbols-outlined text-lg">download</span>
-                        Export CSV
-                    </button>
-                    <button
-                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold shadow-lg shadow-primary/25 hover:opacity-90 transition-all">
-                        <span class="material-symbols-outlined text-lg">add</span>
-                        Create Order
-                    </button>
+                    <form action="{% url 'admin_orders' %}" method="GET" class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input name="q" value="{{ query|default:'' }}" class="w-64 bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 placeholder:text-slate-400" placeholder="Tìm tên, email, mã ĐH..." type="text" />
+                    </form>
+                    <a href="?export=excel{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-bold hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-lg">download</span> Xuất CSV
+                    </a>
                 </div>
             </div>
-            <!-- Stats Summary -->
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div
-                    class="p-4 bg-white dark:bg-background-dark rounded-xl border border-primary/10 flex items-center gap-4">
-                    <div
-                        class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                        <span class="material-symbols-outlined">pending_actions</span>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Processing</p>
-                        <p class="text-xl font-bold">128</p>
-                    </div>
+                <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="size-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><span class="material-symbols-outlined">receipt_long</span></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Tổng Đơn</p><p class="text-xl font-black">{{ total_orders }}</p></div>
                 </div>
-                <div
-                    class="p-4 bg-white dark:bg-background-dark rounded-xl border border-primary/10 flex items-center gap-4">
-                    <div
-                        class="size-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
-                        <span class="material-symbols-outlined">local_shipping</span>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">In Transit</p>
-                        <p class="text-xl font-bold">42</p>
-                    </div>
+                <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="size-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600"><span class="material-symbols-outlined">pending_actions</span></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Chờ xử lý</p><p class="text-xl font-black">{{ pending_orders }}</p></div>
                 </div>
-                <div
-                    class="p-4 bg-white dark:bg-background-dark rounded-xl border border-primary/10 flex items-center gap-4">
-                    <div
-                        class="size-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
-                        <span class="material-symbols-outlined">task_alt</span>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Delivered</p>
-                        <p class="text-xl font-bold">894</p>
-                    </div>
+                <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="size-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined">task_alt</span></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Hoàn tất</p><p class="text-xl font-black">{{ completed_orders }}</p></div>
                 </div>
-                <div
-                    class="p-4 bg-white dark:bg-background-dark rounded-xl border border-primary/10 flex items-center gap-4">
-                    <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">payments</span>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Revenue</p>
-                        <p class="text-xl font-bold">$24.5k</p>
-                    </div>
+                <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">payments</span></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Doanh thu thực</p><p class="text-xl font-black">${{ total_revenue|floatformat:2|intcomma }}</p></div>
                 </div>
             </div>
-            <!-- Table Tabs & Filters -->
-            <div class="bg-white dark:bg-background-dark rounded-xl border border-primary/10 overflow-hidden shadow-sm">
-                <div
-                    class="border-b border-primary/10 px-6 pt-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex gap-6 overflow-x-auto no-scrollbar">
-                        <button
-                            class="border-b-2 border-primary text-primary px-1 py-4 text-sm font-bold whitespace-nowrap">All
-                            Orders</button>
-                        <button
-                            class="border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-1 py-4 text-sm font-medium whitespace-nowrap">Processing</button>
-                        <button
-                            class="border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-1 py-4 text-sm font-medium whitespace-nowrap">Shipped</button>
-                        <button
-                            class="border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-1 py-4 text-sm font-medium whitespace-nowrap">Delivered</button>
-                        <button
-                            class="border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-1 py-4 text-sm font-medium whitespace-nowrap">Cancelled</button>
-                    </div>
-                    <div class="flex items-center gap-2 pb-4 md:pb-0">
-                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">filter_list</span>
-                        </button>
-                        <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">sort</span>
-                        </button>
-                    </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="border-b border-slate-100 px-6 pt-2 flex overflow-x-auto no-scrollbar gap-6">
+                    <a href="{% url 'admin_orders' %}" class="{% if not status_filter %}border-b-2 border-primary text-primary{% else %}border-b-2 border-transparent text-slate-500 hover:text-slate-800{% endif %} px-1 py-4 text-sm font-bold whitespace-nowrap">Tất cả</a>
+                    <a href="?status=pending" class="{% if status_filter == 'pending' %}border-b-2 border-primary text-primary{% else %}border-b-2 border-transparent text-slate-500 hover:text-slate-800{% endif %} px-1 py-4 text-sm font-bold whitespace-nowrap">Chờ xử lý</a>
+                    <a href="?status=completed" class="{% if status_filter == 'completed' %}border-b-2 border-primary text-primary{% else %}border-b-2 border-transparent text-slate-500 hover:text-slate-800{% endif %} px-1 py-4 text-sm font-bold whitespace-nowrap">Đã hoàn tất</a>
                 </div>
-                <!-- Orders Table -->
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                        <thead
-                            class="bg-slate-50 dark:bg-primary/5 text-slate-500 dark:text-primary/70 text-xs font-bold uppercase tracking-wider">
+                        <thead class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider">
                             <tr>
-                                <th class="px-6 py-4">Order ID</th>
-                                <th class="px-6 py-4">Customer</th>
-                                <th class="px-6 py-4">Date</th>
-                                <th class="px-6 py-4">Total</th>
-                                <th class="px-6 py-4 text-center">Status</th>
-                                <th class="px-6 py-4 text-right">Actions</th>
+                                <th class="px-6 py-4">Mã ĐH</th>
+                                <th class="px-6 py-4">Khách hàng</th>
+                                <th class="px-6 py-4">Ngày đặt</th>
+                                <th class="px-6 py-4">Tổng tiền</th>
+                                <th class="px-6 py-4 text-center">Trạng thái</th>
+                                <th class="px-6 py-4 text-right">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-primary/10">
-                            <!-- Row 1 -->
-                            <tr class="hover:bg-slate-50 dark:hover:bg-primary/5 transition-all">
-                                <td class="px-6 py-5 font-bold text-sm">#ORD-9921</td>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for order in orders %}
+                            <tr class="hover:bg-slate-50 transition-all">
+                                <td class="px-6 py-5 font-bold text-sm">#ORD-{{ order.id }}</td>
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-slate-200 overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Customer Alice Johnson profile"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFXXitPqFkEAWjiUKKD32BzSIUT-EGgdHuvSVGyg_JZMu5X1Iq1hKjFujfotHctPDVXQIpGYDGMv-Z2avpzAEag5BKM3k8dnYHEz2t7-fPp3drQ5xarr_Z1ktWRwx8pqrXJvGMuZlGH5I_9nUhHXmCxQXLoa2yejFsSygHDoM8SjYxOkMzhELSnkQxyx2EjD53Up3Axtjyh1uouPCSzxo-nx6XWehGZO7EtcgEZPdb-OTTA600qOE4GsthrEFXBRg-o0vCFcgzJa1Q" />
+                                        <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500 uppercase">
+                                            {{ order.customer.username|make_list|first|default:"?" }}
                                         </div>
                                         <div class="text-sm">
-                                            <p class="font-bold text-slate-900 dark:text-white leading-tight">Alice
-                                                Johnson</p>
-                                            <p class="text-xs text-slate-500">alice.j@example.com</p>
+                                            <p class="font-bold text-slate-900">{{ order.customer.username|default:"Khách ẩn danh" }}</p>
+                                            <p class="text-xs text-slate-500">{{ order.customer.email|default:"Chưa có email" }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Oct 24, 2023</td>
-                                <td class="px-6 py-5 text-sm font-bold text-slate-900 dark:text-white">$1,250.00</td>
+                                <td class="px-6 py-5 text-sm text-slate-600">{{ order.date_ordered|date:"d/m/Y H:i" }}</td>
+                                <td class="px-6 py-5 text-sm font-bold text-slate-900">${{ order.calculated_total|floatformat:2|intcomma }}</td>
                                 <td class="px-6 py-5 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">Processing</span>
+                                    {% if order.complete %}
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Hoàn tất</span>
+                                    {% else %}
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Chờ xử lý</span>
+                                    {% endif %}
                                 </td>
                                 <td class="px-6 py-5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button
-                                            class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-primary/20 hover:bg-slate-100 dark:hover:bg-primary/10 transition-all">Update
-                                            Status</button>
-                                        <button
-                                            class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all">
-                                            <span class="material-symbols-outlined text-xl">visibility</span>
+                                    <form method="POST" class="inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_status" value="1">
+                                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all">
+                                            {% if order.complete %}Hủy Hoàn Tất{% else %}Đánh dấu Hoàn Tất{% endif %}
                                         </button>
-                                    </div>
+                                    </form>
                                 </td>
                             </tr>
-                            <!-- Row 2 -->
-                            <tr class="hover:bg-slate-50 dark:hover:bg-primary/5 transition-all">
-                                <td class="px-6 py-5 font-bold text-sm">#ORD-9920</td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-slate-200 overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Customer Bob Smith profile"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Z4SyPsZnxsw23xsJaDVxzMhn2yvTEubmR7r9ccXHsTJqlFAlmk2_UvKs0b-bEeuvaejuQdC9onelS-9Nvdu2c86qA0Kb10ndD-mX7mhPlvUzajh7eEEVYMY3EDRNNWZqlo9-47EBLIGSdB8SLCqLnRRHpQkH-RwoM8HIM8H89Z4x-Q3_M4qVc4sjNsilGwNZ5UxFLcgN93TlyE8tasEbTec8HwurpQHtL9Z5ChNbA_mUOBU4wTtpDoVr4GC4PlQL_9YlQGbefMFy" />
-                                        </div>
-                                        <div class="text-sm">
-                                            <p class="font-bold text-slate-900 dark:text-white leading-tight">Bob Smith
-                                            </p>
-                                            <p class="text-xs text-slate-500">b.smith@corp.com</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Oct 23, 2023</td>
-                                <td class="px-6 py-5 text-sm font-bold text-slate-900 dark:text-white">$890.50</td>
-                                <td class="px-6 py-5 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800">Shipped</span>
-                                </td>
-                                <td class="px-6 py-5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button
-                                            class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-primary/20 hover:bg-slate-100 dark:hover:bg-primary/10 transition-all">Update
-                                            Status</button>
-                                        <button
-                                            class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all">
-                                            <span class="material-symbols-outlined text-xl">visibility</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 3 -->
-                            <tr class="hover:bg-slate-50 dark:hover:bg-primary/5 transition-all">
-                                <td class="px-6 py-5 font-bold text-sm">#ORD-9919</td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-slate-200 overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Customer Charlie Brown profile"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD98tJxUSnvkV6MwAUQp6UdaJHiXxBNmXEthb0vA6baRpHt76sF61L67_yE3tBd_LCM9l0ongyA_HvzM0nYVNpL7QWNm63YPg_YsXOQQQwgwXbQD5fepAUNQH2tGpcq9vCRy6GQHGUKBvJf9u-ZK7JamQz0RXIBPVL4rRe0y9nn8L_PlVYgXpxY7MXevnA_GnQAriLfqdckhSHwnPals9oOu5YGW1Viq-FeO4XBjKHnKKRzNGRvfNDwkmTowGO6HZCdtu39CvN8yg2g" />
-                                        </div>
-                                        <div class="text-sm">
-                                            <p class="font-bold text-slate-900 dark:text-white leading-tight">Charlie
-                                                Brown</p>
-                                            <p class="text-xs text-slate-500">c.brown@web.net</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Oct 23, 2023</td>
-                                <td class="px-6 py-5 text-sm font-bold text-slate-900 dark:text-white">$2,100.00</td>
-                                <td class="px-6 py-5 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">Delivered</span>
-                                </td>
-                                <td class="px-6 py-5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button
-                                            class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-primary/20 hover:bg-slate-100 dark:hover:bg-primary/10 transition-all">Update
-                                            Status</button>
-                                        <button
-                                            class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all">
-                                            <span class="material-symbols-outlined text-xl">visibility</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 4 -->
-                            <tr class="hover:bg-slate-50 dark:hover:bg-primary/5 transition-all">
-                                <td class="px-6 py-5 font-bold text-sm">#ORD-9918</td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-slate-200 overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Customer Diana Prince profile"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuALYyjOiMkNudZDt2SLbNohDLvHmMtfSlD8IYnVgkILPMuPLDhNBN0Z5z-tlOp8vHFYrB2gwCNi4jguqjgsQxhHGBWwLZOpkRik6nctmLXfSob1KQd9YU4HTPwPW_QqYzr-BJnTXqbYDVqEKVuAGkIEBR5xEIgrdlRkMsjh7pfKTfeWbG-pOrE9VgBfH3Laf61bXf-RAeLjpVvmW8Keauli50LG1rM6QrDGqYCOFs9omkKxrmh9u0OfuTinuFdM5VJP-SPW6UPJl8B5" />
-                                        </div>
-                                        <div class="text-sm">
-                                            <p class="font-bold text-slate-900 dark:text-white leading-tight">Diana
-                                                Prince</p>
-                                            <p class="text-xs text-slate-500">diana.p@star.io</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">Oct 22, 2023</td>
-                                <td class="px-6 py-5 text-sm font-bold text-slate-900 dark:text-white">$450.00</td>
-                                <td class="px-6 py-5 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800">Cancelled</span>
-                                </td>
-                                <td class="px-6 py-5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button
-                                            class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-primary/20 hover:bg-slate-100 dark:hover:bg-primary/10 transition-all">Update
-                                            Status</button>
-                                        <button
-                                            class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all">
-                                            <span class="material-symbols-outlined text-xl">visibility</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 font-medium">Không tìm thấy đơn hàng nào.</td></tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination -->
-                <div class="bg-slate-50 dark:bg-primary/5 px-6 py-4 flex items-center justify-between">
-                    <p class="text-sm text-slate-500 font-medium">Showing 1 to 4 of 1,024 entries</p>
+
+                {% if orders.has_other_pages %}
+                <div class="bg-slate-50 px-6 py-4 flex items-center justify-between border-t border-slate-100">
+                    <p class="text-sm text-slate-500 font-medium">Trang {{ orders.number }} / {{ orders.paginator.num_pages }}</p>
                     <div class="flex gap-2">
-                        <button
-                            class="px-3 py-1 rounded bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-slate-400 cursor-not-allowed">
-                            <span class="material-symbols-outlined text-lg">chevron_left</span>
-                        </button>
-                        <button class="px-3 py-1 rounded bg-primary text-white font-bold text-sm">1</button>
-                        <button
-                            class="px-3 py-1 rounded bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-slate-600 hover:bg-primary hover:text-white transition-all text-sm font-medium">2</button>
-                        <button
-                            class="px-3 py-1 rounded bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-slate-600 hover:bg-primary hover:text-white transition-all text-sm font-medium">3</button>
-                        <button
-                            class="px-3 py-1 rounded bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-slate-600 hover:bg-primary hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-lg">chevron_right</span>
-                        </button>
+                        {% if orders.has_previous %}
+                            <a href="?page={{ orders.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="px-3 py-1 rounded bg-white border border-slate-200 text-slate-600 hover:text-primary transition-all"><span class="material-symbols-outlined text-lg">chevron_left</span></a>
+                        {% endif %}
+
+                        {% for i in orders.paginator.page_range %}
+                            {% if orders.number == i %}
+                                <button class="px-3 py-1 rounded bg-primary text-white font-bold text-sm">{{ i }}</button>
+                            {% else %}
+                                <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="px-3 py-1 rounded bg-white border border-slate-200 text-slate-600 hover:bg-primary hover:text-white transition-all text-sm font-medium">{{ i }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if orders.has_next %}
+                            <a href="?page={{ orders.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="px-3 py-1 rounded bg-white border border-slate-200 text-slate-600 hover:text-primary transition-all"><span class="material-symbols-outlined text-lg">chevron_right</span></a>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
-            <!-- Footer Info -->
-            <div
-                class="flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 dark:text-primary/40 gap-4 mt-4">
-                <p>© 2023 SupplyCentral Admin System. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <a class="hover:text-primary underline decoration-primary/20" href="#">Privacy Policy</a>
-                    <a class="hover:text-primary underline decoration-primary/20" href="#">Support Center</a>
-                    <a class="hover:text-primary underline decoration-primary/20" href="#">System Status</a>
-                </div>
+                {% endif %}
             </div>
         </main>
     </div>
-    </div>
 </body>
-
 </html>

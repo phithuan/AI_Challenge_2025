@@ -92,6 +92,11 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.get_price_quantity for item in orderitems])
         return total
+    @property
+    def total_amount(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.product.price * item.quantity for item in orderitems if item.product])
+        return total
 
 
 # Chi tiết từng sản phẩm trong đơn hàng
@@ -127,3 +132,12 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)  # Ngày mua hàng
     def __str__(self):
         return self.address
+
+# app/models.py
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name='product_images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/gallery/')
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ảnh phụ của {self.product.name}"

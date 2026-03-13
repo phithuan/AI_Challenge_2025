@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Quản Lý Người Dùng | Admin Page</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: { colors: { "primary": "#ec5b13", "background-light": "#f8f6f6", "background-dark": "#221610" }, fontFamily: { "display": ["Public Sans"] } },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined', sans-serif !important; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col fixed h-full z-50">
+            <div class="p-6">
+                <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
+                    <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
+                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
+                        <p class="text-slate-400 text-xs font-normal">HTT_Project</p>
+                    </div>
+                </a>
+                <nav class="flex flex-col gap-2">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_dashboard' %}bg-primary text-white shadow-lg{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all" href="{% url 'admin_dashboard' %}">
+                        <span class="material-symbols-outlined">dashboard</span> <span class="text-sm font-medium">Tổng quan</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_products' %}bg-primary text-white shadow-lg{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all" href="{% url 'admin_products' %}">
+                        <span class="material-symbols-outlined">inventory_2</span> <span class="text-sm font-medium">Sản phẩm</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_categories' %}bg-primary text-white shadow-lg{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all" href="{% url 'admin_categories' %}">
+                        <span class="material-symbols-outlined">category</span> <span class="text-sm font-medium">Danh mục</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_orders' %}bg-primary text-white shadow-lg{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all" href="{% url 'admin_orders' %}">
+                        <span class="material-symbols-outlined">shopping_cart</span> <span class="text-sm font-medium">Đơn hàng</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_users' %}bg-primary text-white shadow-lg{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all" href="{% url 'admin_users' %}">
+                        <span class="material-symbols-outlined">group</span> <span class="text-sm font-medium">Người dùng</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'admin_contact' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %} transition-all"
+                        href="{% url 'admin_contact' %}">
+                        <span class="material-symbols-outlined">mail</span>
+                        <span class="text-sm font-medium">Liên hệ</span>
+                    </a>
+
+                </nav>
+            </div>
+            <div class="mt-auto p-6">
+                <div class="bg-slate-800/50 rounded-xl p-4 flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-white uppercase">{{ request.user.username|make_list|first }}</div>
+                    <div class="overflow-hidden"><p class="text-sm font-bold truncate">{{ request.user.username }}</p><p class="text-xs text-slate-500 truncate">Quản lý cửa hàng</p></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto p-8 pl-72">
+            {% if messages %}{% for message in messages %}
+                <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 mb-6 rounded shadow-sm font-bold">{{ message }}</div>
+            {% endfor %}{% endif %}
+
+            <div class="max-w-6xl mx-auto space-y-8">
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-3xl font-black tracking-tight text-slate-900">Quản Lý Người Dùng</h2>
+                            <p class="text-slate-500 mt-1">Trang quản trị bảo mật dành riêng cho điều hành viên.</p>
+                        </div>
+                        <form action="{% url 'admin_users' %}" method="GET" class="relative max-w-sm w-full">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input name="q" value="{{ query }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50" placeholder="Tìm tên hoặc email...">
+                        </form>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-primary flex items-center gap-2"><span class="material-symbols-outlined text-lg">manage_accounts</span> Quản lý người dùng</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed text-justify">Thêm, xóa, hoặc điều chỉnh quyền của người dùng trong hệ thống, đảm bảo an ninh và kiểm soát truy cập hiệu quả.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-primary flex items-center gap-2"><span class="material-symbols-outlined text-lg">content_paste_search</span> Kiểm soát nội dung</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed text-justify">Phê duyệt, chỉnh sửa hoặc xóa các nội dung không phù hợp, duy trì chất lượng và tuân thủ quy tắc website.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-primary flex items-center gap-2"><span class="material-symbols-outlined text-lg">monitoring</span> Giám sát và báo cáo</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed text-justify">Theo dõi các hoạt động diễn ra trên website (truy cập, tương tác, sự cố bảo mật) để đưa ra quyết định phù hợp.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
+                        <div class="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><span class="material-symbols-outlined">group</span></div>
+                        <div><p class="text-xs font-bold text-slate-400 uppercase">Hệ thống có</p><p class="text-2xl font-black text-slate-800">{{ total_users }} Users</p></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
+                        <div class="size-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center"><span class="material-symbols-outlined">admin_panel_settings</span></div>
+                        <div><p class="text-xs font-bold text-slate-400 uppercase">Quản trị viên</p><p class="text-2xl font-black text-slate-800">{{ staff_count }}</p></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
+                        <div class="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><span class="material-symbols-outlined">person_add</span></div>
+                        <div><p class="text-xs font-bold text-slate-400 uppercase">Mới hôm nay</p><p class="text-2xl font-black text-slate-800">{{ new_today }}</p></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Người dùng</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Ngày tham gia</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Vai trò</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for u in users %}
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold uppercase border border-slate-200">{{ u.username|make_list|first }}</div>
+                                        <div><p class="font-bold text-slate-800">{{ u.username }}</p><p class="text-xs text-slate-400">{{ u.email }}</p></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-500">{{ u.date_joined|date:"d/m/Y" }}</td>
+                                <td class="px-6 py-4 text-center">
+                                    {% if u.is_staff %}<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200 uppercase">Quản trị</span>
+                                    {% else %}<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 uppercase">Khách</span>{% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <a href="?action=delete&id={{ u.id }}" onclick="return confirm('CẢNH BÁO: Hành động này không thể hoàn tác. Bạn chắc chắn muốn xóa người dùng này?')" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Xóa người dùng">
+                                            <span class="material-symbols-outlined">delete_forever</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="px-6 py-8 text-center text-slate-500 font-medium italic">Hiện chưa có người dùng nào được tìm thấy.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    {% if users.has_other_pages %}
+                    <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-200 flex items-center justify-between">
+                        <span class="text-sm text-slate-500">Trang {{ users.number }} / {{ users.paginator.num_pages }}</span>
+                        <div class="flex items-center gap-2">
+                            {% if users.has_previous %}<a href="?page={{ users.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" class="flex items-center justify-center size-9 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-primary"><span class="material-symbols-outlined">chevron_left</span></a>{% endif %}
+                            <button class="flex items-center justify-center size-9 rounded-lg bg-primary text-white font-bold text-sm shadow-md">{{ users.number }}</button>
+                            {% if users.has_next %}<a href="?page={{ users.next_page_number }}{% if query %}&q={{ query }}{% endif %}" class="flex items-center justify-center size-9 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-primary"><span class="material-symbols-outlined">chevron_right</span></a>{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

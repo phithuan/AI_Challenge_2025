@@ -1,0 +1,25 @@
+sửa cái file html
+admin_dashborad
+oder
+product
+categorie
+thêm file
+contact
+user
+prodect_from(giao diện form để thêm sản phẩm)
+
+-------------------------------------
+forms.py thêm 2 cái from là thêm sửa sp, danh muc
+file model.py thì thêm class ProductImage(models.Model):
+file urls.py thì thêm mấy cái địa chỉ user, conact
+file view thì thêm từ phần admnin_dashborad đến cuối mấy chức nắng thôi
+
+cái sting.py t sửa lại mặt khẩu rồi á, nhớ sửa lại
+# ======================
+# STATIC & MEDIA
+# ======================
+khúc này xuống t có sưar coi kĩ lại
+
+------------------------------------
+D:\Code\tmdt\AI_Challenge_2025\WebShop\app\static\app\js\chart.min.js
+thêm file này để gọi thư viện vẽ dashborad

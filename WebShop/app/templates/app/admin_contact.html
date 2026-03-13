@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Quản Lý Liên Hệ | PT Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: { colors: { "primary": "#ec5b13", "background-light": "#f8f6f6", "background-dark": "#221610" }, fontFamily: { "display": ["Public Sans"] } },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined', sans-serif !important; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 antialiased">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col fixed h-full z-50">
+            <div class="p-6">
+                <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
+                    <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
+                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-white text-lg font-bold">VỀ TRANG CHỦ</h1>
+                        <p class="text-slate-400 text-xs">HTT_Project</p>
+                    </div>
+                </a>
+                <nav class="flex flex-col gap-2">
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_dashboard' %}">
+                        <span class="material-symbols-outlined">dashboard</span> <span class="text-sm font-medium">Tổng quan</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_products' %}">
+                        <span class="material-symbols-outlined">inventory_2</span> <span class="text-sm font-medium">Sản phẩm</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_categories' %}">
+                        <span class="material-symbols-outlined">category</span> <span class="text-sm font-medium">Danh mục</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_orders' %}">
+                        <span class="material-symbols-outlined">shopping_cart</span> <span class="text-sm font-medium">Đơn hàng</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" href="{% url 'admin_users' %}">
+                        <span class="material-symbols-outlined">group</span> <span class="text-sm font-medium">Người dùng</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20 transition-all" href="{% url 'admin_contact' %}">
+                        <span class="material-symbols-outlined">mail</span> <span class="text-sm font-medium">Liên hệ</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="mt-auto p-6">
+                <div class="bg-slate-800/50 rounded-xl p-4 flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-white uppercase">{{ request.user.username|make_list|first }}</div>
+                    <div class="overflow-hidden"><p class="text-sm font-bold truncate">{{ request.user.username }}</p><p class="text-xs text-slate-500">Quản lý cửa hàng</p></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto p-8 pl-72">
+            <div class="max-w-6xl mx-auto space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black tracking-tight text-slate-900">Quản Lý Liên Hệ</h2>
+                        <p class="text-slate-500 mt-1">Phản hồi khách hàng và quản lý thông tin cửa hàng.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">storefront</span> Thông tin trụ sở chính
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="space-y-1">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Địa chỉ</p>
+                            <p class="text-sm text-slate-700 font-medium">{{ admin_address }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Email hỗ trợ</p>
+                            <p class="text-sm text-slate-700 font-medium">support@httproject.com</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Trạng thái hệ thống</p>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase">Hoạt động tốt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
+                        <div class="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><span class="material-symbols-outlined">forum</span></div>
+                        <div><p class="text-xs font-bold text-slate-400 uppercase">Tổng tin nhắn</p><p class="text-2xl font-black text-slate-800">{{ total_messages }}</p></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
+                        <div class="size-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><span class="material-symbols-outlined">mark_email_unread</span></div>
+                        <div><p class="text-xs font-bold text-slate-400 uppercase">Chờ phản hồi</p><p class="text-2xl font-black text-slate-800">{{ pending_reply }}</p></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800">Tin nhắn mới nhất</h4>
+                        <form action="" method="GET" class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                            <input name="q" value="{{ query }}" class="bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-1.5 text-xs focus:ring-1 focus:ring-primary" placeholder="Tìm người gửi...">
+                        </form>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase">
+                            <tr>
+                                <th class="px-6 py-4">Khách hàng</th>
+                                <th class="px-6 py-4">Chủ đề</th>
+                                <th class="px-6 py-4">Ngày gửi</th>
+                                <th class="px-6 py-4 text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">K</div>
+                                        <div><p class="font-bold text-slate-800 text-sm">Văn Tài</p><p class="text-[10px] text-slate-400">vt@gmail.com</p></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600 font-medium">Hỏi về chính sách bảo hành Sofa</td>
+                                <td class="px-6 py-4 text-xs text-slate-500">Hôm nay, 14:20</td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-2 text-slate-400 hover:text-primary"><span class="material-symbols-outlined">reply</span></button>
+                                        <button class="p-2 text-slate-400 hover:text-red-500"><span class="material-symbols-outlined">delete</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-6 bg-slate-50/50 text-center">
+                        <button class="text-xs font-bold text-primary hover:underline uppercase tracking-widest">Xem tất cả tin nhắn</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
