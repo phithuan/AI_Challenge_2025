@@ -42,4 +42,7 @@ urlpatterns = [
     path('payment-webhook/', views.payment_webhook, name="payment_webhook"),
 
     path('check-order/<int:order_id>/', views.check_order_status, name='check_order_status'),
+    
+    path('products/', views.products, name='products'),  # thêm dòng này
+
 ]

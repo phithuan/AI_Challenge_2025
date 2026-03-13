@@ -2,82 +2,90 @@
 {% load static %}
 
 {% block main-content %}
-<div class="container my-5">
-  <h1 class="fw-bold text-center mb-4">🌐 WebShop – Demo Hệ thống Bán hàng</h1>
 
-  <!-- Giới thiệu -->
-  <section class="mb-5">
-    <h3 class="text-primary fw-bold">📌 Giới thiệu</h3>
-    <p>
-      Đây là một dự án demo cơ bản xây dựng hệ thống bán hàng trực tuyến bằng 
-      <strong>Django</strong> + <strong>Bootstrap</strong>.
-      Mục tiêu chính không phải thương mại hóa mà là thử nghiệm các tính năng AI như:
-    </p>
-    <ul>
-      <li>🤖 Chatbot hỗ trợ khách hàng.</li>
-      <li>🔍 Tìm kiếm sản phẩm thông minh.</li>
-      <li>🖼️ Gợi ý sản phẩm tương đồng dựa trên ảnh.</li>
-    </ul>
-  </section>
+<section class="container my-5">
 
-  <!-- Tính năng đã có -->
-  <section class="mb-5">
-    <h3 class="text-success fw-bold">✅ Tính năng đã có</h3>
-    <ul>
-      <li><strong>Trang chủ</strong>
-        <ul>
-          <li>Banner động (carousel slider) với hiệu ứng chữ.</li>
-          <li>Hiển thị sản phẩm dạng card (ảnh, tên, mô tả, giá).</li>
-          <li>Hiệu ứng hover zoom ảnh sản phẩm.</li>
-        </ul>
-      </li>
-      <li><strong>Người dùng</strong>
-        <ul>
-          <li>Đăng ký tài khoản & Đăng nhập hệ thống.</li>
-        </ul>
-      </li>
-      <li><strong>Giỏ hàng & Thanh toán</strong>
-        <ul>
-          <li>Thêm sản phẩm vào giỏ hàng.</li>
-          <li>Xem chi tiết giỏ hàng.</li>
-          <li>Tiến hành thanh toán.</li>
-        </ul>
-      </li>
-      <li><strong>Sản phẩm</strong>
-        <ul>
-          <li>Xem chi tiết sản phẩm.</li>
-          <li>Phân loại sản phẩm theo danh mục.</li>
-          <li>Tìm kiếm sản phẩm theo tên.</li>
-        </ul>
-      </li>
-      <li><strong>Chatbot AI</strong>
-        <ul>
-          <li>Bong bóng chatbot hiển thị trên mọi trang.</li>
-          <li>Người dùng có thể trò chuyện trực tiếp với chatbot.</li>
-        </ul>
-      </li>
-      <li><strong>Hệ thống quản lý dữ liệu</strong>
-        <ul>
-          <li>Quản lý người dùng, sản phẩm, danh mục, đơn hàng.</li>
-          <li>CSDL: SQLite3.</li>
-        </ul>
-      </li>
-    </ul>
-  </section>
+    <div class="row align-items-center">
 
-  <!-- Định hướng phát triển -->
-  <section class="mb-5">
-    <h3 class="text-warning fw-bold">🚀 Định hướng phát triển</h3>
-    <ul>
-      <li>🤖 Chatbot nâng cao (dùng LLM, gợi ý sản phẩm cá nhân hóa).</li>
-      <li>🖼️ Tìm kiếm sản phẩm dựa trên ảnh tương đồng AI.</li>
-      <li>🛍️ Quản lý giỏ hàng, thanh toán nâng cao.</li>
-      <li>📊 Hệ thống gợi ý sản phẩm thông minh.</li>
-    </ul>
-  </section>
+        <div class="col-lg-6">
 
-  <div class="text-center">
-    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">⬅️ Quay lại Trang chủ</a>
-  </div>
-</div>
-{% endblock main-content %}
+            <h2 class="fw-bold mb-4">
+                Về Elite Wood Furnishings
+            </h2>
+
+            <p class="text-muted">
+
+                Elite Wood Furnishings là thương hiệu nội thất cao cấp chuyên cung cấp
+                các sản phẩm gỗ tự nhiên với thiết kế sang trọng và bền vững.
+
+                Chúng tôi cam kết mang đến cho khách hàng những sản phẩm:
+
+            </p>
+
+            <ul class="text-muted">
+
+                <li>✔ Chất liệu gỗ tự nhiên cao cấp</li>
+
+                <li>✔ Thiết kế hiện đại chuẩn châu Âu</li>
+
+                <li>✔ Độ bền và tính thẩm mỹ lâu dài</li>
+
+                <li>✔ Dịch vụ chăm sóc khách hàng tận tâm</li>
+
+            </ul>
+
+            <a href="{% url 'products' %}" class="btn btn-dark mt-3">
+                Khám phá sản phẩm
+            </a>
+
+        </div>
+
+
+        <div class="col-lg-6">
+
+            <img src="{% static 'app/images/intro_furniture.jpg' %}" class="img-fluid rounded shadow">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="bg-light py-5">
+
+    <div class="container">
+
+        <div class="row text-center">
+
+            <div class="col-md-4">
+
+                <h3 class="fw-bold">500+</h3>
+
+                <p class="text-muted">Sản phẩm nội thất</p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h3 class="fw-bold">10+</h3>
+
+                <p class="text-muted">Năm kinh nghiệm</p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h3 class="fw-bold">2000+</h3>
+
+                <p class="text-muted">Khách hàng hài lòng</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

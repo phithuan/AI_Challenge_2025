@@ -4,42 +4,48 @@
 {% load humanize %}
 <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
 <!-- ✅ Carousel Bootstrap -->
-<div id="carouselExampleDark" class="carousel slide carousel-fade banner-shadow" data-bs-ride="carousel">
-  <!-- 🔹 Nút điều hướng nhỏ bên dưới -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true"
-      aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
-  </div>
 
-  <!-- 🔹 Nội dung của từng slide -->
-  <div class="carousel-inner ">
-    <!-- Slide 1 -->
-    <div class="carousel-item active" data-bs-interval="6000">
-      <video class="d-block w-100 img-fluid" style="height: 750px; object-fit: cover;" autoplay muted loop>
-        <source src="{% static 'app/image/banner/panner.mp4' %}" type="video/mp4">
-      </video>
+<!-- HERO -->
+<div class="bg-dark text-white py-5" style="height: 700px;">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="badge bg-warning text-dark mb-3 fs-6 px-3 py-2">Bộ Sưu Tập Mới 2025</span>
+        <h1 class="display-4 fw-bold mb-3">Nội Thất Cao Cấp<br />Phong Cách Bắc Âu</h1>
+        <p class="lead text-secondary mb-4">
+          Khám phá những thiết kế tinh tế, được chế tác từ những chất liệu tốt nhất — mang lại vẻ đẹp bền vững cho ngôi
+          nhà của bạn.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="products.html" class="btn btn-warning btn-lg text-dark fw-bold">
+            <i class="fas fa-th-large me-2"></i>Khám Phá Ngay
+          </a>
+          <a href="about.html" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-info-circle me-2"></i>Về Chúng Tôi
+          </a>
+        </div>
+        <div class="row mt-5 pt-3 border-top border-secondary text-center">
+          <div class="col-4">
+            <div class="fs-2 fw-bold text-warning">500+</div>
+            <div class="text-secondary small">Sản Phẩm</div>
+          </div>
+          <div class="col-4 border-start border-end border-secondary">
+            <div class="fs-2 fw-bold text-warning">12K+</div>
+            <div class="text-secondary small">Khách Hàng</div>
+          </div>
+          <div class="col-4">
+            <div class="fs-2 fw-bold text-warning">15</div>
+            <div class="text-secondary small">Năm KN</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&q=80"
+          class="img-fluid rounded-3 shadow-lg" alt="Nội thất LUMINO" />
+      </div>
     </div>
-
-    <!-- Slide 2 -->
-    <div class="carousel-item" data-bs-interval="6000">
-      <img src="{% static 'app/image/banner/anh2.png' %}" class="d-block w-100 img-fluid" alt="Thời đại mới"
-        style="height: 750px; object-fit: cover;">
-    </div>
   </div>
-
-  <!-- 🔹 Nút qua lại -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
 </div>
-
 {% endblock banner_slider %}
 
 {% block main-content %}
@@ -61,77 +67,122 @@
 
       <!-- Grid 4 cột lớn, responsive -->
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+
         {% for item in product %}
+
         <div class="col">
+
           <div class="product-card h-100">
-            <div class="card-img-container">
+
+            <div class="card-img-container position-relative">
+
               <a href="{% url 'product_detail' item.id %}">
                 <img src="{{ item.ImageURL }}" class="card-img" alt="{{ item.name|default:'Sản phẩm' }}">
               </a>
-              <button class="btn">Xem chi tiết</button>
+
+              {% if item.sale_price and item.sale_price < item.price %} <div
+                class="position-absolute top-0 start-0 m-2 badge bg-danger">
+                -{{ item.discount_percent }}%
             </div>
-            <div class="p-3 card-body d-flex flex-column justify-content-between">
-              <div class="d-flex justify-content-between align-items-start">
-                <div>
-                  <h5 class="mb-1 fw-medium text-dark">{{ item.name|default:'Chưa đặt tên' }}</h5>
-                  <p class="mb-0 text-muted-custom small">
-                    {{ item.material|default:"Gỗ tự nhiên" }}
-                    {% if item.origin %} · {{ item.origin }}{% endif %}
-                  </p>
-                </div>
-                <p class="price mb-0 text-dark">{{ item.price|floatformat:0|intcomma }} VNĐ</p>
-              </div>
-            </div>
+            {% endif %}
+
+            <button class="btn">Xem chi tiết</button>
+
           </div>
+
+
+          <div class="p-3 card-body d-flex flex-column justify-content-between">
+
+            <div>
+
+              <h5 class="mb-1 fw-medium text-dark">
+                {{ item.name|default:"Chưa đặt tên" }}
+              </h5>
+
+              <p class="mb-1 text-muted small">
+                {{ item.material|default:"Gỗ tự nhiên" }}
+                {% if item.origin %} · {{ item.origin }}{% endif %}
+              </p>
+
+              {% if item.sale_price %}
+
+              <span class="price">
+                {{ item.sale_price|floatformat:0|intcomma }} đ
+              </span>
+
+              <span class="old-price">
+                {{ item.price|floatformat:0|intcomma }} đ
+              </span>
+
+              {% else %}
+
+              <p class="price mb-0">
+                {{ item.price|floatformat:0|intcomma }} đ
+              </p>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-          <p class="text-muted fs-5">Hiện chưa có sản phẩm nào trong bộ sưu tập nổi bật.</p>
-        </div>
-        {% endfor %}
+
       </div>
 
-      <!-- Nếu muốn giới hạn chỉ hiển thị tối đa 16 sản phẩm (4 hàng × 4 cột) -->
-      <!-- Cách 1: Giới hạn ngay trong template (không khuyến khích nếu có phân trang) -->
-      <!-- {% for item in product|slice:":16" %} ... {% endfor %} -->
+      {% empty %}
 
-      <!-- Cách tốt hơn: Giới hạn trong view.py -->
-      <!-- Ví dụ: products = Product.objects.filter(is_featured=True)[:16] -->
-    </section>
-      <div class="container">
-        <div class="text-center mb-5">
-          <p class="section-label" style="color:var(--accent)">Đánh Giá</p>
-          <h2 class="section-title" style="color:var(--cream)">Khách Hàng Nói Gì?</h2>
+      <div class="col-12 text-center py-5">
+        <p class="text-muted fs-5">
+          Hiện chưa có sản phẩm nào trong bộ sưu tập nổi bật.
+        </p>
+      </div>
+
+      {% endfor %}
+
+  </div>
+
+  <!-- Nếu muốn giới hạn chỉ hiển thị tối đa 16 sản phẩm (4 hàng × 4 cột) -->
+  <!-- Cách 1: Giới hạn ngay trong template (không khuyến khích nếu có phân trang) -->
+  <!-- {% for item in product|slice:":16" %} ... {% endfor %} -->
+
+  <!-- Cách tốt hơn: Giới hạn trong view.py -->
+  <!-- Ví dụ: products = Product.objects.filter(is_featured=True)[:16] -->
+  </section>
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label" style="color:var(--accent)">Đánh Giá</p>
+      <h2 class="section-title" style="color:var(--cream)">Khách Hàng Nói Gì?</h2>
+    </div>
+    <div class="row g-4 text-dark">
+      <div class="col-lg-4">
+        <div class="testimonial-card" style="background-color: #ddeaeb;">
+          <div class="stars">★★★★★</div>
+          <p>"Bộ sofa Oslo thực sự làm thay đổi hoàn toàn phòng khách của tôi. Chất liệu vải cao cấp, khung gỗ chắc
+            chắn, màu sắc đúng như hình. Rất hài lòng!"</p>
+          <div class="author">Nguyễn Minh Anh</div>
+          <div class="author-job">Kiến Trúc Sư · Hà Nội</div>
         </div>
-        <div class="row g-4 text-dark">
-          <div class="col-lg-4">
-            <div class="testimonial-card" style="background-color: #ddeaeb;">
-              <div class="stars">★★★★★</div>
-              <p>"Bộ sofa Oslo thực sự làm thay đổi hoàn toàn phòng khách của tôi. Chất liệu vải cao cấp, khung gỗ chắc
-                chắn, màu sắc đúng như hình. Rất hài lòng!"</p>
-              <div class="author">Nguyễn Minh Anh</div>
-              <div class="author-job">Kiến Trúc Sư · Hà Nội</div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="testimonial-card" style="background-color: #ddeaeb;">
-              <div class="stars">★★★★★</div>
-              <p>"Dịch vụ giao hàng và lắp đặt rất chuyên nghiệp. Nhân viên tư vấn nhiệt tình, giúp tôi chọn được bộ nội
-                thất phù hợp cho căn hộ nhỏ."</p>
-              <div class="author">Trần Phương Linh</div>
-              <div class="author-job">Bác Sĩ · TP.HCM</div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="testimonial-card" style="background-color: #ddeaeb;">
-              <div class="stars">★★★★★</div>
-              <p>"Đã mua 3 lần tại MAISON, lần nào cũng hài lòng. Sản phẩm bền đẹp, giá cả hợp lý so với chất lượng. Sẽ
-                tiếp tục ủng hộ hahahahahahahahahahahahahah!"</p>
-              <div class="author">Lê Hoàng Nam</div>
-              <div class="author-job">Bác Sĩ · TP.HCM</div>
-            </div>
-          </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="testimonial-card" style="background-color: #ddeaeb;">
+          <div class="stars">★★★★★</div>
+          <p>"Dịch vụ giao hàng và lắp đặt rất chuyên nghiệp. Nhân viên tư vấn nhiệt tình, giúp tôi chọn được bộ nội
+            thất phù hợp cho căn hộ nhỏ."</p>
+          <div class="author">Trần Phương Linh</div>
+          <div class="author-job">Bác Sĩ · TP.HCM</div>
         </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="testimonial-card" style="background-color: #ddeaeb;">
+          <div class="stars">★★★★★</div>
+          <p>"Đã mua 3 lần tại MAISON, lần nào cũng hài lòng. Sản phẩm bền đẹp, giá cả hợp lý so với chất lượng. Sẽ
+            tiếp tục ủng hộ hahahahahahahahahahahahahah!"</p>
+          <div class="author">Lê Hoàng Nam</div>
+          <div class="author-job">Bác Sĩ · TP.HCM</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

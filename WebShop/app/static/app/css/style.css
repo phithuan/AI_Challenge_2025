@@ -329,14 +329,14 @@ body.dark-mode .btn-danger:hover {
 }
 
 .nav-link-active {
-  border-bottom: 2px solid var(--primary, #e67e22);
+  font-weight: 400 solid var(--primary, #e67e22);
   color: #181411 !important;
   padding-bottom: 0.5rem;
 }
 
 .nav-link {
   color: #887263;
-  font-weight: bold;
+  font-weight: 400;
   border-bottom: 2px solid transparent;
   padding-bottom: 0.5rem;
   transition: color 0.2s;
@@ -371,3 +371,98 @@ body.dark-mode .btn-danger:hover {
   box-shadow: 0 20px 30px rgba(0, 0, 0, 0.25);
   z-index: 1;
 }
+
+  body {
+    background: #f8f6f2;
+  }
+
+  .product-card {
+    transition: .35s;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .15);
+  }
+
+  .product-image {
+    height: 260px;
+    object-fit: cover;
+    transition: .5s;
+  }
+
+  .product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  .product-overlay {
+    opacity: 0;
+    transition: .3s;
+  }
+
+  .product-card:hover .product-overlay {
+    opacity: 1;
+  }
+
+  .price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #8b5e3c;
+  }
+
+  .old-price {
+    font-size: 14px;
+    color: #888;
+    text-decoration: line-through;
+  }
+
+  .sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
+  }
+
+  .filter-title {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  .category-link {
+    display: block;
+    padding: 8px 0;
+    color: #444;
+    text-decoration: none;
+  }
+
+  .category-link:hover {
+    color: #8b5e3c;
+  }
+
+  .category-active {
+    color: #8b5e3c;
+    font-weight: 600;
+  }
+
+  .sort-select {
+    border-radius: 8px;
+  }
+
+  .add-cart-btn {
+    background: #1e1e1e;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .add-cart-btn:hover {
+    background: #8b5e3c;
+  }

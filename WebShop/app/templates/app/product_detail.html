@@ -15,11 +15,11 @@
 
       <!-- Ảnh chính -->
       {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded mb-3 product-image"
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid w-100 rounded mb-3 product-image"
         id="mainImage">
       {% elif product.images.first %}
       <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
-        class="img-fluid rounded mb-3 product-image" id="mainImage">
+        class="img-fluid w-100 rounded mb-3 product-image" id="mainImage">
       {% endif %}
 
       <!-- Thumbnail -->
@@ -27,13 +27,13 @@
 
         <!-- Ảnh chính -->
         {% if product.image %}
-        <img src="{{ product.image.url }}" class="thumbnail rounded active" style="width: 80px; cursor:pointer;"
+        <img src="{{ product.image.url }}" class="thumbnail rounded active" style="width: 90px; cursor:pointer;"
           onclick="changeImage(event, this.src)">
         {% endif %}
 
         <!-- Ảnh phụ -->
         {% for img in product.images.all %}
-        <img src="{{ img.image.url }}" class="thumbnail rounded" style="width: 98px; cursor:pointer;"
+        <img src="{{ img.image.url }}" class="thumbnail rounded" style="width: 150px; cursor:pointer;"
           onclick="changeImage(event, this.src)">
         {% endfor %}
 

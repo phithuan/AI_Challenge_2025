@@ -22,6 +22,71 @@ def category(request, slug):
     }
     return render(request, 'app/category.html', context)
 
+    
+# # views.py
+# from django.shortcuts import render
+# from .models import Product, Category
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Product, Category
+
+
+def products(request):
+
+    # ================= DANH MỤC =================
+    categories = Category.objects.filter(is_sub=False)
+
+    # ================= QUERYSET GỐC =================
+    queryset = Product.objects.all()
+
+    # ================= GET PARAMS =================
+    category_id = request.GET.get("category")
+    sort = request.GET.get("sort")
+    materials = request.GET.getlist("material")
+    price = request.GET.get("price")
+
+    # ================= FILTER CATEGORY =================
+    if category_id:
+        queryset = queryset.filter(category__id=category_id)
+
+    # ================= FILTER MATERIAL =================
+    if materials:
+        queryset = queryset.filter(material__in=materials)
+
+    # ================= FILTER PRICE =================
+    if price:
+        queryset = queryset.filter(price__lte=price)
+
+    # ================= SORT =================
+    if sort == "price_asc":
+        queryset = queryset.order_by("price")
+
+    elif sort == "price_desc":
+        queryset = queryset.order_by("-price")
+
+    elif sort == "name":
+        queryset = queryset.order_by("name")
+
+    else:
+        queryset = queryset.order_by("-id")
+
+    # ================= PAGINATION =================
+    paginator = Paginator(queryset, 12)
+    page = request.GET.get("page")
+    products = paginator.get_page(page)
+
+    # ================= MATERIAL LIST (CHO FILTER UI) =================
+    materials_list = Product.objects.values_list("material", flat=True).distinct()
+
+    context = {
+        "products": products,
+        "categories": categories,
+        "materials": materials_list,
+        "selected_materials": materials   # thêm dòng này fix nè
+    }
+
+    return render(request, "app/products.html", context)
+
 
 from django.shortcuts import render, redirect
 from django.db.models import Q

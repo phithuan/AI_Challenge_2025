@@ -1,0 +1,354 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block main-content %}
+
+<!-- ================= STYLE ================= -->
+<style>
+  body {
+    background: #f8f6f2;
+  }
+
+  /* Card sản phẩm */
+  .product-card {
+    border-radius: 12px;
+    background: white;
+    overflow: hidden;
+    transition: 0.35s;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Container ảnh */
+  .card-img-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ảnh sản phẩm */
+  .card-img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transition: 0.5s;
+  }
+
+  .product-card:hover .card-img {
+    transform: scale(1.05);
+  }
+
+  /* Nút hover */
+  .card-img-container .btn {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e1e;
+    color: white;
+    padding: 6px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    opacity: 0;
+    transition: 0.3s;
+  }
+
+  .product-card:hover .btn {
+    opacity: 1;
+  }
+
+  .card-img-container .btn:hover {
+    background: #8b5e3c;
+  }
+
+  /* Giá */
+  .price {
+    font-weight: 600;
+    font-size: 16px;
+    color: #8b5e3c;
+  }
+
+  .old-price {
+    font-size: 14px;
+    text-decoration: line-through;
+    color: #888;
+  }
+
+  /* Sidebar filter */
+  .sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .filter-title {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  .category-link {
+    display: block;
+    padding: 8px 0;
+    color: #444;
+    text-decoration: none;
+  }
+
+  .category-link:hover {
+    color: #8b5e3c;
+  }
+
+  .category-active {
+    color: #8b5e3c;
+    font-weight: 600;
+  }
+</style>
+
+
+<div class="container my-5">
+
+  <div class="row g-4">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="col-lg-3">
+
+      <div class="sidebar sticky-top" style="top:90px">
+
+        <div class="filter-title">Danh mục</div>
+
+        <a href="{% url 'products' %}"
+          class="category-link {% if not request.GET.category %}category-active{% endif %}">
+          Tất cả sản phẩm
+        </a>
+
+        {% for c in categories %}
+
+        <a href="?category={{c.id}}"
+          class="category-link {% if request.GET.category == c.id|stringformat:'s' %}category-active{% endif %}">
+          {{c.name}}
+        </a>
+
+        {% endfor %}
+
+        <hr>
+
+        <div class="filter-title">Khoảng giá</div>
+
+        <form method="GET">
+
+          <input type="hidden" name="category" value="{{request.GET.category}}">
+
+          <input type="range" name="price" min="0" max="50000000" step="500000" class="form-range">
+
+          <button class="btn btn-dark w-100 mt-3">
+            Lọc giá
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- ================= PRODUCT AREA ================= -->
+    <div class="col-lg-9">
+
+      <!-- Thanh thông tin -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+          <strong>{{products.paginator.count}}</strong> sản phẩm
+        </div>
+
+        <form method="GET">
+
+          <input type="hidden" name="category" value="{{request.GET.category}}">
+
+          <select name="sort" class="form-select">
+
+            <option value="">Sắp xếp</option>
+            <option value="new">Mới nhất</option>
+            <option value="price_asc">Giá thấp → cao</option>
+            <option value="price_desc">Giá cao → thấp</option>
+            <option value="name">Tên A → Z</option>
+
+          </select>
+
+        </form>
+
+      </div>
+
+
+
+      <!-- ================= GRID 4 CỘT ================= -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+        {% for item in products %}
+
+        <div class="col">
+
+          <div class="product-card h-100">
+
+            <!-- Ảnh sản phẩm -->
+            <div class="card-img-container">
+
+              <a href="{% url 'product_detail' item.id %}">
+
+                {% if item.ImageURL %}
+                <img src="{{ item.ImageURL }}" class="card-img" alt="{{ item.name|default:'Sản phẩm' }}">
+                {% else %}
+                <img src="{% static 'app/images/no-image.png' %}" class="card-img">
+                {% endif %}
+
+              </a>
+
+              <!-- Nút xem chi tiết -->
+              <a href="{% url 'product_detail' item.id %}" class="btn">
+                Xem chi tiết
+              </a>
+
+            </div>
+
+
+            <!-- Thông tin sản phẩm -->
+            <div class="p-3 card-body d-flex flex-column justify-content-between">
+
+              <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+
+                  <h5 class="mb-1 fw-medium text-dark">
+                    {{ item.name|default:'Chưa đặt tên' }}
+                  </h5>
+
+                  <p class="mb-0 text-muted small">
+
+                    {{ item.material|default:"Gỗ tự nhiên" }}
+
+                    {% if item.origin %}
+                    · {{ item.origin }}
+                    {% endif %}
+
+                  </p>
+
+                </div>
+
+
+                <!-- Giá -->
+                <div class="text-end">
+
+                  {% if item.sale_price and item.sale_price < item.price %} <p class="old-price mb-0">
+                    {{ item.price|floatformat:0|intcomma }} ₫
+                    </p>
+
+                    <p class="price mb-0">
+                      {{ item.final_price|floatformat:0|intcomma }} ₫
+                    </p>
+
+                    {% else %}
+
+                    <p class="price mb-0">
+                      {{ item.price|floatformat:0|intcomma }} ₫
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center py-5">
+
+          <p class="text-muted fs-5">
+            Hiện chưa có sản phẩm nào trong bộ sưu tập.
+          </p>
+
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+
+
+      <!-- ================= PAGINATION ================= -->
+      {% if products.has_other_pages %}
+
+      <nav class="mt-5">
+
+        <ul class="pagination justify-content-center">
+
+          {% if products.has_previous %}
+
+          <li class="page-item">
+
+            <a class="page-link" href="?page={{products.previous_page_number}}&category={{request.GET.category}}">
+
+              Trước
+
+            </a>
+
+          </li>
+
+          {% endif %}
+
+
+          {% for num in products.paginator.page_range %}
+
+          <li class="page-item {% if products.number == num %}active{% endif %}">
+
+            <a class="page-link" href="?page={{num}}&category={{request.GET.category}}">
+
+              {{num}}
+
+            </a>
+
+          </li>
+
+          {% endfor %}
+
+
+          {% if products.has_next %}
+
+          <li class="page-item">
+
+            <a class="page-link" href="?page={{products.next_page_number}}&category={{request.GET.category}}">
+
+              Sau
+
+            </a>
+
+          </li>
+
+          {% endif %}
+
+        </ul>
+
+      </nav>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

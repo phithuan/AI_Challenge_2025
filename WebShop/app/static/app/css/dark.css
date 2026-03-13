@@ -196,3 +196,36 @@ body.dark-mode .cart-btn:hover{
 body.dark-mode .total-text {
   color: #f1f1f1;
 }
+
+/* hover nút toggle */
+body.dark-mode .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* icon trong dark mode */
+body.dark-mode .theme-toggle-btn .material-symbols-outlined {
+  color: #e9ecef;
+}
+
+/* hover icon */
+body.dark-mode .theme-toggle-btn:hover .material-symbols-outlined {
+  color: #f8f9fa;
+}
+
+/* NAVBAR DARK MODE */
+
+body.dark-mode .navbar {
+  background: #1e1e1e !important;
+}
+
+body.dark-mode .nav-link {
+  color: #d8bb14 !important;
+}
+
+body.dark-mode .nav-link:hover {
+  color: #ddd905 !important;
+}
+
+body.dark-mode .navbar-brand {
+  color: #ffffff !important;
+}

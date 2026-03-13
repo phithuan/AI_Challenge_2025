@@ -1,0 +1,325 @@
+{% extends 'app/base.html' %} <!-- kế thừa layout chung từ file base.html -->
+{% load static %} <!-- load static để sử dụng file tĩnh: css, js, image -->
+{% load humanize %} <!-- load thư viện humanize để format số (vd: 1000000 -> 1,000,000) -->
+
+{% block main-content %} <!-- bắt đầu block nội dung chính -->
+
+<div class="container my-5"> <!-- container bootstrap, margin top bottom = 5 -->
+  <div class="row g-4"> <!-- grid bootstrap, khoảng cách giữa các cột -->
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <div class="col-lg-3"> <!-- sidebar chiếm 3/12 cột trên màn hình lớn -->
+
+      <div class="sidebar sticky-top text-dark" style="top:90px"> <!-- sidebar cố định khi scroll -->
+
+        <form method="GET"> <!-- form lọc sản phẩm bằng GET để giữ query trên URL -->
+
+          <div class="filter-title">Danh mục</div> <!-- tiêu đề danh mục -->
+
+          <a href="{% url 'products' %}"
+            class="category-link {% if not request.GET.category %}category-active{% endif %}">
+            Tất cả sản phẩm
+          </a>
+          <!-- link hiển thị tất cả sản phẩm, nếu không có category thì active -->
+
+          {% for c in categories %} <!-- lặp qua danh sách category từ backend -->
+
+          <a href="?category={{c.id}}"
+            class="category-link {% if request.GET.category == c.id|stringformat:'s' %}category-active{% endif %}">
+            {{c.name}}
+          </a>
+          <!-- link lọc theo category, nếu category hiện tại trùng thì thêm class active -->
+
+          {% endfor %}
+
+          <input type="hidden" name="category" value="{{request.GET.category}}">
+          <!-- giữ lại category khi submit form -->
+
+          <hr> <!-- đường kẻ phân cách -->
+
+          <!-- PRICE FILTER -->
+
+          <div class="mb-4"> <!-- bộ lọc khoảng giá -->
+
+            <h6 class="fw-bold text-uppercase small text-muted mb-2">Khoảng Giá</h6>
+            <!-- tiêu đề filter giá -->
+
+            <input type="range" name="price" min="0" max="50000000" step="500000" value="{{request.GET.price}}"
+              class="form-range">
+            <!-- slider chọn giá tối đa -->
+
+            <div class="d-flex justify-content-between small text-muted">
+              <span>0₫</span>
+              <span>50.000.000₫</span>
+            </div>
+            <!-- hiển thị min và max giá -->
+
+          </div>
+
+          <hr>
+
+          <!-- MATERIAL FILTER -->
+
+          <div class="mb-4"> <!-- bộ lọc chất liệu -->
+
+            <h6 class="fw-bold text-uppercase small text-muted mb-2">Chất Liệu</h6>
+
+            {% for m in materials %} <!-- lặp danh sách chất liệu -->
+
+            <div class="form-check mb-1"> <!-- checkbox bootstrap -->
+
+              <input class="form-check-input"
+                type="checkbox"
+                name="material"
+                value="{{ m }}"
+                {% if m in selected_materials %}checked{% endif %}>
+              <!-- nếu material đã được chọn trước đó thì checked -->
+
+              <label class="form-check-label small">
+                {{ m }}
+              </label>
+
+            </div>
+
+            {% endfor %}
+
+          </div>
+
+          <button class="btn btn-dark w-100 mt-2">
+            Lọc sản phẩm
+          </button>
+          <!-- nút submit filter -->
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= PRODUCT AREA ================= -->
+
+    <div class="col-lg-9"> <!-- khu vực hiển thị sản phẩm chiếm 9/12 -->
+
+      <!-- TOOLBAR -->
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+      <!-- thanh công cụ phía trên sản phẩm -->
+
+        <div>
+          <strong>{{ products.paginator.count }}</strong> sản phẩm
+        </div>
+        <!-- hiển thị tổng số sản phẩm -->
+
+        <form method="GET"> <!-- form sắp xếp -->
+
+          <input type="hidden" name="category" value="{{request.GET.category}}">
+          <!-- giữ category khi sắp xếp -->
+
+          {% for m in selected_materials %}
+          <input type="hidden" name="material" value="{{m}}">
+          {% endfor %}
+          <!-- giữ material đã chọn -->
+
+          <input type="hidden" name="price" value="{{request.GET.price}}">
+          <!-- giữ filter giá -->
+
+          <select name="sort" class="form-select sort-select" onchange="this.form.submit()">
+          <!-- dropdown sắp xếp, khi đổi sẽ submit form -->
+
+            <option value="">Sắp xếp</option>
+
+            <option value="new" {% if request.GET.sort == "new" %}selected{% endif %}>
+              Mới nhất
+            </option>
+
+            <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>
+              Giá thấp → cao
+            </option>
+
+            <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>
+              Giá cao → thấp
+            </option>
+
+            <option value="name" {% if request.GET.sort == "name" %}selected{% endif %}>
+              Tên A → Z
+            </option>
+
+          </select>
+
+        </form>
+
+      </div>
+
+
+      <!-- ================= PRODUCT GRID ================= -->
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+      <!-- grid hiển thị sản phẩm responsive -->
+
+        {% for product in products %} <!-- lặp danh sách sản phẩm -->
+
+        <div class="col">
+
+          <div class="product-card h-100">
+          <!-- card sản phẩm, height 100% -->
+
+            <div class="position-relative overflow-hidden">
+            <!-- wrapper ảnh sản phẩm -->
+
+              <a href="{% url 'product_detail' product.id %}">
+              <!-- link đến trang chi tiết sản phẩm -->
+
+                {% if product.ImageURL %}
+                <img src="{{ product.ImageURL }}" class="w-100 product-image">
+                {% else %}
+                <img src="{% static 'app/images/no-image.png' %}" class="w-100 product-image">
+                {% endif %}
+                <!-- nếu không có ảnh thì dùng ảnh mặc định -->
+
+              </a>
+
+              {% if product.sale_price and product.sale_price < product.price %} 
+              <div
+                class="position-absolute top-0 start-0 m-2 badge bg-danger">
+                -{{ product.discount_percent }}%
+              </div>
+              {% endif %}
+              <!-- badge hiển thị phần trăm giảm giá -->
+
+            <div class="product-overlay position-absolute bottom-0 start-50 translate-middle-x mb-3">
+            <!-- overlay nút thêm giỏ -->
+
+              <a href="{% url 'add_to_cart' product.id %}" class="add-cart-btn">
+                Thêm giỏ
+              </a>
+
+            </div>
+
+          </div>
+
+          <!-- INFO -->
+
+          <div class="p-3">
+          <!-- thông tin sản phẩm -->
+
+            <h5 class="mb-1 fw-medium text-dark">
+              {{ product.name|default:"Chưa đặt tên" }}
+            </h5>
+            <!-- tên sản phẩm -->
+
+            <p class="mb-1 text-muted small">
+              {{ product.material|default:"Gỗ tự nhiên" }}
+              {% if product.origin %} · {{ product.origin }}{% endif %}
+            </p>
+            <!-- hiển thị chất liệu và xuất xứ -->
+
+            {% if product.sale_price %}
+            <!-- nếu có giá giảm -->
+
+            <span class="price">
+              {{ product.sale_price|floatformat:0|intcomma }} đ
+            </span>
+            <!-- giá sau giảm -->
+
+            <span class="old-price ms-2">
+              {{ product.price|floatformat:0|intcomma }} đ
+            </span>
+            <!-- giá gốc -->
+
+            {% else %}
+
+            <p class="price">
+              {{ product.price|floatformat:0|intcomma }} đ
+            </p>
+            <!-- nếu không giảm giá -->
+
+            {% endif %}
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {% empty %}
+      <!-- nếu không có sản phẩm -->
+
+      <div class="col-12 text-center py-5">
+        <h5>Không có sản phẩm</h5>
+      </div>
+
+      {% endfor %}
+
+    </div>
+
+
+    <!-- ================= PAGINATION ================= -->
+
+    {% if products.has_other_pages %}
+    <!-- nếu có nhiều trang -->
+
+    <nav class="mt-5">
+
+      <ul class="pagination justify-content-center">
+      <!-- pagination bootstrap -->
+
+        {% if products.has_previous %}
+
+        <li class="page-item">
+
+          <a class="page-link"
+            href="?page={{products.previous_page_number}}&category={{request.GET.category}}&price={{request.GET.price}}{% for m in selected_materials %}&material={{m}}{% endfor %}">
+            Trước
+          </a>
+          <!-- nút trang trước -->
+
+        </li>
+
+        {% endif %}
+
+
+        {% for num in products.paginator.page_range %}
+        <!-- lặp tất cả số trang -->
+
+        <li class="page-item {% if products.number == num %}active{% endif %}">
+        <!-- nếu trang hiện tại thì active -->
+
+          <a class="page-link"
+            href="?page={{num}}&category={{request.GET.category}}&price={{request.GET.price}}{% for m in selected_materials %}&material={{m}}{% endfor %}">
+            {{num}}
+          </a>
+
+        </li>
+
+        {% endfor %}
+
+
+        {% if products.has_next %}
+
+        <li class="page-item">
+
+          <a class="page-link"
+            href="?page={{products.next_page_number}}&category={{request.GET.category}}&price={{request.GET.price}}{% for m in selected_materials %}&material={{m}}{% endfor %}">
+            Sau
+          </a>
+          <!-- nút trang sau -->
+
+        </li>
+
+        {% endif %}
+
+      </ul>
+
+    </nav>
+
+    {% endif %}
+
+  </div>
+
+</div>
+
+</div>
+
+{% endblock %} <!-- kết thúc block main-content -->
