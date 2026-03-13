@@ -75,9 +75,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sale_tmdt',
         'USER': 'root',
-        'PASSWORD': '1710',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3307',
     }
 }
 

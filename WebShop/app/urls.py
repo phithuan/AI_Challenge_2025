@@ -32,13 +32,13 @@ urlpatterns = [
     # ==========================================
     # ADMIN SYSTEM
     # ==========================================
-    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('admin-products/', views.admin_products, name='admin_products'),
-    path('admin-orders/', views.admin_orders, name='admin_orders'),
-    path('admin-categories/', views.admin_categories, name='admin_categories'),
+    # path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    # path('admin-products/', views.admin_products, name='admin_products'),
+    # path('admin-orders/', views.admin_orders, name='admin_orders'),
+    # path('admin-categories/', views.admin_categories, name='admin_categories'),
     path('admin-users/', views.admin_users, name='admin_users'),
     path('admin-contact/', views.admin_contact, name='admin_contact'),
-]
+
     # ✅ Xử lý thanh toán + thông báo
     path('process_order/', views.process_order, name='process_order'), # xử lý đơn hàng
 
