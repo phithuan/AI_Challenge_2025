@@ -2,90 +2,240 @@
 {% load static %}
 
 {% block main-content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- HERO -->
+<div class="bg-dark text-white py-5 text-center">
+  <div class="container py-3">
+    <span class="badge bg-warning text-dark mb-3 px-3 py-2">Câu Chuyện Của Chúng Tôi</span>
+    <h1 class="display-4 fw-bold mb-3">Kiến Tạo Không Gian Sống<br/>Tinh Tế Từ 2011</h1>
+    <p class="lead text-secondary mx-auto" style="max-width:550px;">Hơn 15 năm mang đến nội thất cao cấp, kết hợp tinh hoa thủ công và thiết kế hiện đại</p>
+  </div>
+</div>
 
-<section class="container my-5">
-
-    <div class="row align-items-center">
-
-        <div class="col-lg-6">
-
-            <h2 class="fw-bold mb-4">
-                Về Elite Wood Furnishings
-            </h2>
-
-            <p class="text-muted">
-
-                Elite Wood Furnishings là thương hiệu nội thất cao cấp chuyên cung cấp
-                các sản phẩm gỗ tự nhiên với thiết kế sang trọng và bền vững.
-
-                Chúng tôi cam kết mang đến cho khách hàng những sản phẩm:
-
-            </p>
-
-            <ul class="text-muted">
-
-                <li>✔ Chất liệu gỗ tự nhiên cao cấp</li>
-
-                <li>✔ Thiết kế hiện đại chuẩn châu Âu</li>
-
-                <li>✔ Độ bền và tính thẩm mỹ lâu dài</li>
-
-                <li>✔ Dịch vụ chăm sóc khách hàng tận tâm</li>
-
-            </ul>
-
-            <a href="{% url 'products' %}" class="btn btn-dark mt-3">
-                Khám phá sản phẩm
-            </a>
-
-        </div>
-
-
-        <div class="col-lg-6">
-
-            <img src="{% static 'app/images/intro_furniture.jpg' %}" class="img-fluid rounded shadow">
-
-        </div>
-
+<!-- STATS -->
+<div class="bg-warning py-4">
+  <div class="container">
+    <div class="row text-center g-3">
+      <div class="col-6 col-md-3">
+        <div class="display-5 fw-bold text-dark">15+</div>
+        <div class="text-dark small fw-semibold text-uppercase">Năm Kinh Nghiệm</div>
+      </div>
+      <div class="col-6 col-md-3 border-start border-dark border-opacity-25">
+        <div class="display-5 fw-bold text-dark">500+</div>
+        <div class="text-dark small fw-semibold text-uppercase">Sản Phẩm</div>
+      </div>
+      <div class="col-6 col-md-3 border-start border-dark border-opacity-25">
+        <div class="display-5 fw-bold text-dark">12K+</div>
+        <div class="text-dark small fw-semibold text-uppercase">Khách Hàng</div>
+      </div>
+      <div class="col-6 col-md-3 border-start border-dark border-opacity-25">
+        <div class="display-5 fw-bold text-dark">4</div>
+        <div class="text-dark small fw-semibold text-uppercase">Showroom</div>
+      </div>
     </div>
+  </div>
+</div>
 
-</section>
-
-
-<section class="bg-light py-5">
-
-    <div class="container">
-
-        <div class="row text-center">
-
-            <div class="col-md-4">
-
-                <h3 class="fw-bold">500+</h3>
-
-                <p class="text-muted">Sản phẩm nội thất</p>
-
-            </div>
-
-            <div class="col-md-4">
-
-                <h3 class="fw-bold">10+</h3>
-
-                <p class="text-muted">Năm kinh nghiệm</p>
-
-            </div>
-
-            <div class="col-md-4">
-
-                <h3 class="fw-bold">2000+</h3>
-
-                <p class="text-muted">Khách hàng hài lòng</p>
-
-            </div>
-
-        </div>
-
+<!-- STORY -->
+<div class="container my-5">
+  <div class="row g-5 align-items-center">
+    <div class="col-lg-6">
+      <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&q=80"
+           class="img-fluid rounded-3 shadow" alt="Xưởng LUMINO"/>
     </div>
+    <div class="col-lg-6">
+      <span class="badge bg-warning text-dark mb-3 px-3 py-2">Lịch Sử</span>
+      <h2 class="fw-bold mb-3">Từ Xưởng Gỗ Nhỏ Đến Thương Hiệu Quốc Gia</h2>
+      <p class="text-muted">Urban Living được thành lập năm 2011 bởi kiến trúc sư Huỳnh Chí Phi Thuận với mong muốn đơn giản: Tạo ra nội thất chất lượng cao mà người Việt có thể tự hào sở hữu.</p>
+      <p class="text-muted">Khởi đầu từ một xưởng gỗ nhỏ ở Hậu Giang với 12 thợ thủ công, nay đã phát triển thành thương hiệu uy tín với hơn 500 nhân viên và 4 showroom toàn quốc.</p>
+      <blockquote class="blockquote border-start border-warning border-4 ps-3 my-4">
+        <p class="fst-italic text-secondary">"Mỗi sản phẩm chúng tôi tạo ra là một cam kết về chất lượng, về vẻ đẹp và về sự bền vững qua thời gian."</p>
+        <footer class="blockquote-footer mt-1">Huỳnh Chí Phi Thuận <cite>– Nhà sáng lập & CEO</cite></footer>
+      </blockquote>
+      <a href="products.html" class="btn btn-warning fw-bold text-dark">
+        <i class="fas fa-th-large me-2"></i>Khám Phá Sản Phẩm
+      </a>
+    </div>
+  </div>
+</div>
 
-</section>
+<!-- GIÁ TRỊ CỐT LÕI -->
+<div class="bg-white py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="badge bg-warning text-dark mb-2 px-3 py-2">Giá Trị Cốt Lõi</span>
+      <h2 class="fw-bold">Những Gì Chúng Tôi Theo Đuổi</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100 p-3">
+          <div class="card-body">
+            <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                 style="width:65px;height:65px;">
+              <i class="fas fa-leaf fs-4 text-dark"></i>
+            </div>
+            <h5 class="fw-bold">Bền Vững</h5>
+            <p class="text-muted small">Chỉ sử dụng gỗ từ rừng được chứng nhận FSC, cam kết bảo vệ môi trường cho thế hệ mai sau.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100 p-3">
+          <div class="card-body">
+            <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                 style="width:65px;height:65px;">
+              <i class="fas fa-gem fs-4 text-dark"></i>
+            </div>
+            <h5 class="fw-bold">Chất Lượng</h5>
+            <p class="text-muted small">Từng sản phẩm được kiểm tra qua quy trình kiểm định chất lượng nghiêm ngặt trước khi đến tay khách hàng.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100 p-3">
+          <div class="card-body">
+            <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                 style="width:65px;height:65px;">
+              <i class="fas fa-pencil-ruler fs-4 text-dark"></i>
+            </div>
+            <h5 class="fw-bold">Sáng Tạo</h5>
+            <p class="text-muted small">Đội ngũ 30 nhà thiết kế kết hợp thẩm mỹ Bắc Âu và bản sắc Á Đông tạo nên phong cách độc đáo.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100 p-3">
+          <div class="card-body">
+            <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                 style="width:65px;height:65px;">
+              <i class="fas fa-heart fs-4 text-dark"></i>
+            </div>
+            <h5 class="fw-bold">Tận Tâm</h5>
+            <p class="text-muted small">Dịch vụ hậu mãi chu đáo, bảo hành tận nơi và đội ngũ tư vấn sẵn sàng hỗ trợ 24/7.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUY TRÌNH -->
+<div class="container my-5">
+  <div class="row g-5 align-items-center">
+    <div class="col-lg-6">
+      <span class="badge bg-warning text-dark mb-3 px-3 py-2">Quy Trình</span>
+      <h2 class="fw-bold mb-4">Từ Ý Tưởng Đến Ngôi Nhà Của Bạn</h2>
+      <div class="d-flex gap-3 mb-4">
+        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+             style="width:44px;height:44px;color:#333;">01</div>
+        <div>
+          <h6 class="fw-bold mb-1">Thiết Kế & Sáng Tạo</h6>
+          <p class="text-muted small mb-0">Đội ngũ phát triển ý tưởng dựa trên xu hướng toàn cầu và nhu cầu khách hàng Việt Nam.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3 mb-4">
+        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+             style="width:44px;height:44px;color:#333;">02</div>
+        <div>
+          <h6 class="fw-bold mb-1">Lựa Chọn Nguyên Liệu</h6>
+          <p class="text-muted small mb-0">Gỗ được nhập từ nguồn chứng nhận tại Đức, Thụy Điển kết hợp gỗ bản địa chất lượng cao.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3 mb-4">
+        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+             style="width:44px;height:44px;color:#333;">03</div>
+        <div>
+          <h6 class="fw-bold mb-1">Gia Công Thủ Công</h6>
+          <p class="text-muted small mb-0">Thợ lành nghề 10+ năm kinh nghiệm kết hợp kỹ thuật truyền thống và công nghệ CNC hiện đại.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+             style="width:44px;height:44px;color:#333;">04</div>
+        <div>
+          <h6 class="fw-bold mb-1">Kiểm Định & Giao Hàng</h6>
+          <p class="text-muted small mb-0">Quy trình kiểm định chất lượng nghiêm ngặt. Giao hàng tận nơi và lắp đặt miễn phí toàn quốc.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80"
+           class="img-fluid rounded-3 shadow" alt="Quy trình"/>
+    </div>
+  </div>
+</div>
+
+<!-- ĐỘI NGŨ -->
+<div class="bg-white py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="badge bg-warning text-dark mb-2 px-3 py-2">Đội Ngũ</span>
+      <h2 class="fw-bold">Những Người Tạo Nên Urban Living</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80"
+               class="card-img-top" style="height:300px;object-fit:cover;" alt="CEO"/>
+          <div class="card-body">
+            <h6 class="fw-bold mb-0">Huỳnh Chí Phi Thuận</h6>
+            <span class="badge bg-warning text-dark small mt-1">CEO & Nhà Sáng Lập</span>
+            <p class="text-muted small mt-2">Kiến trúc sư 15 năm kinh nghiệm, tốt nghiệp ĐH Kiến trúc Thành Phố Hồ Chí Minh và Polytechnico di Milano tại Ý.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100">
+          <img src="https://danhthiepdoanhnhan.com/wp-content/uploads/2023/11/z4921927765568_62b84d277f3ecd7ef143cb9e55c4bb85.jpg"
+               class="card-img-top" style="height:300px;object-fit:cover;" alt=""/>
+          <div class="card-body">
+            <h6 class="fw-bold mb-0">Vỏ Văn Tài</h6>
+            <span class="badge bg-warning text-dark small mt-1">Giám Đốc Thiết Kế</span>
+            <p class="text-muted small mt-2">Đạt giải ASEAN Young Designer với tầm nhìn không gian sống tối giản và tinh tế.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100">
+          <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&q=80"
+               class="card-img-top" style="height:300px;object-fit:cover;" alt=""/>
+          <div class="card-body">
+            <h6 class="fw-bold mb-0">Phan Nguyễn Vũ Huy</h6>
+            <span class="badge bg-warning text-dark small mt-1">Giám Đốc Sản Xuất</span>
+            <p class="text-muted small mt-2">Kỹ sư chế biến gỗ chuyên sâu về quy trình sản xuất đạt chuẩn quốc tế.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm text-center h-100">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
+               class="card-img-top" style="height: 300px; object-fit: cover;" alt=""/>
+          <div class="card-body">
+            <h6 class="fw-bold mb-0">Phạm Thị Lan Anh</h6>
+            <span class="badge bg-warning text-dark small mt-1">Giám Đốc Trải Nghiệm</span>
+            <p class="text-muted small mt-2">Chuyên gia 10 năm xây dựng hành trình khách hàng xuất sắc tại các thương hiệu cao cấp.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="bg-dark text-white text-center py-5">
+  <div class="container py-2">
+    <span class="badge bg-warning text-dark mb-3 px-3 py-2">Bắt Đầu Ngay</span>
+    <h2 class="fw-bold display-5 mb-3">Hãy Cùng Kiến Tạo<br/>Không Gian Mơ Ước</h2>
+    <p class="text-secondary lead mx-auto mb-4" style="max-width:500px;">Ghé thăm showroom hoặc đặt lịch tư vấn miễn phí với đội ngũ chuyên gia</p>
+    <a href="products.html" class="btn btn-warning btn-lg text-dark fw-bold me-2">
+      <i class="fas fa-th-large me-2"></i>Khám Phá Sản Phẩm
+    </a>
+    <a href="contact.html" class="btn btn-outline-light btn-lg">
+      <i class="fas fa-phone me-2"></i>Liên Hệ Tư Vấn
+    </a>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}

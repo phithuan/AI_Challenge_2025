@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect  # render: trả template, get_object_or_404: lấy object hoặc 404, redirect: chuyển hướng
-from django.http import HttpResponse, JsonResponse  # HttpResponse đơn giản, JsonResponse nếu muốn trả JSON
+from django.http import HttpResponse, JsonResponse
+from django.urls import reverse  # HttpResponse đơn giản, JsonResponse nếu muốn trả JSON
 from .models import Category, Product, Order, OrderItem  # import rõ ràng các model bạn cần
 from json import loads  # để parse JSON từ request.body nếu cần
 from django.views.decorators.csrf import csrf_exempt  # để bỏ qua CSRF cho API (nếu cần)
 import datetime  # để xử lý thời gian nếu cần
 import json  # để xử lý JSON nếu cần
-from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
+from django.core.mail import send_mail # để  Import gửi email
+from django.conf import settings # để Import gửi email 
 
 
 def category(request, slug):
@@ -59,7 +62,7 @@ def products(request):
 
     # ================= SORT =================
     if sort == "price_asc":
-        queryset = queryset.order_by("price")
+        queryset = queryset.order_by("price") # 
 
     elif sort == "price_desc":
         queryset = queryset.order_by("-price")
@@ -88,7 +91,6 @@ def products(request):
     return render(request, "app/products.html", context)
 
 
-from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import Product
 from .milvus_utils import search_milvus
@@ -112,7 +114,9 @@ def search(request):
         keys = Product.objects.filter(query)
 
         # Tìm trong Milvus
-        image_results = search_milvus(searched, top_k=6)
+        image_results = search_milvus(searched, top_k=12)
+        print("Search text:", searched)
+        print("Milvus results:", image_results)
 
         return render(
             request,
@@ -120,8 +124,13 @@ def search(request):
             {"searched": searched, "keys": keys, "image_results": image_results}
         )
 
-# Đăng ký
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+
 def registerPage(request):
+
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -129,15 +138,52 @@ def registerPage(request):
 
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
+
         if form.is_valid():
-            user = form.save()   # 🔥 DÒNG QUAN TRỌNG NHẤT
-            messages.success(request, 'Tạo tài khoản thành công')
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            # tạo link kích hoạt
+            activation_link = request.build_absolute_uri(
+                reverse('activate', args=[user.id])
+            )
+
+            subject = "Kích hoạt tài khoản WebShop"
+            message = f"""Xin chào {user.username}, Vui lòng click link bên dưới để kích hoạt tài khoản:{activation_link}"""
+
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False,
+            )
+
+            messages.success(request, "Đăng ký thành công! Kiểm tra email để kích hoạt.")
             return redirect('login')
+
         else:
-            messages.error(request, 'Đăng ký thất bại, kiểm tra lại thông tin')
+            messages.error(request, "Đăng ký thất bại")
 
     context = {'form': form}
     return render(request, 'app/register.html', context)
+        
+
+
+def activate(request, user_id):# để kích hoạt gmail
+
+    try:
+        user = User.objects.get(id=user_id)
+        user.is_active = True
+        user.save()
+
+        messages.success(request, "Tài khoản đã kích hoạt, bạn có thể đăng nhập.")
+        return redirect('login')
+
+    except User.DoesNotExist:
+        messages.error(request, "Link kích hoạt không hợp lệ")
+        return redirect('home')
 
 
 # Đăng nhập
@@ -428,7 +474,7 @@ from django.http import JsonResponse # để trả JSON response
 from django.views.decorators.csrf import csrf_exempt # để bỏ qua CSRF (nếu cần). cho phép frontend JS gọi API mà không cần CSRF token
 import json # để parse JSON - đọc dữ liệu gửi từ chatbot.js
 #from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\RAG_Milvus\rag_utils.py
-
+from .rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\WebShop\app\rag_utils.py
 @csrf_exempt
 def chatbot_api(request):
     if request.method == "POST":
@@ -484,7 +530,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import F, Sum, Count, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
 from .models import Order, OrderItem, Category
 
 def admin_check(user):

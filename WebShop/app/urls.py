@@ -1,7 +1,16 @@
-from django.urls import path
+from django.urls import include, path
+
+from django.contrib import admin
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+
+    path('admin/', admin.site.urls),
+
+    path('accounts/', include('allauth.urls')),  # thêm dòng này
+    
+    path('activate/<int:user_id>/', views.activate, name='activate'),
     # ==========================================
     # STORE PAGES & USER
     # ==========================================
@@ -21,7 +30,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('update_item/', views.updateItem, name='update_item'),
     path('add-to-cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
-    path('process_order/', views.process_order, name='process_order'),
     path('order_success/<int:order_id>/', views.order_success, name='order_success'),
 
     # ==========================================
@@ -49,8 +57,7 @@ urlpatterns = [
 
     path('bank-payment/<int:order_id>/', views.bank_payment, name='bank_payment'), # Thêm route xử lý thanh toán qua ngân hàng
 
-    
-    path('bank-payment/<int:order_id>/', views.bank_payment, name='bank_payment'),
+
 
     path('payment-webhook/', views.payment_webhook, name="payment_webhook"),
 
@@ -58,4 +65,39 @@ urlpatterns = [
     
     path('products/', views.products, name='products'),  # thêm dòng này
 
+
+    # =========================
+    # RESET PASSWORD
+    # ========================= 
+    path('password_reset_done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='app/password_reset_done.html'
+         ),
+         name='password_reset_done'),
+
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='app/password_reset_confirm.html'
+         ),
+         name='password_reset_confirm'),
+
+    path('reset_complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='app/password_reset_complete.html'
+         ),
+         name='password_reset_complete'),
+    
+
+    path('password_reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='app/password_reset.html',
+
+             # 🔥 THÊM DÒNG NÀY
+             email_template_name='registration/password_reset_email.html',
+
+             extra_email_context={
+                 'domain': '127.0.0.1:8001'
+             }
+         ),
+         name='password_reset'), 
 ]

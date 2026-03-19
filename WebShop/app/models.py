@@ -31,7 +31,7 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
 
     digital = models.BooleanField(default=False, null=True, blank=True)  # digital=True nghĩa là sản phẩm số (ví dụ: Ebook, phần mềm), không cần shipping
     
-    image = models.ImageField(upload_to='products/', null=True, blank=True)  # ảnh chính của sản phẩm
+    image = models.CharField(max_length=255, null=True, blank=True)  # ảnh chính của sản phẩm
 
     category = models.ManyToManyField(Category, related_name='products')  # Danh mục cha
     description = models.TextField(null=True, blank=True)  # ✅ Thêm trường mô tả
@@ -45,12 +45,12 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
     def __str__(self):
         return self.name # Hiển thị tên sản phẩm
     @property
-    def ImageURL(self): # Hàm lấy URL ảnh, nếu không có ảnh thì trả về chuỗi rỗng
-        try:
-            url = self.image.url
-        except:
-            url = ''
-        return url
+    def ImageURL(self):
+        if self.image:
+            # image trong DB đang lưu là: multiple/slug/ten_anh.jpg
+            # Kết quả trả về: /static/images/multiple/slug/ten_anh.jpg
+            return "/static/images/" + str(self.image)
+        return "/static/app/images/no-image.png"  # fallback cho đẹp
     
     # ✅ TÍNH PHẦN TRĂM GIẢM
     @property
@@ -64,12 +64,20 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
     def final_price(self):
         return self.sale_price if self.sale_price else self.price
 
-class ProductImage(models.Model): # Mỗi ảnh phụ thuộc vào 1 sản phẩm
+class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/multiple/')
-    
+    image = models.CharField(max_length=255, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"Image of {self.product.name}"
+
+    @property
+    def ImageURL(self):
+        if self.image:
+            return f"/static/images/{self.image}"
+        return ""
+
 
 # Đơn hàng
 class Order(models.Model):
@@ -132,12 +140,3 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)  # Ngày mua hàng
     def __str__(self):
         return self.address
-
-# app/models.py
-class ProductImage(models.Model):
-    product = models.ForeignKey(Product, related_name='product_images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products/gallery/')
-    date_added = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Ảnh phụ của {self.product.name}"

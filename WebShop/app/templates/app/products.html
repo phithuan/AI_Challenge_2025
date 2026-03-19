@@ -191,9 +191,11 @@
             <div class="product-overlay position-absolute bottom-0 start-50 translate-middle-x mb-3">
             <!-- overlay nút thêm giỏ -->
 
-              <a href="{% url 'add_to_cart' product.id %}" class="add-cart-btn">
-                Thêm giỏ
-              </a>
+              <!-- ✅ Nút -->
+              <button data-product="{{ product.id }}" data-action="add"
+                class="btn btn-dark">
+                <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+              </button>
 
             </div>
 

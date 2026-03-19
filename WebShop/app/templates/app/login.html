@@ -4,54 +4,60 @@
 {% load static %}
 
 {% block Register %}
-<section class="vh-100 bg-light">
+<section class="vh-120 bg-light">
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-lg-12 col-xl-10">
         <div class="card shadow-lg border-0 rounded-4">
           <div class="row g-0">
-            
+
             <!-- Form -->
             <div class="col-md-6 p-5">
-              <h2 class="fw-bold mb-4 text-center text-primary">Login</h2>
-              <p class="text-muted text-center mb-5">Welcome back! Please enter your credentials 👋</p>
-              
+              <h2 class="fw-bold mb-4 text-center text-primary">Đăng nhập</h2>
+              <p class="text-muted text-center mb-5">Chào mừng trở lại! Vui lòng nhập thông tin xác thực của bạn 👋</p>
+
               <form method="POST" action="">
                 {% csrf_token %}
                 <!-- Username -->
-                <div class="mb-3"> 
+                <div class="mb-3">
                   <label class="form-label fw-semibold">
-                    <i class="fas fa-user me-2 text-primary"></i>Username 
+                    <i class="fas fa-user me-2 text-primary"></i>Tài khoản
                   </label>
-                  <input type="text" name = 'username' id="from3Example1c" class="form-control" />
+                  <input type="text" name='username' id="from3Example1c" class="form-control" />
                 </div>
 
                 <!-- Password -->
                 <div class="mb-4">
                   <label class="form-label fw-semibold">
-                    <i class="fas fa-lock me-2 text-primary"></i>Password
+                    <i class="fas fa-lock me-2 text-primary"></i>Mật khẩu
                   </label>
-                  <input type="password" name = 'password' id="from3Example1c" class="form-control" />
+                  <input type="password" name='password' id="from3Example1c" class="form-control" />
                 </div>
 
                 <!-- Submit -->
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary btn-lg shadow">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                    <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
                   </button>
                 </div>
               </form>
-              
+
               <p class="mt-4 text-center">
-                Don't have an account? 
-                <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">Register here</a>
+                Bạn chưa có tài khoản?
+                <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">Đăng ký tại đây</a>
+              </p>
+              <p class="mt-4 text-center">
+                Bạn quên mật khẩu!
+                <a href="{% url 'password_reset' %}" class="text-primary fw-bold text-decoration-none">
+                  Click để lấy lại bằng gmail
+                </a>
               </p>
               {% if messages %}
-                {% for message in messages %}
-                  <p id="message" class="mt-4 text-center text-danger fw-bold">
-                    {{ message }}
-                  </p>
-                {% endfor %}
+              {% for message in messages %}
+              <p id="message" class="mt-4 text-center text-danger fw-bold">
+                {{ message }}
+              </p>
+              {% endfor %}
               {% endif %}
 
               <p class="mt-3 text-center">
@@ -62,8 +68,8 @@
 
             <!-- Image -->
             <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-primary rounded-end-4">
-              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                   alt="Login" class="img-fluid p-4 animate__animated animate__fadeInRight">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp" alt="Login"
+                class="img-fluid p-4 animate__animated animate__fadeInRight">
             </div>
 
           </div>

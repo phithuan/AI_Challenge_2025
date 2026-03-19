@@ -33,6 +33,14 @@ INSTALLED_APPS = [
     'app',
     'widget_tweaks',
     'django.contrib.humanize',
+
+    'django.contrib.sites', # cần cho allauth
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -41,6 +49,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    # thêm dòng này
+    'allauth.account.middleware.AccountMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -95,13 +107,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # ======================
 # INTERNATIONALIZATION
 # ======================
+# settings.py
 
-LANGUAGE_CODE = 'vi'
-
-TIME_ZONE = 'Asia/Ho_Chi_Minh'
+LANGUAGE_CODE = 'vi-vn' # Thêm -vn cho rõ ràng
 
 USE_I18N = True
 USE_TZ = True
+
+# Quan trọng: Tắt L10N để Django dùng cấu hình THOUSAND_SEPARATOR bên dưới
+USE_L10N = False 
+
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = ','  # Nếu bạn muốn 2,000,000
+# THOUSAND_SEPARATOR = '.' # Nếu bạn muốn 2.000.000 theo kiểu VN
+
+NUMBER_GROUPING = 3
 
 # ======================
 # STATIC & MEDIA
@@ -121,3 +141,41 @@ MEDIA_ROOT = BASE_DIR / "media"
 # ======================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SITE_ID = 1 # cần cho allauth
+# ======================
+# DJANGO ALLAUTH CONFIG
+# ======================
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'   # BẮT BUỘC xác thực email
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+# ======================
+# Cấu hình Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'turnthuan1@gmail.com' # Email của bạn
+EMAIL_HOST_PASSWORD = 'zmru vtxj sbvi eyrh' # Mã 16 ký tự vừa tạo
+
+# lấy lại mk
+# URL redirect sau khi reset
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+
+# DOMAIN (quan trọng để email hoạt động đúng)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# ======================
+# MILVUS VECTOR SEARCH
+# ======================
+USE_MILVUS = True

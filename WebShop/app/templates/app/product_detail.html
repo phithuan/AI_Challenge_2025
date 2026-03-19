@@ -6,37 +6,44 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
+<style>
+  .product-image {
+    width: 100%;
+    height: 500px;
+    /* chỉnh cao bao nhiêu tùy bạn */
+    object-fit: cover;
+    /* giữ tỷ lệ + không méo */
+  }
+</style>
 
-<div class="container mt-5">
-  <div class="row">
+<div class="container my-5">
+  <div class="row g-4">
 
     <!-- ================== ẢNH SẢN PHẨM ================== -->
     <div class="col-md-6 mb-4">
 
       <!-- Ảnh chính -->
       {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid w-100 rounded mb-3 product-image"
+      <img src="{{ product.ImageURL }}" alt="{{ product.name }}" class="img-fluid w-100 rounded mb-3 product-image"
         id="mainImage">
       {% elif product.images.first %}
-      <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
-        class="img-fluid w-100 rounded mb-3 product-image" id="mainImage">
+      <img src="{{ product.images.first.ImageURL }}" alt="{{ product.name }}"
+        class="img-fluid w-100 rounded mb-3 product-image" style="height: 600px;" id="mainImage">
       {% endif %}
 
       <!-- Thumbnail -->
       <div class="d-flex gap-2 flex-wrap">
-
         <!-- Ảnh chính -->
         {% if product.image %}
-        <img src="{{ product.image.url }}" class="thumbnail rounded active" style="width: 90px; cursor:pointer;"
+        <img src="{{ product.ImageURL }}" class="thumbnail rounded active" style="width: 90px; cursor:pointer;"
           onclick="changeImage(event, this.src)">
         {% endif %}
 
         <!-- Ảnh phụ -->
         {% for img in product.images.all %}
-        <img src="{{ img.image.url }}" class="thumbnail rounded" style="width: 150px; cursor:pointer;"
+        <img src="{{ img.ImageURL }}" class="thumbnail rounded" style="width: 111px; cursor:pointer;"
           onclick="changeImage(event, this.src)">
         {% endfor %}
-
       </div>
 
       <!-- ===== Modal Zoom ===== -->

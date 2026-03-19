@@ -32,3 +32,22 @@ __pycache__/
 *.sqlite3
 db.sqlite3
 \.venv1
+
+# Bỏ qua tất cả các file ảnh
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+
+# Bỏ qua các thư mục chứa ảnh cụ thể trong project của bạn
+WebShop/app/static/images/
+WebShop/app/static/images1/
+WebShop/media/
+
+# Bỏ qua thư mục cấu hình VS Code (nên bỏ qua cái này)
+.vscode/
+
+# Bỏ qua thư mục tài liệu cá nhân (nếu bạn không muốn push)
+zTai_Lieu/
