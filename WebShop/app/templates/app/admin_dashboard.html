@@ -1,6 +1,6 @@
 {% load static %}
 {% load humanize %}
-
+{% load tz %}
 <!DOCTYPE html>
 <html class="light" lang="vi">
 <head>
@@ -42,7 +42,7 @@
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
-                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50">
+                        <img src="{% static 'app/image/banner/logo_PT.png' %}" alt="Logo" width="50" height="50">
                     </div>
                     <div class="flex flex-col">
                         <h1 class="text-white text-lg font-bold uppercase tracking-tight">Trang chủ</h1>
@@ -92,7 +92,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined">payments</span></div>
-                    <div><p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Doanh thu</p><p class="text-2xl font-black">${{ total_revenue|floatformat:2|intcomma }}</p></div>
+                    <div><p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Doanh thu</p><p class="text-2xl font-black">{{ total_revenue|floatformat|intcomma }} đ</p></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span class="material-symbols-outlined">shopping_bag</span></div>
@@ -139,8 +139,8 @@
                             <tr class="hover:bg-slate-50 transition-all">
                                 <td class="px-6 py-5 font-black text-sm text-slate-400">#ORD-{{ order.id }}</td>
                                 <td class="px-6 py-5 font-bold text-slate-900">{{ order.customer.username }}</td>
-                                <td class="px-6 py-5 text-sm text-slate-500 text-center">{{ order.date_ordered|date:"d/m/Y" }}</td>
-                                <td class="px-6 py-5 text-sm font-black text-center">${{ order.temp_total|floatformat:2|intcomma }}</td>
+                                <td class="px-6 py-5 text-sm text-slate-500 text-center">{{ order.date_ordered|timezone:"Asia/Ho_Chi_Minh"|date:"d/m/Y H:i" }}</td>
+                                <td class="px-6 py-5 text-sm font-black text-center">{{ order.get_cart_total|floatformat|intcomma }} đ</td>
                                 <td class="px-6 py-5 text-center">
                                     {% if order.complete %}<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">HOÀN TẤT</span>
                                     {% else %}<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">XỬ LÝ</span>{% endif %}
@@ -171,7 +171,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Doanh thu ($)',
+                            label: 'Doanh thu (VNĐ)',
                             data: data,
                             backgroundColor: '#ec5b13',
                             borderRadius: 8,
@@ -186,7 +186,7 @@
                             y: {
                                 beginAtZero: true,
                                 grid: { borderDash: [4, 4], color: '#f1f5f9' },
-                                ticks: { callback: (v) => '$' + v.toLocaleString() }
+                                ticks: { callback: (v) => v.toLocaleString() + ' đ' }
                             },
                             x: { grid: { display: false } }
                         }

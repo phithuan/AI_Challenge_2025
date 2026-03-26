@@ -24,7 +24,7 @@
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
-                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                        <img src="{% static 'app/image/banner/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
                     </div>
                     <div class="flex flex-col">
                         <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
@@ -128,9 +128,12 @@
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onclick="openModal('edit', '{{ cat.id }}', '{{ cat.name }}', '{{ cat.slug }}', '{{ cat.is_sub }}', '{{ cat.sub_category.id|default:"" }}')" class="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all" title="Chỉnh sửa">
-                                                <span class="material-symbols-outlined text-xl">edit</span>
-                                            </button>
+                                            <!-- Nút Sửa trong vòng lặp categories -->
+<button onclick="openModal('edit', '{{ cat.id }}', '{{ cat.name }}', '{{ cat.slug }}', '{{ cat.is_sub }}', '{{ cat.sub_category.id|default:'' }}')" 
+        class="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all" 
+        title="Chỉnh sửa">
+    <span class="material-symbols-outlined text-xl">edit</span>
+</button>
 
                                             <form method="POST" class="inline" onsubmit="return confirm('Xóa danh mục này có thể ảnh hưởng đến các sản phẩm. Bạn chắc chứ?');">
                                                 {% csrf_token %}
@@ -212,38 +215,78 @@
     </div>
 
     <script>
-        const modal = document.getElementById('categoryModal');
-        const modalContent = document.getElementById('modalContent');
+    const modal = document.getElementById('categoryModal');
+    const modalContent = document.getElementById('modalContent');
 
-        function openModal(action, id='', name='', slug='', is_sub='False', sub_cat='') {
-            // Set tiêu đề Modal
-            document.getElementById('modalTitle').innerText = action === 'edit' ? 'Sửa Danh Mục' : 'Thêm Danh Mục Mới';
+    /**
+     * Hàm mở Modal
+     * @param {string} action - 'add' hoặc 'edit'
+     * @param {string} id - ID của danh mục (nếu sửa)
+     * @param {string} name - Tên danh mục
+     * @param {string} slug - Slug
+     * @param {string} is_sub - 'True' hoặc 'False'
+     * @param {string} sub_cat_id - ID danh mục cha (nếu có)
+     */
+    function openModal(action, id='', name='', slug='', is_sub='False', sub_cat_id='') {
+        // 1. Cập nhật tiêu đề modal
+        document.getElementById('modalTitle').innerText = (action === 'edit') ? 'Chỉnh Sửa Danh Mục' : 'Thêm Danh Mục Mới';
 
-            // Đổ dữ liệu vào form (NẾU LÀ SỬA)
-            document.getElementById('cat_id').value = id; // id="" nghĩa là Thêm mới
-            document.querySelector('[name="name"]').value = name;
-            document.querySelector('[name="slug"]').value = slug;
-            document.querySelector('[name="is_sub"]').checked = (is_sub === 'True');
-            document.querySelector('[name="sub_category"]').value = sub_cat;
+        // 2. Gán giá trị vào Hidden Input để View biết là Sửa hay Thêm
+        document.getElementById('cat_id').value = id;
 
-            // Hiển thị Modal với hiệu ứng Fade In
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-            }, 10);
+        // 3. Gán giá trị vào các field của Django Form (dựa trên ID mặc định của Django)
+        document.getElementById('id_name').value = name;
+        document.getElementById('id_slug').value = slug;
+        
+        // Xử lý checkbox is_sub
+        document.getElementById('id_is_sub').checked = (is_sub === 'True' || is_sub === 'true');
+        
+        // Xử lý select sub_category
+        document.getElementById('id_sub_category').value = sub_cat_id;
+
+        // 4. Hiệu ứng hiển thị Modal
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            // Reset form khi đóng
+            document.querySelector('#categoryModal form').reset();
+            document.getElementById('cat_id').value = '';
+        }, 300);
+    }
+
+    // --- TÍNH NĂNG THÊM: TỰ ĐỘNG TẠO SLUG KHI NHẬP TÊN ---
+    const nameInput = document.getElementById('id_name');
+    const slugInput = document.getElementById('id_slug');
+
+    nameInput.addEventListener('input', function() {
+        // Chỉ tự tạo slug nếu đang là chế độ "Thêm mới"
+        if (document.getElementById('cat_id').value === '') {
+            let slug = this.value.toLowerCase()
+                .replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, 'a')
+                .replace(/[éèẻẽẹêếềểễệ]/g, 'e')
+                .replace(/[íìỉĩị]/g, 'i')
+                .replace(/[óòỏõọôốồổỗộơớờởỡợ]/g, 'o')
+                .replace(/[úùủũụưứừửữự]/g, 'u')
+                .replace(/[ýỳỷỹỵ]/g, 'y')
+                .replace(/đ/g, 'd')
+                .replace(/([^0-9a-z-\s])/g, '')
+                .replace(/(\s+)/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
         }
-
-        function closeModal() {
-            // Đóng Modal với hiệu ứng Fade Out
-            modal.classList.add('opacity-0');
-            modalContent.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
-        }
-    </script>
+    });
+</script>
 </body>
 </html>

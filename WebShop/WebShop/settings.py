@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+#ALLOWED_HOSTS = ["localhost", "127.0.0.1",".ngrok-free.dev",]   # 🔥 cho tất cả link ngrok
 
 # ======================
 # APPLICATIONS
@@ -109,10 +109,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # ======================
 # settings.py
 
+# Sửa từ 'America/Chicago' hoặc 'UTC' thành:
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
+
 LANGUAGE_CODE = 'vi-vn' # Thêm -vn cho rõ ràng
 
 USE_I18N = True
-USE_TZ = True
+USE_TZ = False  # ĐỔI THÀNH FALSE
 
 # Quan trọng: Tắt L10N để Django dùng cấu hình THOUSAND_SEPARATOR bên dưới
 USE_L10N = False 

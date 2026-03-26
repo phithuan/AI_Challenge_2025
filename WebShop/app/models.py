@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator  # ✅ dùng validator cho số điện thoại
 from django.contrib.auth.forms import UserCreationForm  # để làm việc với User
 
-
 # Khách hàng
 # class Customer(models.Model):
 #     # Liên kết 1-1 với User trong Django, nếu user bị xóa thì set NULL
@@ -46,7 +45,7 @@ class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
         return self.name # Hiển thị tên sản phẩm
     @property
     def ImageURL(self):
-        if self.image:
+        if self.image: # Nếu self.image là "main/giuong.jpg" -> return "/static/images/main/giuong.jpg"
             # image trong DB đang lưu là: multiple/slug/ten_anh.jpg
             # Kết quả trả về: /static/images/multiple/slug/ten_anh.jpg
             return "/static/images/" + str(self.image)
@@ -74,7 +73,7 @@ class ProductImage(models.Model):
 
     @property
     def ImageURL(self):
-        if self.image:
+        if self.image: # Nếu self.image là "multiple/anh1.jpg" -> return "/static/images/multiple/anh1.jpg"
             return f"/static/images/{self.image}"
         return ""
 
@@ -100,10 +99,11 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.get_price_quantity for item in orderitems])
         return total
+
     @property
     def total_amount(self):
         orderitems = self.orderitem_set.all()
-        total = sum([item.product.price * item.quantity for item in orderitems if item.product])
+        total = sum([item.product.final_price * item.quantity for item in orderitems if item.product])
         return total
 
 
@@ -116,8 +116,9 @@ class OrderItem(models.Model):
     @property
     def get_price_quantity(self):
         # Tổng tiền = giá * số lượng
-        total = self.product.price * self.quantity
-        return total
+        if self.product:
+            return self.product.final_price * self.quantity
+        return 0
 
 
 # Địa chỉ giao hàng

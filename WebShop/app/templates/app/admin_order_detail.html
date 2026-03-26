@@ -1,0 +1,79 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết đơn hàng</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex justify-center">
+
+    <main class="w-full max-w-4xl p-8">
+
+        <!-- HEADER -->
+        <div class="mb-6 text-center">
+            <h1 class="text-3xl font-bold">
+                📦 Chi tiết đơn hàng #ORD-{{ order.id }}
+            </h1>
+            <p class="text-gray-500">
+                Khách: {{ order.customer.username }}
+            </p>
+        </div>
+
+        <!-- CARD -->
+        <div class="bg-white rounded-xl shadow p-6 w-full">
+
+            <!-- SẢN PHẨM -->
+            <h3 class="font-bold mb-3 text-lg">🛒 đơn hàng #ORD-{{ order.id }}</h3>
+
+            <div class="border rounded-lg divide-y">
+                {% for item in items %}
+                <div class="flex justify-between items-center p-4">
+                    <div>
+                        <p class="font-semibold">{{ item.product.name }}</p>
+                        <p class="text-sm text-gray-500">Số lượng: {{ item.quantity }}</p>
+                    </div>
+                    <div class="font-bold text-green-600">
+                        {{ item.get_price_quantity|floatformat:0|intcomma }} VNĐ
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- TỔNG -->
+            <div class="flex justify-between mt-6 text-xl font-bold text-green-600 border-t pt-4">
+                <span>Tổng tiền:</span>
+                <span>{{ order.get_cart_total|floatformat:0|intcomma }} VNĐ</span>
+            </div>
+
+            <!-- ĐỊA CHỈ -->
+            {% if shipping %}
+            <div class="mt-6 p-5 border rounded-lg bg-gray-50">
+                <h4 class="font-bold mb-2">📦 Thông tin giao hàng</h4> <br>
+                <p><strong>Địa chỉ:</strong> {{ shipping.address }}{{ shipping.state }},{{ shipping.city }}</p>
+                <p><strong>Người nhận:</strong> {{ shipping.customer }}</p>
+                <p><strong>SĐT:</strong> {{ shipping.mobile }}</p>
+            </div>
+            {% endif %}
+
+            <!-- BUTTON -->
+            <a href="{% url 'admin_orders' %}"
+               class="inline-block mt-6 px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                ← Quay lại
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

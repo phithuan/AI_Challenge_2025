@@ -1,6 +1,6 @@
 {% load static %}
 {% load humanize %}
-
+{% load tz %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -27,7 +27,7 @@
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
-                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                        <img src="{% static 'app/image/banner/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
                     </div>
                     <div class="flex flex-col">
                         <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="size-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600"><span class="material-symbols-outlined">pending_actions</span></div>
-                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Chờ xử lý</p><p class="text-xl font-black">{{ pending_orders }}</p></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Đơn Hàng Đã Hủy</p><p class="text-xl font-black">{{ pending_orders }}</p></div>
                 </div>
                 <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="size-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined">task_alt</span></div>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
                     <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">payments</span></div>
-                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Doanh thu thực</p><p class="text-xl font-black">${{ total_revenue|floatformat:2|intcomma }}</p></div>
+                    <div><p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Doanh thu thực</p><p class="text-xl font-black">{{ total_revenue|floatformat|intcomma }} đ</p></div>
                 </div>
             </div>
 
@@ -138,7 +138,11 @@
                         <tbody class="divide-y divide-slate-100">
                             {% for order in orders %}
                             <tr class="hover:bg-slate-50 transition-all">
-                                <td class="px-6 py-5 font-bold text-sm">#ORD-{{ order.id }}</td>
+                                <td class="px-6 py-5 font-bold text-sm">
+                                    <a href="{% url 'admin_order_detail' order.id %}" class="text-primary hover:underline">
+                                        #ORD-{{ order.id }}
+                                    </a>
+                                </td>
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-3">
                                         <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500 uppercase">
@@ -150,13 +154,15 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 text-sm text-slate-600">{{ order.date_ordered|date:"d/m/Y H:i" }}</td>
-                                <td class="px-6 py-5 text-sm font-bold text-slate-900">${{ order.calculated_total|floatformat:2|intcomma }}</td>
+                                <td class="px-6 py-5 text-sm text-slate-600">
+                                    {{ order.date_ordered|timezone:"Asia/Ho_Chi_Minh"|date:"d/m/Y H:i" }}
+                                </td>
+                                <td class="px-6 py-5 text-sm font-bold text-slate-900">{{ order.get_cart_total|floatformat:0|intcomma }} đ</td>
                                 <td class="px-6 py-5 text-center">
                                     {% if order.complete %}
                                         <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Hoàn tất</span>
                                     {% else %}
-                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Chờ xử lý</span>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Đơn đã hủy</span>
                                     {% endif %}
                                 </td>
                                 <td class="px-6 py-5 text-right">
@@ -165,7 +171,7 @@
                                         <input type="hidden" name="update_status" value="1">
                                         <input type="hidden" name="order_id" value="{{ order.id }}">
                                         <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all">
-                                            {% if order.complete %}Hủy Hoàn Tất{% else %}Đánh dấu Hoàn Tất{% endif %}
+                                            {% if order.complete %}Hủy Đơn{% else %}Đánh dấu Hoàn Tất{% endif %}
                                         </button>
                                     </form>
                                 </td>

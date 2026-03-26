@@ -68,8 +68,7 @@
 
                     <h5 class="mb-3">Quét QR để thanh toán</h5>
 
-                    <img src="https://img.vietqr.io/image/mbbank-0797818263-compact2.png?amount={{ order.get_cart_total }}&addInfo=ORDER{{ order.id }}"
-                        class="img-fluid" style="max-width:300px">
+                    <img src="https://img.vietqr.io/image/mbbank-0797818263-compact2.png?amount={{ order.get_cart_total|stringformat:"d" }}&addInfo=ORDER{{ order.id }}" ...>
 
                     <p class="text-muted mt-3">
                         Mở ứng dụng ngân hàng → quét QR → xác nhận thanh toán.

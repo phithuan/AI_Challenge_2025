@@ -236,4 +236,18 @@ mobile (RegexValidator số điện thoại VN bắt đầu bằng 0 và 10 số
 """
 
 
-search
+👉 Bình thường (không dùng ngrok):
+
+Bạn chạy web ở:
+
+http://localhost:8001
+Khi user chuyển khoản / thanh toán xong
+Ngân hàng (hoặc cổng như Stripe, MoMo, SePay) sẽ gọi webhook về server của bạn
+
+❌ Nhưng:
+
+localhost chỉ có máy bạn thấy
+Internet không truy cập được
+➡️ Ngân hàng không gửi dữ liệu về được
+
+---“Do server mình đang chạy ở local nên ngân hàng không gọi về được, vì vậy phải dùng ngrok để tạo webhook public cho nó gọi vào.”

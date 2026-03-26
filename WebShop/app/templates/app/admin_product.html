@@ -35,7 +35,7 @@
             <div class="p-6">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 mb-8">
                     <div class="bg-primary size-10 rounded-xl flex items-center justify-center">
-                        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                        <img src="{% static 'app/image/banner/logo_PT.png' %}" alt="Logo" width="50" height="50" class="me-2">
                     </div>
                     <div class="flex flex-col">
                         <h1 class="text-white text-lg font-bold leading-tight tracking-tight">VỀ TRANG CHỦ</h1>
@@ -156,7 +156,7 @@
                                 <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                                     <td class="px-6 py-4 text-center">
                                         <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-12 h-12 inline-block shadow-inner border border-slate-200"
-                                            style='background-image: url("{% if item.image %}{{ item.image.url }}{% else %}{% static "app/image/placeholder.png" %}{% endif %}");'>
+                                            style='background-image: url("{{ item.ImageURL }}");'>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -175,7 +175,7 @@
                                         {% endfor %}
                                     </td>
                                     <td class="px-6 py-4 text-slate-700 dark:text-slate-300 font-bold text-sm">
-                                        ${{ item.price|floatformat:2|intcomma }}
+                                        {{ item.price|floatformat|intcomma }}đ
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex flex-col gap-1.5">

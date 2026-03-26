@@ -45,13 +45,21 @@
             <h6 class="fw-bold text-uppercase small text-muted mb-2">Khoảng Giá</h6>
             <!-- tiêu đề filter giá -->
 
-            <input type="range" name="price" min="0" max="50000000" step="500000" value="{{request.GET.price}}"
+            <input 
+              type="range" 
+              id="priceRange"
+              name="price" 
+              min="0" 
+              max="100000000" 
+              step="500000" 
+              value="{{request.GET.price|default:'100000000'}}"
               class="form-range">
             <!-- slider chọn giá tối đa -->
-
             <div class="d-flex justify-content-between small text-muted">
               <span>0₫</span>
-              <span>50.000.000₫</span>
+              <span id="priceValue">
+                {{ request.GET.price|default:"100000000"|intcomma }}₫
+              </span>
             </div>
             <!-- hiển thị min và max giá -->
 
@@ -193,9 +201,10 @@
 
               <!-- ✅ Nút -->
               <button data-product="{{ product.id }}" data-action="add"
-                class="btn btn-dark">
+                class="btn btn-dark update-cart">
                 <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
               </button>
+              
 
             </div>
 
@@ -323,5 +332,26 @@
 </div>
 
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const range = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+
+    function formatNumber(number) {
+        return new Intl.NumberFormat('vi-VN').format(number);
+    }
+
+    function updatePrice() {
+        priceValue.innerText = formatNumber(range.value) + "₫";
+    }
+
+    // chạy lần đầu khi load
+    updatePrice();
+
+    // khi kéo slider
+    range.addEventListener("input", updatePrice);
+});
+</script>
 
 {% endblock %} <!-- kết thúc block main-content -->

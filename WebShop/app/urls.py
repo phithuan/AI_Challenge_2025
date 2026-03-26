@@ -54,6 +54,7 @@ urlpatterns = [
     path('admin-products/', views.admin_products, name='admin_products'), # Thêm route quản lý sản phẩm
     path('admin-orders/', views.admin_orders, name='admin_orders'), # Thêm route quản lý đơn hàng
     path('admin-categories/', views.admin_categories, name='admin_categories'), # Thêm route quản lý danh mục
+    path('admin-order-detail/<int:order_id>/', views.order_success, name='admin_order_detail'), # chi tiết đơn hàng để giao
 
     path('bank-payment/<int:order_id>/', views.bank_payment, name='bank_payment'), # Thêm route xử lý thanh toán qua ngân hàng
 

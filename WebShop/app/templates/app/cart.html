@@ -40,7 +40,19 @@
                   <span class="fw-semibold">{{ item.product.name }}</span>
                 </div>
               </td>
-              <td class="price-text fw-bold">{{ item.product.price|floatformat:0 |intcomma}}</td>
+              <td class="price-text fw-bold">
+                {% if item.product.sale_price %}
+                <span class="text-danger">
+                  {{ item.product.sale_price|floatformat:0|intcomma }}
+                </span>
+                <br>
+                <small class="text-muted">
+                  <s>{{ item.product.price|floatformat:0|intcomma }}</s>
+                </small>
+                {% else %}
+                {{ item.product.price|floatformat:0|intcomma }}
+                {% endif %}
+              </td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
                   <button data-product="{{ item.product.id }}" data-action="remove"
@@ -51,7 +63,8 @@
               </td>
               <td class="subtotal-text fw-bold">{{ item.get_price_quantity|floatformat:0|intcomma }} VNĐ</td>
               <td>
-                <button data-product="{{ item.product.id }}" data-action="delete" class="btn btn-sm btn-danger update-cart bi bi-trash3"></button>
+                <button data-product="{{ item.product.id }}" data-action="delete"
+                  class="btn btn-sm btn-danger update-cart bi bi-trash3"></button>
               </td>
             </tr>
             {% endfor %}
@@ -61,8 +74,7 @@
 
       <!-- Tổng tiền -->
       <div class="d-flex justify-content-end mt-4 pe-4">
-        <h4 class="fw-bold">tổng tiền: <span class="total-text fw-bold">{{ order.get_cart_total|floatformat:0|intcomma }}
-            VNĐ</span></h4>
+        <h4 class="fw-bold">tổng tiền: <span class="total-text fw-bold">{{ order.get_cart_total|floatformat:0|intcomma}} đ</span></h4>
       </div>
     </div>
   </div>

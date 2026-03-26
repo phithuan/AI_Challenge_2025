@@ -10,8 +10,8 @@
   <!-- Bootstrap CSS + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <!-- Material Symbols -->
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
@@ -80,7 +80,7 @@
     });
   </script>
 
-  <title>{% block title %}PT_Project - Home{% endblock %}</title>
+  <title>{% block title %}Nội thất TTH - Home{% endblock %}</title>
 
   <!-- Theme toggle button style -->
   <style>
@@ -133,9 +133,9 @@
 
       <!-- Logo -->
       <a class="navbar-brand d-flex align-items-center fw-bold fs-4" href="{% url 'home' %}">
-        <img src="{% static 'app/image/logo_PT.png' %}" alt="Logo" width="45" height="45"
+        <img src="{% static 'app/image/banner/logo_PT.png' %}" alt="Logo" width="45" height="45"
           class="me-2 rounded-circle shadow-sm">
-        PT_Project
+        Nội thất TTH
       </a>
 
       <!-- Toggle mobile -->
@@ -159,8 +159,10 @@
             </ul>
           </li> -->
           <li class="nav-item"><a class="nav-link active" href="{% url 'introduce' %}">Giới thiệu</a></li>
-          
-          <li class="nav-item"><a class="nav-link active">Liên hệ</a></li>
+
+          <li class="nav-item">
+            <a href="#footer-contact" class="nav-link active">Liên hệ</a>
+          </li>
         </ul>
 
         <!-- Search + Dark mode toggle -->
@@ -229,7 +231,19 @@
     </div>
   </nav>
 
-  <main class="flex-grow-1"> <!-- để cho các trang con chèn nội dung vào layout chung. khung website chung (navbar + footer + layout) -->
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center shadow-sm" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="flex-grow-1">
+    <!-- để cho các trang con chèn nội dung vào layout chung. khung website chung (navbar + footer + layout) -->
     {% block banner_slider %}{% endblock %}
     {% block main-content %}{% endblock %}
     {% block cart_content %}{% endblock %}
@@ -239,7 +253,7 @@
   </main>
 
   <!-- Footer Main -->
-  <div class="footer-container" style="background-color: #f0f0f0;">
+  <div id="footer-contact" class="footer-container" style="background-color: #f0f0f0;">
     <div class="container text-dark py-5">
       <div class="row g-4 footer-container--content">
         <!-- About + Logo + Certifications -->
@@ -337,38 +351,44 @@
 
   <script>
 
-var updateBtns = document.getElementsByClassName('update-cart')
+    var updateBtns = document.getElementsByClassName('update-cart')
 
-for (var i = 0; i < updateBtns.length; i++) {
+    for (var i = 0; i < updateBtns.length; i++) {
 
-    updateBtns[i].addEventListener('click', function(){
+      updateBtns[i].addEventListener('click', function () {
         var productId = this.dataset.product
         var action = this.dataset.action
 
         updateUserOrder(productId, action)
-    })
-}
+      })
+    }
 
-function updateUserOrder(productId, action){
-    fetch('/update_item/', {
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
+    function updateUserOrder(productId, action) {
+      fetch('/update_item/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
         },
-        body:JSON.stringify({
-            'productId':productId,
-            'action':action
+        body: JSON.stringify({
+          'productId': productId,
+          'action': action
         })
-    })
-    .then((response) => {
-        return response.json()
-    })
-    .then((data) => {
-        location.reload()
-    })
-}
-</script>
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          if (data.error === 'not_authenticated') {
+            alert("⚠️ Bạn cần đăng nhập!");
+            window.location.href = "/login/";
+            return;
+          }
+
+          location.reload();
+        })
+    }
+  </script>
 
 </body>
 
