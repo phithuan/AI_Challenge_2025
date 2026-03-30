@@ -10,6 +10,9 @@
 *.csv
 *.xlsx
 
+*.safetensors
+Video_Similarity_Search/data/video/
+
 # Bỏ thư mục dataset
 dataset/
 data/
@@ -53,5 +56,5 @@ WebShop/media/
 # Bỏ qua thư mục tài liệu cá nhân (nếu bạn không muốn push)
 zTai_Lieu/
 
-CODE_THTN/clip-ViT-B-32
-CODE_THTN/clip-ViT-B-32-multilingual-v1
+CODE_THTN/clip-ViT-B-32/
+CODE_THTN/clip-ViT-B-32-multilingual-v1/
