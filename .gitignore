@@ -17,6 +17,7 @@ Text-to-Image/images_folder/
 
 # Bỏ HuggingFace cache
 huggingface_cache/
+models--sentence-transformers--all-MiniLM-L6-v2/
 
 models--BAAI--bge-m3/
 .locks/
@@ -51,3 +52,6 @@ WebShop/media/
 
 # Bỏ qua thư mục tài liệu cá nhân (nếu bạn không muốn push)
 zTai_Lieu/
+
+CODE_THTN/clip-ViT-B-32
+CODE_THTN/clip-ViT-B-32-multilingual-v1
