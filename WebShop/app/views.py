@@ -91,39 +91,89 @@ def products(request):
     return render(request, "app/products.html", context)
 
 
-from django.db.models import Q
+
+# app/views.py
+import re
+from django.shortcuts import render
 from .models import Product
-from .milvus_utils import search_milvus
+from . import milvus_utils_img  # Đã cập nhật logic ngưỡng 0.75 ở trên
+from django.db.models import Q
+
+def clean_query(text):
+    """Làm sạch chuỗi tìm kiếm văn bản"""
+    if not text: return ""
+    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
 
 def search(request):
+    print("=== HÀM SEARCH: ĐANG SỬ DỤNG NGƯỠNG AI===")
+    searched_raw = ""
+    searched = ""
+    ai_products = []
+    db_products = []
+    
     if request.method == "POST":
-        searched = request.POST["searched"]
+        searched_raw = request.POST.get("searched", "")
+        searched = clean_query(searched_raw)
 
-        if not searched:
-            return redirect('home')
+        # 1. TÌM KIẾM THEO TỪ KHÓA (MYSQL - Khớp chính xác tên)
+        if searched:
+            db_products = list(Product.objects.filter(name__icontains=searched))
 
-        # Tách từ khóa
-        keywords = searched.split()
+        # 2. TÌM KIẾM THEO AI (MILVUS - Vector Search đã lọc ngưỡng 0.75)
+        hits_ids = []
+        if searched:
+            # Tìm kiếm ngữ nghĩa bằng text
+            hits_ids = milvus_utils_img.search_text(searched)
+        elif request.FILES.get("image"):
+            # Tìm kiếm tương đồng bằng hình ảnh
+            hits_ids = milvus_utils_img.search_image(request.FILES["image"])
+        
+        # 3. TRUY VẤN THÔNG TIN SẢN PHẨM TỪ DANH SÁCH ID AI
+        clean_ai_ids = []
+        seen_ai_temp = set()
+        if isinstance(hits_ids, list):
+            for pid in hits_ids:
+                if pid not in seen_ai_temp:
+                    clean_ai_ids.append(pid)
+                    seen_ai_temp.add(pid)
+        
+        if clean_ai_ids:
+            # Lấy sản phẩm từ DB dựa trên list ID đã lọc ngưỡng
+            product_qs = Product.objects.filter(id__in=clean_ai_ids)
+            product_map = {p.id: p for p in product_qs}
+            # Giữ đúng thứ tự sắp xếp theo độ tương đồng của Milvus
+            ai_products = [product_map[pid] for pid in clean_ai_ids if pid in product_map]
 
-        # Tạo truy vấn OR
-        query = Q()
-        for keyword in keywords:
-            query |= Q(name__icontains=keyword)
+    # ================= LOGIC GỘP KẾT QUẢ (HYBRID) =================
+    # Ưu tiên Database trước, sau đó bổ sung kết quả từ AI
+    final_products = []
+    global_seen_ids = set()
 
-        # Tìm trong DB
-        keys = Product.objects.filter(query)
+    # Thêm sản phẩm từ DB (Tag: db)
+    for p in db_products:
+        if p.id not in global_seen_ids:
+            p.search_type = "db"
+            final_products.append(p)
+            global_seen_ids.add(p.id)
 
-        # Tìm trong Milvus
-        image_results = search_milvus(searched, top_k=12)
-        print("Search text:", searched)
-        print("Milvus results:", image_results)
+    # Thêm sản phẩm từ AI (Tag: ai) - Chỉ những cái chưa có trong list
+    for p in ai_products:
+        if p.id not in global_seen_ids:
+            p.search_type = "ai"
+            final_products.append(p)
+            global_seen_ids.add(p.id)
 
-        return render(
-            request,
-            'app/search.html',
-            {"searched": searched, "keys": keys, "image_results": image_results}
-        )
+    # Giới hạn hiển thị 12 sản phẩm chất lượng nhất
+    final_products = final_products[:12]
 
+    return render(request, "app/search.html", {
+        "searched": searched if searched else searched_raw,
+        "products": final_products
+    })
+
+    
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
@@ -841,7 +891,7 @@ def admin_products(request):
                 form.save_m2m()
 
                 # --- XỬ LÝ ẢNH PHỤ ---
-                import os
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.utils.text import slugify, get_valid_filename # Thêm slugify để tạo tên thư mục

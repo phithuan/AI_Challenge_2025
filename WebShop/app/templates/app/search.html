@@ -1,160 +1,72 @@
 {% extends 'app/base.html' %}
-<title>{% block title %}Search Results{% endblock %}
-
-{% load widget_tweaks %}
-{% load static %}
 {% load humanize %}
 
 {% block Register %}
-
 <div class="container my-5">
-
-  <!-- =============================
-       TIÊU ĐỀ KẾT QUẢ TÌM KIẾM
-  ============================== -->
-  <h4 class="mb-4">
-    🔎 Kết quả tìm kiếm cho:
-    <span class="text-primary">"{{ searched }}"</span>
-  </h4>
-
-  {% if keys %}
-
-  <!-- =============================
-       GRID SẢN PHẨM
-  ============================== -->
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-
-    {% for item in keys %}
-
-    <div class="col">
-
-      <!-- CARD SẢN PHẨM -->
-      <div class="product-card h-100">
-
-        <!-- =============================
-             KHUNG ẢNH
-        ============================== -->
-        <div class="card-img-container position-relative overflow-hidden">
-
-          <!-- LINK ẢNH -->
-          <a href="{% url 'product_detail' item.id %}">
-            <img src="{{ item.ImageURL }}" class="card-img" alt="{{ item.name }}">
-          </a>
-
-          <!-- BADGE SALE -->
-          {% if item.sale_price and item.sale_price < item.price %}
-          <div class="position-absolute top-0 start-0 m-2 badge bg-danger">
-            -{{ item.discount_percent }}%
-          </div>
-          {% endif %}
-
-          <!-- =============================
-               NÚT THÊM GIỎ HÀNG TRONG ẢNH
-               hiện khi hover
-          ============================== -->
-          <div class="product-overlay position-absolute bottom-0 start-50 translate-middle-x mb-3">
-
-            <button
-              data-product="{{ item.id }}"
-              data-action="add"
-              class="btn btn-dark update-cart">
-
-              <i class="bi bi-cart-plus"></i>
-              Thêm vào giỏ hàng
-
-            </button>
-
-          </div>
-
-        </div>
-
-        <!-- =============================
-             THÔNG TIN SẢN PHẨM
-        ============================== -->
-        <div class="p-3 d-flex flex-column justify-content-between">
-
-          <div>
-
-            <!-- TÊN -->
-            <h6 class="fw-semibold mb-1">
-              {{ item.name }}
-            </h6>
-
-            <!-- CHẤT LIỆU -->
-            <p class="mb-1 text-muted small">
-              {{ item.material|default:"Gỗ tự nhiên" }}
-              {% if item.origin %} · {{ item.origin }}{% endif %}
-            </p>
-
-            <!-- GIÁ -->
-            {% if item.sale_price %}
-
-            <span class="price">
-              {{ item.sale_price|floatformat:0|intcomma }} đ
-            </span>
-
-            <span class="old-price ms-2">
-              {{ item.price|floatformat:0|intcomma }} đ
-            </span>
-
-            {% else %}
-
-            <span class="price">
-              {{ item.price|floatformat:0|intcomma }} đ
-            </span>
-
+    <!-- Header -->
+    <div class="d-flex align-items-center mb-4">
+        <h4 class="fw-bold m-0">
+            <i class="fas fa-search text-dark me-2"></i> 
+            {% if searched %} 
+                Kết quả tìm kiếm cho: "{{ searched }}" 
+            {% else %} 
+                Kết quả tìm kiếm bằng hình ảnh 
             {% endif %}
+        </h4>
+        <div class="flex-grow-1 ms-3 border-top"></div>
+    </div>
 
-          </div>
+    {% if products %}
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        {% for item in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden product-card">
+                <div class="position-relative">
+                    <a href="{% url 'product_detail' item.id %}">
+                        <img src="{{ item.ImageURL }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+                    </a>
+                    
+                    <!-- Hiển thị tag phân biệt (Tùy chọn: Có thể xóa nếu muốn giống hệt nhau) -->
+                    {% if item.search_type == "ai" %}
+                    <span class="badge bg-info text-dark position-absolute top-0 end-0 m-2" style="font-size: 0.6rem; font-weight: 500;">
+                        ✨ Gợi ý thêm
+                    </span>
+                    {% else %}
+                    <span class="badge bg-dark text-white position-absolute top-0 end-0 m-2" style="font-size: 0.6rem; font-weight: 500;">
+                        🔍 Chính xác
+                    </span>
+                    {% endif %}
+                </div>
 
+                <div class="card-body">
+                    <h6 class="card-title text-truncate mb-2" title="{{ item.name }}">
+                        <a href="{% url 'product_detail' item.id %}" class="text-decoration-none text-dark">{{ item.name }}</a>
+                    </h6>
+                    <div class="d-flex align-items-center">
+                        <p class="text-danger fw-bold mb-0 me-2">{{ item.final_price|floatformat:0|intcomma }}đ</p>
+                        {% if item.sale_price %}
+                        <small class="text-muted text-decoration-line-through">{{ item.price|floatformat:0|intcomma }}đ</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-
-      </div>
-
+        {% endfor %}
     </div>
-
-    {% endfor %}
-
-  </div>
-
-  {% else %}
-
-  <!-- KHÔNG CÓ KẾT QUẢ -->
-  <div class="alert alert-warning text-center rounded-4 shadow-sm">
-    😥 Không tìm thấy sản phẩm nào khớp với từ khóa
-    <strong>"{{ searched }}"</strong>
-  </div>
-
-  {% endif %}
-
-
-  <!-- =============================
-       MILVUS IMAGE SEARCH
-  ============================== -->
-  {% if image_results %}
-
-  <hr class="my-5">
-
-  <h4 class="mb-4">
-    🖼 Gợi ý sản phẩm tương tự bằng Milvus vector search
-  </h4>
-
-  <div class="row row-cols-2 row-cols-md-4 g-4">
-
-    {% for hit in image_results %}
-
-    <div class="col">
-      <div class="product-card">
-        <img src="{% static hit.filepath %}" class="card-img">
-      </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Không tìm thấy sản phẩm nào phù hợp với lựa chọn của bạn.</p>
+        <a href="{% url 'products' %}" class="btn btn-dark rounded-pill px-4">Quay lại cửa hàng</a>
     </div>
-
-    {% endfor %}
-
-  </div>
-
-  {% endif %}
-
+    {% endif %}
 </div>
 
-{% endblock Register %}
+<style>
+    .product-card { transition: all 0.25s ease; }
+    .product-card:hover { 
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

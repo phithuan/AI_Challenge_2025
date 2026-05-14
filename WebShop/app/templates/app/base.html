@@ -166,18 +166,50 @@
         </ul>
 
         <!-- Search + Dark mode toggle -->
-        <div class="d-flex align-items-center">
-          <button id="themeToggle" class="theme-toggle-btn me-3">
-            <span class="material-symbols-outlined">light_mode</span>
-            <span class="material-symbols-outlined d-none">nightlight</span>
-          </button>
+        <!-- Search + Dark mode toggle -->
+      <div class="d-flex align-items-center">
+        <button id="themeToggle" class="theme-toggle-btn me-3">
+          <span class="material-symbols-outlined">light_mode</span>
+          <span class="material-symbols-outlined d-none">nightlight</span>
+        </button>
 
-          <form class="d-flex" method="POST" action="{% url 'search' %}">
+        <!-- FORM TÌM KIẾM CẬP NHẬT -->
+        <!-- Chỉnh sửa phần Search trong Navbar -->
+        <form class="d-flex align-items-center ms-lg-3" method="POST" action="{% url 'search' %}" enctype="multipart/form-data">
             {% csrf_token %}
-            <input class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm" name="searched">
-            <button class="btn btn-dark rounded-pill">Tìm</button>
-          </form>
-        </div>
+            <div class="input-group search-group">
+                <input class="form-control rounded-start-pill border-end-0 border-secondary-subtle" 
+                      type="search" 
+                      placeholder="Tìm kiếm nội thất..." 
+                      name="searched"
+                      style="width: 180px; font-size: 0.9rem;">
+                
+                <!-- Nút Camera -->
+                <label class="btn btn-white border-top border-bottom border-secondary-subtle d-flex align-items-center px-2" 
+                      style="cursor: pointer; background: white;" 
+                      title="Tìm bằng hình ảnh">
+                    <i class="fas fa-camera text-secondary"></i>
+                    <input type="file" name="image" accept="image/*" hidden onchange="this.form.submit()">
+                </label>
+
+                <!-- Nút Tìm -->
+                <button class="btn btn-dark rounded-end-pill px-3" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+
+        <style>
+            /* CSS bổ sung cho Navbar */
+            .search-group .form-control:focus {
+                box-shadow: none;
+                border-color: #dee2e6;
+            }
+            .search-group .btn-white:hover {
+                background-color: #f8f9fa !important;
+            }
+        </style>
+      </div>
 
         <!-- User / Cart menu -->
         <ul class="navbar-nav ms-3 ">

@@ -23,21 +23,21 @@ class Category(models.Model): # Mỗi danh mục có các thuộc tính sau
 
 # Sản phẩm
 class Product(models.Model): # Mỗi sản phẩm có các thuộc tính sau
-    name = models.CharField(max_length=200, null=True)  # Tên sản phẩm
+    name = models.CharField(max_length=300, null=True)  # Tên sản phẩm
     price = models.FloatField()  # Giá sản phẩm
     # ✅ THÊM GIÁ KHUYẾN MÃI
     sale_price = models.FloatField(null=True, blank=True)
 
     digital = models.BooleanField(default=False, null=True, blank=True)  # digital=True nghĩa là sản phẩm số (ví dụ: Ebook, phần mềm), không cần shipping
     
-    image = models.CharField(max_length=255, null=True, blank=True)  # ảnh chính của sản phẩm
+    image = models.CharField(max_length=500, null=True, blank=True)  # ảnh chính của sản phẩm
 
     category = models.ManyToManyField(Category, related_name='products')  # Danh mục cha
     description = models.TextField(null=True, blank=True)  # ✅ Thêm trường mô tả
 
-    material = models.CharField(max_length=200, null=True, blank=True)   # chất liệu
-    size = models.CharField(max_length=100, null=True, blank=True)       # kích thước
-    origin = models.CharField(max_length=200, null=True, blank=True)     # xuất xứ
+    material = models.TextField(null=True, blank=True)   # chất liệu
+    size = models.TextField(null=True, blank=True)       # kích thước
+    origin = models.CharField(max_length=255, null=True, blank=True)     # xuất xứ
     quality = models.CharField(max_length=100, null=True, blank=True)    # chất lượng (Loại 1, VIP,…)
     history = models.TextField(null=True, blank=True)                    # lịch sử / thông tin thêm
 
