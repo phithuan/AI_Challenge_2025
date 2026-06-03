@@ -61,3 +61,8 @@ CODE_THTN/clip-ViT-B-32-multilingual-v1/
 
 __pycache__/
 *.pyc
+
+# API keys
+api_key.txt
+.env
+

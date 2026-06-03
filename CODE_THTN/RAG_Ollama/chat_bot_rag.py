@@ -1,405 +1,362 @@
 """
-chat_bot_rag.py  —  BGE-M3 via Ollama + Milvus
-===============================================
-Pipeline:
-  Câu hỏi khách
-    → Query Enrichment (gộp lịch sử gần nhất)
-    → BGE-M3 embed qua Ollama /api/embed
-    → Milvus COSINE search (product + policy riêng)
-    → Lọc sản phẩm theo dynamic gap
-    → Build context có cấu trúc
-    → gemma2:2b trả lời dựa trên context
+chat_bot_rag.py
+===============
+Pipeline gọn, tối ưu tốc độ:
+
+  Câu hỏi
+    → [Bước 1] Function Calling: LLM phân loại ý định
+                "search_product" | "search_policy" | "answer_direct"
+    → [Bước 2] Dense Search: BGE-M3 embed + Milvus COSINE search
+    → [Bước 3] LLM trả lời dựa trên context
+
+Đã bỏ: BM25, Re-ranker, Query Rewriting (giảm ~3-5s mỗi lượt)
+Ưu tiên: chính xác trước, tốc độ sau
 
 Yêu cầu:
-  ollama serve  (đang chạy)
-  ollama pull bge-m3
-  ollama pull gemma2:2b  (hoặc gemma2:9b)
+  pip install pymilvus requests
+  ollama serve + ollama pull bge-m3 + ollama pull gemma2:9b
   Milvus đang chạy port 19530
   Đã chạy task2_embed_and_insert.py
 """
 
 import json
-import requests
 import os
-from collections import defaultdict
+import requests
+import time
 from pymilvus import MilvusClient
 
-
 # ─────────────────────────────────────────────────────────────
-# CẤU HÌNH
+# CẤU HÌNH — chỉnh ở đây khi cần
 # ─────────────────────────────────────────────────────────────
-BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+OLLAMA_URL  = "http://127.0.0.1:11434"
+EMBED_MODEL = "bge-m3"       # phải khớp với model dùng lúc insert
+VECTOR_DIM  = 1024
+LLM_MODEL   = "gemma2:2b"    # 9đổi thành gemma2:2b nếu máy yếu
 
-OLLAMA_URL      = "http://127.0.0.1:11434"
-EMBED_MODEL     = "bge-m3"      # phải khớp với model dùng lúc insert
-LLM_MODEL       = "gemma2:2b"   # đổi thành gemma2:9b khi đã cài
-VECTOR_DIM      = 1024          # BGE-M3 output dimension
 
 MILVUS_URI      = "http://localhost:19530"
 COLLECTION_NAME = "furniture_rag"
 
-TOP_K_PRODUCT = 20   # lấy nhiều để đủ dữ liệu cho bước lọc gap động
-TOP_K_POLICY  = 4    # đủ chunk chính sách cho hầu hết câu hỏi
-EF_SEARCH     = 200  # độ sâu HNSW search — cao hơn = chính xác hơn, chậm hơn
+TOP_K_PRODUCT = 5    # lấy top 5 sản phẩm liên quan nhất
+TOP_K_POLICY  = 8    # lấy top 8 chunk chính sách
+EF_SEARCH     = 150  # độ sâu HNSW: 150 cân bằng speed/accuracy
 
-# Score thresholds — tuned theo BGE-M3 trên dữ liệu nội thất tiếng Việt
-MIN_SCORE_PRODUCT = 0.60
-MIN_SCORE_POLICY  = 0.55
+MIN_SCORE_PRODUCT = 0.55  # ngưỡng cosine cho sản phẩm
+MIN_SCORE_POLICY  = 0.50  # ngưỡng cosine cho chính sách
 
-MAX_PRODUCTS   = 5    # số sp tối đa đưa vào context sau khi lọc gap
-DESC_MAX_CHARS = 400  # giới hạn ký tự phần mô tả sp
+MAX_HISTORY = 10   # số lượt hội thoại tối đa giữ trong lịch sử
 
-MAX_HISTORY_TURNS      = 10  # số lượt hội thoại tối đa giữ trong lịch sử
-QUERY_ENRICHMENT_TURNS = 2   # số lượt user gần nhất dùng để enrich query
+# Timeout (giây) — gemma2:9b chậm hơn 2b
+TIMEOUT_CLASSIFY = 20   # phân loại câu hỏi
+TIMEOUT_LLM      = 300  # sinh câu trả lời
 
 
 # ═════════════════════════════════════════════════════════════
-# EMBEDDING
+# EMBEDDING — BGE-M3 qua Ollama REST API
 # ═════════════════════════════════════════════════════════════
 
-def embed_query(text: str) -> list[float]:
+def embed(text: str) -> list[float]:
     """
-    Embed 1 text query thành vector 1024 chiều qua BGE-M3 trên Ollama.
-    BGE-M3 qua Ollama đã normalize vector — dùng trực tiếp với COSINE.
-    Xử lý 2 dạng response tùy version Ollama:
-      "embeddings": [[...]]  (mới) hoặc  "embedding": [...]  (cũ)
+    Chuyển text thành vector 1024 chiều qua BGE-M3 Ollama.
+    BGE-M3 đã normalize sẵn → dùng trực tiếp với COSINE metric.
     """
-    payload  = {"model": EMBED_MODEL, "input": [text]}
-    response = requests.post(
+    resp = requests.post(
         f"{OLLAMA_URL}/api/embed",
-        json=payload,
+        json={"model": EMBED_MODEL, "input": [text]},
         timeout=30
     )
-    response.raise_for_status() # nếu lỗi kết nối hoặc Ollama trả về lỗi HTTP
-    data = response.json()
-
+    resp.raise_for_status()
+    data = resp.json()
+    # Ollama trả về "embeddings" (mới) hoặc "embedding" (cũ)
     if "embeddings" in data:
-        return data["embeddings"][0] # vì input là list có 1 phần tử, output cũng là list có 1 vector
-    elif "embedding" in data:
-        return data["embedding"] # một số version Ollama trả về embedding trực tiếp không nằm trong list
-    raise ValueError(f"Ollama không trả về embedding: {list(data.keys())}")
+        return data["embeddings"][0]
+    return data["embedding"]
 
 
 # ═════════════════════════════════════════════════════════════
-# KHỞI TẠO
+# KHỞI TẠO — kiểm tra kết nối trước khi chat
 # ═════════════════════════════════════════════════════════════
 
 def init_services() -> MilvusClient:
-    """
-    Kiểm tra Ollama embed + kết nối Milvus.
-    Không load model Python vào RAM — BGE-M3 chạy trong Ollama process.
-    """
-    print(f"[Khởi động] Kiểm tra Ollama embed ({EMBED_MODEL})...")
+    """Kiểm tra Ollama embed + kết nối Milvus. Trả về MilvusClient."""
+
+    # Test embed
+    print(f"[Init] Kiểm tra Ollama embed ({EMBED_MODEL})...")
     try:
-        vec = embed_query("test kết nối") # test thoi
-        if len(vec) != VECTOR_DIM: # check vector dim đúng cấu hình chưa
-            raise ValueError(f"Vector dim thực tế {len(vec)} != cấu hình {VECTOR_DIM}.")
-        print(f"[Khởi động] Ollama embed OK (dim={len(vec)})")
+        vec = embed("test")
+        assert len(vec) == VECTOR_DIM, f"Dim sai: {len(vec)} != {VECTOR_DIM}"
+        print(f"[Init] Embed OK (dim={len(vec)})")
     except requests.exceptions.ConnectionError:
         raise ConnectionError("Không kết nối Ollama! Chạy: ollama serve")
 
-    print(f"[Khởi động] Kết nối Milvus {MILVUS_URI}...")
+    # Test LLM có sẵn chưa
+    print(f"[Init] Kiểm tra LLM ({LLM_MODEL})...")
+    try:
+        tags   = requests.get(f"{OLLAMA_URL}/api/tags", timeout=5).json()
+        models = [m["name"] for m in tags.get("models", [])]
+        if any(LLM_MODEL in m for m in models):
+            print(f"[Init] LLM OK")
+        else:
+            print(f"[Init] CẢNH BÁO: {LLM_MODEL} chưa pull! Chạy: ollama pull {LLM_MODEL}")
+    except Exception:
+        print(f"[Init] Không kiểm tra được LLM list")
+
+    # Milvus
+    print(f"[Init] Kết nối Milvus {MILVUS_URI}...")
     client = MilvusClient(uri=MILVUS_URI)
-    client.load_collection(COLLECTION_NAME) # load collection vào RAM để search nhanh hơn
-    print(f"[Khởi động] Sẵn sàng! LLM={LLM_MODEL}, Embed={EMBED_MODEL}\n")
+    client.load_collection(COLLECTION_NAME)  # nạp vào RAM để search nhanh
+    print(f"[Init] Milvus OK\n")
     return client
 
 
 # ═════════════════════════════════════════════════════════════
-# QUERY ENRICHMENT
+# BƯỚC 1: FUNCTION CALLING — phân loại ý định câu hỏi
 # ═════════════════════════════════════════════════════════════
+# Prompt ngắn gọn, rõ ràng → LLM phân loại nhanh và chính xác hơn
+CLASSIFY_PROMPT = """Tôi có một câu hỏi, bạn phân tích câu hỏi và phân loại nó vào một trong ba loại:
+- search_product : tư vấn, tìm kiếm sản phẩm, hỏi về giá, chất liệu, kích thước
+- search_policy  : hỏi về bảo hành, đổi trả, vận chuyển, chính sách, quy định, thông tin liên hệ, thời gian hoạt động mở cửa hoặc đóng cửa
+- answer_direct  : chào hỏi thông thường, những phép tính... ngoài những ý search_product và search_policy
 
-def build_enriched_query(user_input: str, history: list[dict]) -> str:
-    """
-    Gộp N lượt user gần nhất + câu hỏi hiện tại thành 1 chuỗi để embed.
-    Giải quyết vấn đề đại từ mơ hồ:
-      "bàn ăn moho oslo 901" | "kích thước như thế nào?"
-      → vector biết đây là hỏi kích thước của oslo 901.
-    Chỉ lấy QUERY_ENRICHMENT_TURNS lượt để tránh nhiễu khi đổi chủ đề.  
+Chỉ trả về đúng tên loại, không thêm gì khác.
 
-    history có dạng
-        [
-        user,
-        assistant,
-        user,
-        assistant
-        ] nên * 2 để lấy đủ lượt user. Nếu không có lịch sử thì trả về nguyên câu hỏi gốc.
+Câu hỏi: {query}
+Loại:"""
+
+
+def classify_intent(query: str) -> str:
     """
-    if not history:
-        return user_input
-    recent     = history[-(QUERY_ENRICHMENT_TURNS * 2):]
-    user_turns = [m["content"] for m in recent if m["role"] == "user"]
-    return " | ".join(user_turns + [user_input]) if user_turns else user_input # nếu không có lượt user nào trong recent thì vẫn trả về câu hỏi gốc
+    Dùng LLM phân loại ý định câu hỏi.
+    Trả về: "search_product" | "search_policy" | "answer_direct"
+    Fallback về "search_product" nếu LLM fail hoặc timeout.
+    """
+    try:
+        resp = requests.post(
+            f"{OLLAMA_URL}/api/generate",
+            json={
+                "model":  LLM_MODEL,
+                "prompt": CLASSIFY_PROMPT.format(query=query),
+                "stream": False, # không cần stream vì response rất ngắn, và muốn có timeout chính xác hơn.
+                # Giới hạn token output → phân loại nhanh hơn
+                "options": {"num_predict": 10, "temperature": 0} # num_predict=10 để đảm bảo LLM chỉ trả về 1 từ loại, không thêm giải thích gì khác, và giảm thời gian xử lý. Temperature=0 để phân loại ổn định hơn.
+            },
+            timeout=TIMEOUT_CLASSIFY
+        )
+        resp.raise_for_status()
+        result = resp.json().get("response", "").strip().lower()
+
+        # Match kết quả trả về vào tên chuẩn
+        if "policy" in result or "chính sách" in result or "bảo hành" in result:
+            return "search_policy"
+        if "direct" in result or "chào" in result:
+            return "answer_direct"
+        return "search_product"
+
+    except requests.exceptions.Timeout:
+        print(f"  [Classify] Timeout → fallback search_product")
+    except Exception as e:
+        print(f"  [Classify] Lỗi: {e} → fallback search_product")
+
+    return "search_product"
 
 
 # ═════════════════════════════════════════════════════════════
-# SEARCH MILVUS
+# BƯỚC 2: DENSE SEARCH — tìm kiếm ngữ nghĩa trong Milvus
 # ═════════════════════════════════════════════════════════════
-
-def calc_dynamic_gap(best_score: float) -> float: 
+def search_product(query: str, client: MilvusClient) -> list[dict]:
     """
-    Gap threshold tự động theo best_score — tuned cho BGE-M3:
-      > 0.88 → 0.05: query rõ (tên sp cụ thể), chỉ lấy sp khớp nhất
-      > 0.75 → 0.08: query bình thường
-      ≤ 0.75 → 0.12: query mơ hồ, lấy rộng hơn để không bỏ sót
+    Embed query → search Milvus cosine → trả về top K sản phẩm.
+    Metadata lưu sẵn trong Milvus → lấy trực tiếp, không parse raw_text.
     """
-    if best_score > 0.88:
-        return 0.05
-    if best_score > 0.75:
-        return 0.08
-    return 0.12
-
-def retrieve_context(query_for_embed: str, client: MilvusClient) -> dict:
-    """
-    Embed query → search Milvus → nhóm sp theo product_id → lọc dynamic gap.
-    Policy chunk trả về trực tiếp theo MIN_SCORE mà không lọc thêm.
-
-    {
-    "products": [ { "meta": {...}, "chunks": [...], "max_score": 0.9 }, ... ],
-    "policies": [ { "text": "...", "source": "...", "section": "..." }, ... ]
-    }
-    """
-    query_vector  = embed_query(query_for_embed)
-    results       = {"products": [], "policies": []}
-    search_params = {"metric_type": "COSINE", "params": {"ef": EF_SEARCH}}
-
-    # ── Sản phẩm ──────────────────────────────────────────────
-    product_hits = client.search(
+    qvec = embed(query)
+    hits = client.search(
         collection_name=COLLECTION_NAME,
-        data=[query_vector],
+        data=[qvec],
         filter='content_type == "product"',
         limit=TOP_K_PRODUCT,
-        output_fields=["raw_text", "metadata_json", "chunk_type"],
-        search_params=search_params
+        output_fields=["metadata_json"],
+        search_params={"metric_type": "COSINE", "params": {"ef": EF_SEARCH}}
     )
-
-    # Nhóm chunk theo product_id để tổng hợp đầy đủ thông tin 1 sản phẩm
-    # (mỗi sp có 4 chunk: name_only, identity_price, physical, description)
-    product_groups = defaultdict(lambda: {
-        "meta": {}, 
-        "chunks": [], 
-        "max_score": 0.0
-        }
-    ) 
-
-    for hit in product_hits[0]: # vì input là list có 1 phần tử, output cũng là list có 1 list hits
-        score = hit["distance"] # COSINE similarity đã normalize về [0,1]
-        if score < MIN_SCORE_PRODUCT: # nếu dưới ngưỡng thì bỏ qua luôn, không cần nhóm nữa
-            continue  # Nếu điểm dưới 0.6, vứt luôn, không cho vào nhóm.
-
-        meta = json.loads(hit["entity"]["metadata_json"]) # metadata_json chứa thông tin chung của sản phẩm, giống nhau ở tất cả chunk của cùng 1 sp, nên chỉ cần lấy từ 1 chunk nào đó là đủ. Quan trọng nhất là product_id để nhóm chunk đúng sp với nhau.
-        pid  = meta.get("product_id", "unknown") # nếu không có product_id thì nhóm vào "unknown", nhưng lý tưởng là dữ liệu đã phải có product_id
-        product_groups[pid]["meta"] = meta # cập nhật metadata chung cho nhóm sản phẩm (cùng pid sẽ ghi đè nhau nhưng vì giống nhau nên không vấn đề gì)
-        product_groups[pid]["chunks"].append({ # lưu chunk vào nhóm sản phẩm
-            "chunk_type": hit["entity"]["chunk_type"], # loại chunk để sau này build context, ví dụ "name_only", "identity_price", "physical", "description"
-            "raw_text":   hit["entity"]["raw_text"], # nội dung chunk, ví dụ "Sản phẩm: Bàn Oslo 901", "Từ khóa: bàn ăn, oslo, 901 | Giá bán: 5 triệu", "Chất liệu: gỗ sồi | Kích thước: 120x80cm", hoặc mô tả dài hơn ở chunk description
-            "score":      round(score, 4) # Lưu score cao nhất của sản phẩm.
+    results = []
+    for hit in hits[0]:
+        if hit["distance"] < MIN_SCORE_PRODUCT:
+            continue  # loại chunk quá xa về ngữ nghĩa
+        meta = json.loads(hit["entity"]["metadata_json"]) # metadata đã lưu sẵn khi insert, không phải parse raw_text → nhanh hơn và chính xác hơn
+        results.append({
+            "score":    round(hit["distance"], 3), # điểm cosine đã normalize sẵn, chỉ cần round 3 chữ số - để dễ đọc, không cần hiển thị nhiều hơn
+            #"raw_text": hit["entity"]["raw_text"],
+            "metadata": meta,
         })
-        if score > product_groups[pid]["max_score"]: # cập nhật max_score của nhóm sản phẩm nếu chunk này có score cao hơn
-            product_groups[pid]["max_score"] = score # điểm cao nhất trong tất cả chunk của sản phẩm này, dùng để lọc gap động sau khi nhóm xong
+    return results
 
-    if product_groups: # nếu có sản phẩm nào vượt ngưỡng thì mới tiến hành lọc gap, nếu không có sản phẩm nào thì trả về list rỗng luôn
-        sorted_groups = sorted( # sắp xếp nhóm sản phẩm theo max_score giảm dần để nhóm có điểm cao nhất đứng đầu
-            product_groups.values(), # lấy giá trị của dict (bỏ qua key là product_id) rồi sắp xếp
-            key=lambda x: x["max_score"], reverse=True # sắp xếp giảm dần theo max_score để nhóm có điểm cao nhất đứng đầu
-        )
-        best_score = sorted_groups[0]["max_score"] # Lấy điểm của thằng đứng đầu (thằng giống nhất)
-        gap        = calc_dynamic_gap(best_score)
-        # Chỉ giữ sp trong vòng `gap` điểm của sp tốt nhất
-        filtered = [g for g in sorted_groups
-                    if g["max_score"] >= best_score - gap] #  Điểm cao -> Khắt khe (lấy ít); Điểm thấp -> Nới lỏng (lấy rộng).
-        results["products"] = filtered[:MAX_PRODUCTS]
-        # Nếu bạn hỏi cực kỳ chính xác -> best_score cao -> gap nhỏ -> Vùng an toàn hẹp -> Chỉ lấy 1 sản phẩm.
-        # Nếu bạn hỏi mơ hồ -> best_score thấp -> gap rộng -> Vùng an toàn lớn -> Lấy nhiều sản phẩm để gợi ý.'''
 
-    # ── Chính sách ────────────────────────────────────────────
-    policy_hits = client.search(
+def search_policy(query: str, client: MilvusClient) -> list[dict]:
+    """Tìm chunk chính sách liên quan đến câu hỏi."""
+    qvec = embed(query)
+    hits = client.search(
         collection_name=COLLECTION_NAME,
-        data=[query_vector],
+        data=[qvec],
         filter='content_type == "policy"',
         limit=TOP_K_POLICY,
         output_fields=["raw_text", "metadata_json"],
-        search_params=search_params
+        search_params={"metric_type": "COSINE", "params": {"ef": EF_SEARCH}}
     )
-
-    for hit in policy_hits[0]: # vì input là list có 1 phần tử, output cũng là list có 1 list hits
-        score = hit["distance"]
-        if score >= MIN_SCORE_POLICY: # CHỐT CHẶN: Chỉ lấy nếu điểm > 0.55
-            meta = json.loads(hit["entity"]["metadata_json"])
-            results["policies"].append({
-                "text":    hit["entity"]["raw_text"],
-                "score":   round(score, 3),
-                "source":  meta.get("source", ""),
-                "section": meta.get("section", ""),
-            })
-
+    results = []
+    for hit in hits[0]:
+        if hit["distance"] < MIN_SCORE_POLICY:
+            continue
+        meta = json.loads(hit["entity"]["metadata_json"])
+        results.append({
+            "score":    round(hit["distance"], 3),
+            "text":     hit["entity"]["raw_text"],
+            "source":   meta.get("source", ""),
+            "section":  meta.get("section", ""),
+        })
     return results
 
-# ═════════════════════════════════════════════════════════════
-# PARSE CHUNK → THÔNG TIN SẢN PHẨM
-# ═════════════════════════════════════════════════════════════
-
-def parse_pipe_attrs(raw_text: str) -> dict:
-    """
-    Parse chuỗi pipe-separated thành dict.
-    "Sản phẩm: X | Chất liệu: Y | Kích thước: Z"
-    → {"Sản phẩm": "X", "Chất liệu": "Y", "Kích thước": "Z"}
-    """
-    attrs = {}
-    for part in raw_text.split(" | "): # tách theo " | " để lấy từng cặp key-value, sau đó tách tiếp theo ":"
-        part = part.strip() # loại bỏ khoảng trắng thừa ở đầu và cuối phần tử
-        if ":" in part:# nếu có dấu ":" thì mới tách thành key-value, nếu không có thì bỏ qua phần tử này vì không đúng định dạng
-            key, _, val = part.partition(":") # partition sẽ tách chuỗi thành 3 phần: phần trước dấu ":", dấu ":", và phần sau dấu ":". Nếu có nhiều dấu ":" thì chỉ tách ở dấu đầu tiên, phần sau sẽ nguyên vẹn. Ví dụ "Từ khóa: bàn ăn: oslo" sẽ được tách thành key="Từ khóa", val="bàn ăn: oslo"
-            attrs[key.strip()] = val.strip()
-    return attrs
-
-
-def build_product_info(group: dict) -> dict:
-    """
-    Tổng hợp thông tin sp từ tất cả chunk của nhóm.
-    Phân nhánh theo chunk_type — không detect từ nội dung raw_text:
-      name_only      → bỏ qua (chỉ dùng để search)
-      identity_price → tags, giá bán
-      physical       → chất liệu, kích thước
-      description    → mô tả đầy đủ (phần sau dòng "Sản phẩm: ...")
-    """
-    info = { # bắt đầu với thông tin cơ bản từ metadata, sau đó sẽ cập nhật thêm từ chunk
-        "name": group["meta"].get("name", ""),
-        "category": group["meta"].get("category", ""),
-        "tags": "", "price": "", "material": "", "size": "", "description": "",
-    }
-    for chunk in group["chunks"]: # duyệt qua tất cả chunk của nhóm sản phẩm để tổng hợp thông tin
-        ctype, raw = chunk["chunk_type"], chunk["raw_text"] 
-        if ctype == "name_only": # chunk name_only chỉ dùng để search, không chứa thông tin gì mới so với metadata đã có, nên bỏ qua không cần parse thêm, vì info["name"] đã được lấy từ metadata rồi. Nếu sau này có chunk nào khác cũng chứa tên sản phẩm thì sẽ cập nhật vào info["name"] nếu muốn, nhưng hiện tại theo cấu trúc dữ liệu thì chỉ có metadata mới chứa tên đầy đủ của sản phẩm.
-            pass
-        elif ctype == "identity_price": # chunk này chứa thông tin về tags và giá bán, được định dạng theo kiểu "Từ khóa: ... | Giá bán: ..." nên sẽ parse theo cấu trúc pipe-separated để lấy ra từng phần thông tin một cách linh hoạt, tránh phụ thuộc vào thứ tự của các phần thông tin trong chuỗi raw_text.
-            attrs = parse_pipe_attrs(raw)
-            info["tags"]  = attrs.get("Từ khóa", "")
-            info["price"] = attrs.get("Giá bán", "")
-        elif ctype == "physical":
-            attrs = parse_pipe_attrs(raw)
-            info["material"] = attrs.get("Chất liệu", "")
-            info["size"]     = attrs.get("Kích thước", "")
-        elif ctype == "description":
-            # "Sản phẩm: X\n<mô tả>" → bỏ dòng đầu, lấy mô tả
-            if "\n" in raw: # nếu có dòng mới thì mới tách, nếu không có dòng mới thì phần mô tả sẽ để trống vì không đúng định dạng
-                parts = raw.split("\n", 1)
-                info["description"] = parts[1].strip() if len(parts) > 1 else ""
-    return info
-
 
 # ═════════════════════════════════════════════════════════════
-# BUILD CONTEXT BLOCK
+# BUILD CONTEXT — format dữ liệu cho LLM đọc
 # ═════════════════════════════════════════════════════════════
-# Context (Ngữ cảnh): "Cuốn sách tra cứu" sau khi đã tìm kiếm trong Milvus.
-# Vai trò: Cung cấp kiến thức thực tế (Giá cả, chất liệu, chính sách).
-# Kết hợp: Hàm build_system_prompt(context_block) sẽ dán nội dung này ngay bên dưới SYSTEM_RULES.
-def build_context_block(retrieved: dict) -> str:
+def build_product_context(docs: list[dict]) -> str:
     """
-    Format kết quả search thành context có cấu trúc cho LLM.
-    Header "CÓ N SẢN PHẨM" báo LLM biết cần liệt kê đủ bao nhiêu sp.
-    Chính sách kèm tên file nguồn để LLM biết đây là thông tin chính thức.
+    Format sản phẩm thành context có cấu trúc rõ ràng.
+    Lấy giá/chất liệu/kích thước từ metadata (đã lưu khi insert)
+    thay vì parse raw_text → nhanh hơn và chính xác hơn.
     """
-    blocks = []
+    if not docs:
+        return ""
 
-    if retrieved["products"]:
-        n = len(retrieved["products"]) #
-        blocks.append(f"=== CÓ {n} SẢN PHẨM LIÊN QUAN ===") # header này rất quan trọng để LLM biết cần giới thiệu đủ N sản phẩm, tránh tình trạng chỉ giới thiệu 1 sp dù có nhiều sp phù hợp trong ngữ cảnh
-        for i, group in enumerate(retrieved["products"], 1):
-            info  = build_product_info(group)
-            lines = [f"\n[SP{i}] {info['name']}"]
-            if info["category"]: lines.append(f"  Danh mục  : {info['category']}")
-            if info["tags"]:     lines.append(f"  Từ khóa   : {info['tags']}")
-            if info["price"]:    lines.append(f"  Giá bán   : {info['price']}")
-            if info["material"]: lines.append(f"  Chất liệu : {info['material']}")
-            if info["size"]:     lines.append(f"  Kích thước: {info['size']}")
-            if info["description"]:
-                desc = info["description"]
-                if len(desc) > DESC_MAX_CHARS:
-                    desc = desc[:DESC_MAX_CHARS] + "..." # cắt mô tả nếu quá dài để tránh ngập context, vì mô tả thường chiếm nhiều ký tự nhất
-                lines.append(f"  Mô tả     : {desc}")
-            blocks.append("\n".join(lines))
+    lines = [f"=== CÓ {len(docs)} SẢN PHẨM LIÊN QUAN ==="]
+    for i, doc in enumerate(docs, 1):
+        meta = doc["metadata"]
+        lines.append(f"\n[SP{i}] {meta.get('name', '')}")
+        lines.append(f"  Danh mục  : {meta.get('category', '')}")
 
-    if retrieved["policies"]:
-        blocks.append("\n=== THÔNG TIN CHÍNH SÁCH ===")
-        for j, item in enumerate(retrieved["policies"], 1): # đánh số chính sách để LLM dễ tham chiếu, ví dụ "theo chính sách [CS1] thì..."
-            src_label = ""
-            if item.get("source"):
-                src_label = f"(nguồn: {item['source']}"
-                if item.get("section"):
-                    src_label += f" | mục: {item['section']}"
-                src_label += ")"
-            blocks.append(f"\n[CS{j}] {src_label}")
-            blocks.append(item["text"])
+        # Format giá và % giảm
+        ps = meta.get("price_sale", 0) # giá sale, nếu có, để ưu tiên hiển thị giá đang bán hơn là giá gốc
+        po = meta.get("price_original", 0) # giá gốc, để tính % giảm nếu có giá sale và giá gốc
+        if ps: # nếu có giá sale, mới hiển thị giá và % giảm, vì giá sale là thông tin khách hàng quan tâm nhất, còn giá gốc chỉ để tham khảo nếu có giá sale. Nếu không có giá sale thì không cần hiển thị gì cả, vì khách hàng sẽ không quan tâm đến giá gốc nếu không có giá sale.
+            price_str = f"{int(ps):,}đ".replace(",", ".")
+            if po and po > ps:
+                pct = round((po - ps) / po * 100)
+                price_str += f" (giảm {pct}% từ {f'{int(po):,}đ'.replace(',', '.')})"
+            lines.append(f"  Giá bán   : {price_str}")
 
-    return "\n".join(blocks) if blocks else ""
+        if meta.get("material"):
+            lines.append(f"  Chất liệu : {meta['material']}")
+        if meta.get("size"):
+            lines.append(f"  Kích thước: {meta['size']}")
+
+        # Ưu điểm từ metadata (summary đã chuẩn hóa sẵn)
+        summary = meta.get("summary", "")
+        if summary:
+            lines.append(f"  Ưu điểm : {summary}") # ưu điểm đã được chuẩn hóa sẵn khi insert, không phải parse raw_text → nhanh hơn và chính xác hơn
+
+    return "\n".join(lines)
+
+
+def build_policy_context(docs: list[dict]) -> str:
+    """Format chunk chính sách, ghi rõ file nguồn để LLM biết đây là thông tin chính thức."""
+    if not docs:
+        return ""
+    lines = ["=== THÔNG TIN CHÍNH SÁCH ==="]
+    for j, item in enumerate(docs, 1):
+        src = ""
+        if item.get("source"):
+            src = f"(nguồn: {item['source']}"
+            if item.get("section"):
+                src += f" | mục: {item['section']}"
+            src += ")"
+        lines.append(f"\n[CS{j}] {src}")
+        lines.append(item["text"])
+    return "\n".join(lines)
 
 
 # ═════════════════════════════════════════════════════════════
-# SYSTEM PROMPT
+# SYSTEM PROMPT — hướng dẫn hành vi LLM
 # ═════════════════════════════════════════════════════════════
-SYSTEM_RULES = """Bạn là nhân viên tư vấn bán hàng nội thất. Trả lời bằng tiếng Việt, thân thiện và ngắn gọn.
 
-LUẬT BẮT BUỘC — vi phạm là sai:
+SYSTEM_RULES = """Bạn là nhân viên tư vấn bán hàng nội thất. Trả lời bằng tiếng Việt, thân thiện và ngắn gọn. nếu thấy khách chào thì chào lại ngay
+
+LUẬT BẮT BUỘC:
 1. CHỈ dùng thông tin trong [NGỮ CẢNH]. KHÔNG tự thêm số liệu ngoài.
-2. Giá, kích thước, chất liệu: lấy NGUYÊN XI từ [NGỮ CẢNH], không được thay đổi.
-3. Nếu [NGỮ CẢNH] có đủ thông tin → trả lời đầy đủ, cụ thể ngay.
-4. Nếu [NGỮ CẢNH] KHÔNG có thông tin → nói: "Xin lỗi, tôi chưa có thông tin về vấn đề này."
-5. Khi giới thiệu sản phẩm: PHẢI nêu đủ tên, giá bán, chất liệu, kích thước.
-6. [NGỮ CẢNH] có bao nhiêu sản phẩm [SP1],[SP2]...: PHẢI giới thiệu ĐỦ bấy nhiêu.
+2. Giá, kích thước, chất liệu: lấy NGUYÊN XI từ không thay đổi [NGỮ CẢNH].
+3. KHÔNG đề cập link, hotline, trang web nếu không có trong [NGỮ CẢNH].
+4. Nếu có thông tin → trả lời đầy đủ, cụ thể ngay.
+5. Nếu không có → nói: "Xin lỗi, tôi chưa có thông tin về vấn đề này."
+6. Khi giới thiệu sản phẩm: nêu đủ tên, giá, chất liệu, kích thước, "summary": "Ưu điểm nổi bật".
+7. Nhiều sản phẩm: liệt kê TẤT CẢ theo format:
 
-CÁCH TRÌNH BÀY KHI CÓ NHIỀU SẢN PHẨM:
 Dạ, cửa hàng có [N] sản phẩm phù hợp:
 
 **1. [Tên SP1]**
 - Giá: [giá]
 - Chất liệu: [chất liệu]
 - Kích thước: [kích thước]
+- Ưu điểm: [Ưu điểm nổi bật của sản phẩm này]
 
 **2. [Tên SP2]**
-- Giá: [giá]
-- Chất liệu: [chất liệu]
-- Kích thước: [kích thước]"""
+..."""
 
 
-# SYSTEM_RULES Nó được gán vào hàm build_system_prompt để làm cái nền móng cho mọi câu trả lời.
-def build_system_prompt(context_block: str) -> str: # nếu có ngữ cảnh thì thêm header [NGỮ CẢNH], 
-    ctx = (f"[NGỮ CẢNH]\n{context_block}" if context_block
-           else "[NGỮ CẢNH]\nKhông có dữ liệu liên quan.") # nếu không có thì vẫn phải có header nhưng ghi rõ "Không có dữ liệu liên quan" để LLM biết là không có ngữ cảnh nào để tham khảo, tránh trường hợp LLM tưởng mình quên đưa ngữ cảnh mà tự nhiên bịa ra thông tin không có thật.
+def build_system_prompt(context: str) -> str: # nếu có context thì thêm, nếu không có thì vẫn phải có phần [NGỮ CẢNH] để LLM biết không có data liên quan
+    ctx = f"[NGỮ CẢNH]\n{context}" if context else "[NGỮ CẢNH]\nKhông có dữ liệu liên quan."
     return f"{SYSTEM_RULES}\n\n{ctx}"
 
 
 # ═════════════════════════════════════════════════════════════
-# OLLAMA LLM STREAMING
+# BƯỚC 3: LLM STREAMING
 # ═════════════════════════════════════════════════════════════
 
-def chat_ollama_llm(messages: list[dict]) -> str:
-    """Gửi messages tới Ollama /api/chat, stream response ra màn hình."""
-    payload       = {"model": LLM_MODEL, "messages": messages, "stream": True}
+def call_llm(messages: list[dict]) -> str:
+    """
+    Gửi messages tới Ollama /api/chat, stream response ra màn hình.
+    Dùng num_ctx=4096 để giảm thời gian xử lý context (mặc định 8192).
+    """
+    payload = {
+        "model":    LLM_MODEL,
+        "messages": messages,
+        "stream":   True,
+        "options":  {
+            "num_ctx":     4096,  # giảm context window → nhanh hơn
+            "temperature": 0.3,   # ít ngẫu nhiên → ổn định hơn
+        }
+    }
     full_response = ""
     print("\nAI tư vấn: ", end="", flush=True)
 
     try:
-        response = requests.post(
+        resp = requests.post(
             f"{OLLAMA_URL}/api/chat",
-            json=payload, stream=True, timeout=120
+            json=payload, stream=True, timeout=TIMEOUT_LLM
         )
-        response.raise_for_status()
+        resp.raise_for_status()
     except requests.exceptions.ConnectionError:
-        print("\nLỖI: Không kết nối Ollama.")
+        print("\n[LLM] Không kết nối được Ollama!")
         raise
+    except requests.exceptions.Timeout:
+        print(f"\n[LLM] Timeout {TIMEOUT_LLM}s")
+        return ""
 
-    for line in response.iter_lines(): # Đọc từng dòng dữ liệu "chảy" về từ server Ollama
-        if line:
-            chunk = json.loads(line.decode("utf-8")) # Chuyển dòng dữ liệu thô (bytes) thành đối tượng JSON (Dictionary)
-            # Kiểm tra nếu trong gói dữ liệu có chứa nội dung tin nhắn
+    received_any = False
+    for line in resp.iter_lines(): # nếu không nhận được gì sau khi timeout, sẽ trả về empty string và in cảnh báo ở phần gọi hàm
+        if not line:
+            continue
+        try: # có thể có dòng không phải JSON (như heartbeat), nên cần try-except để tránh lỗi dừng stream
+            chunk = json.loads(line.decode("utf-8"))
             if "message" in chunk:
-                content = chunk["message"]["content"] # Trích xuất phần chữ AI vừa tạo ra
+                content = chunk["message"]["content"]
                 print(content, end="", flush=True)
-                full_response += content # Lưu lại toàn bộ phản hồi của AI để có thể sử dụng sau này nếu cần, ví dụ để lưu vào lịch sử hội thoại hoặc phân tích thêm
-            # Nếu nhận được tín hiệu "done": true từ AI -> Kết thúc câu trả lời
+                full_response += content
+                received_any  = True
             if chunk.get("done"):
                 print("\n")
+        except json.JSONDecodeError:
+            continue
+
+    if not received_any:
+        print(f"\n[LLM] Không nhận được response! Thử: ollama run {LLM_MODEL}")
 
     return full_response
 
@@ -408,10 +365,10 @@ def chat_ollama_llm(messages: list[dict]) -> str:
 # VÒNG LẶP CHAT
 # ═════════════════════════════════════════════════════════════
 
-def chat_with_rag():
-    milvus_client = init_services()
-    conversation_history: list[dict] = []
-    debug_mode = False
+def chat():
+    client = init_services() # khởi tạo và kiểm tra kết nối trước khi chat
+    history: list[dict] = []  # lịch sử hội thoại {role, content}
+    debug   = False
 
     print("─" * 55)
     print("  CHÀO MỪNG — TƯ VẤN NỘI THẤT AI")
@@ -422,70 +379,68 @@ def chat_with_rag():
 
     while True:
         print("\n" + "=" * 40)
-        user_input = input("Khách hàng: ").strip()
+        user_input = input("Khách hàng: ").strip() # nếu chỉ nhập khoảng trắng thì sẽ yêu cầu nhập lại, tránh gửi câu trống cho LLM
 
+        if not user_input:
+            print("Vui lòng nhập câu hỏi.")
+            continue
         if user_input.lower() == "q":
             print("AI: Cảm ơn quý khách! Hẹn gặp lại.")
             break
         if user_input.lower() == "c":
-            conversation_history = []
+            history = []
             print("--- Đã xóa lịch sử ---")
             continue
         if user_input.lower() == "d":
-            debug_mode = not debug_mode
-            print(f"--- Debug: {'BẬT' if debug_mode else 'TẮT'} ---")
-            continue
-        if not user_input: # nếu khách hàng chỉ nhấn Enter mà không nhập gì thì bỏ qua, không gọi LLM, tránh tạo phản hồi vô nghĩa hoặc lỗi do input rỗng
+            debug = not debug
+            print(f"--- Debug: {'BẬT' if debug else 'TẮT'} ---")
             continue
 
-        # 1. Enrich query bằng lịch sử
-        query_for_embed = build_enriched_query(user_input, conversation_history)
+        t0 = time.time() # đo thời gian tổng để có thể in ra sau cùng, vì mỗi bước đã có in thời gian riêng, nên sẽ biết bước nào tốn nhiều thời gian nhất để tối ưu sau này.
 
-        # 2. Search Milvus
-        try:
-            retrieved = retrieve_context(query_for_embed, milvus_client)
-        except requests.exceptions.Timeout:
-            print("  [Timeout] Ollama embed chậm, thử lại...")
-            continue
-        except Exception as e:
-            print(f"  [Lỗi] {e}")
-            continue
+        # ── Bước 1: Phân loại ý định ──────────────────────────
+        intent = classify_intent(user_input) # nếu lỗi hoặc timeout sẽ fallback về "search_product" để vẫn có trải nghiệm tìm kiếm sản phẩm, vì đây là ý định phổ biến nhất và cũng là phần quan trọng nhất cần đảm bảo hoạt động ổn định.
+        print(f"  [Intent] {intent}  ({time.time()-t0:.1f}s)")
 
-        context_block = build_context_block(retrieved)
+        # ── Bước 2: Search theo intent ─────────────────────────
+        context = "" # context mặc định là rỗng, nếu có kết quả search sẽ format lại để build context cho LLM, nếu không có kết quả nào đủ tốt thì vẫn trả về context rỗng, và LLM sẽ trả lời dựa trên kiến thức đã học (nếu có) hoặc nói rằng không có thông tin liên quan.
 
-        # 3. Debug log
-        n_prod   = len(retrieved["products"])
-        sp_info  = [f"{g['meta'].get('name','?')[:15]}({g['max_score']:.3f})"
-                    for g in retrieved["products"]]
-        cs_info  = [f"{p['score']:.3f}:{p.get('source','')[:12]}"
-                    for p in retrieved["policies"]]
-        gap_used = (calc_dynamic_gap(retrieved["products"][0]["max_score"])
-                    if retrieved["products"] else 0)
+        if intent == "search_product": # tìm sản phẩm liên quan, lấy thông tin từ metadata đã lưu sẵn trong Milvus để build context nhanh và chính xác hơn, thay vì parse raw_text.
+            docs    = search_product(user_input, client)
+            context = build_product_context(docs) # format context theo cấu trúc rõ ràng để LLM dễ đọc và trả lời chính xác hơn, thay vì chỉ liệt kê raw_text lộn xộn.
+            sp_info = [f"{d['metadata'].get('name','?')[:18]}({d['score']:.2f})" # để debug nhanh tên sản phẩm và điểm số, thay vì hiển thị toàn bộ metadata hoặc raw_text có thể rất dài và lộn xộn.
+                       for d in docs]
+            print(f"  [Search] {len(docs)}sp {sp_info}  ({time.time()-t0:.1f}s)")
 
-        print(f"  [RAG] {n_prod}sp gap={gap_used} {sp_info}")
-        print(f"  [RAG] cs={cs_info}")
-        print(f"  [Q]   {query_for_embed[:75]}{'...' if len(query_for_embed)>75 else ''}")
+        elif intent == "search_policy": # tìm chunk chính sách liên quan, lấy raw_text để build context vì thông tin chính sách thường nằm trong phần văn bản chi tiết, metadata chỉ có thể giúp biết file nguồn và section để LLM biết đây là thông tin chính thức, nhưng nội dung chi tiết vẫn cần raw_text để đảm bảo LLM có đủ dữ liệu để trả lời chính xác.
+            docs    = search_policy(user_input, client)
+            context = build_policy_context(docs)
+            cs_info = [f"{d['score']:.2f}:{d.get('source','')[:12]}" for d in docs]
+            print(f"  [Search] {len(docs)}cs {cs_info}  ({time.time()-t0:.1f}s)")
 
-        if debug_mode:
+        # answer_direct: context rỗng, LLM trả lời thẳng
+
+        if debug:
             print("\n" + "-"*40)
-            print(context_block)
+            print(context or "(không có context)")
             print("-"*40)
 
-        # 4. Gọi LLM
-        system_prompt = build_system_prompt(context_block)
-        messages = ( # Lắp ghép mọi thứ lại thành một mẩu tin gửi đi
-            [{"role": "system", "content": system_prompt}] # 1. Luật + Kiến thức
-            + conversation_history  # 2. Trí nhớ (các câu hỏi đáp cũ)
-            + [{"role": "user",  "content": f"Câu hỏi của khách: {user_input}"}] # 3. Câu hỏi mới
+        # ── Bước 3: Gọi LLM ───────────────────────────────────
+        messages = (
+            [{"role": "system", "content": build_system_prompt(context)}]
+            + history
+            + [{"role": "user",  "content": user_input}]
         )
 
         try:
-            ai_response = chat_ollama_llm(messages)
-            # Lưu history với nội dung gốc (không có prefix "Câu hỏi của khách:")
-            conversation_history.append({"role": "user",      "content": user_input})
-            conversation_history.append({"role": "assistant",  "content": ai_response})
-            if len(conversation_history) > MAX_HISTORY_TURNS * 2:
-                conversation_history = conversation_history[-(MAX_HISTORY_TURNS * 2):]
+            answer = call_llm(messages)
+            if answer:
+                # Lưu lịch sử để duy trì ngữ cảnh hội thoại
+                history.append({"role": "user",      "content": user_input})
+                history.append({"role": "assistant",  "content": answer})
+                # Giới hạn history để tránh context quá dài
+                if len(history) > MAX_HISTORY * 2:
+                    history = history[-(MAX_HISTORY * 2):]
 
         except requests.exceptions.ConnectionError:
             print("Hãy chạy 'ollama serve'.")
@@ -494,7 +449,8 @@ def chat_with_rag():
             print(f"\nLỖI: {e}")
             break
 
+        print(f"  [Tổng] {time.time()-t0:.1f}s")
+
 
 if __name__ == "__main__":
-    chat_with_rag()
-
+    chat()

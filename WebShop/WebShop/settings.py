@@ -182,3 +182,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # MILVUS VECTOR SEARCH
 # ======================
 USE_MILVUS = True
+
+# ======================
+# RAG CHATBOT API
+# ======================
+RAG_API_URL = os.getenv("RAG_API_URL", "http://127.0.0.1:8010/chat")

@@ -466,3 +466,23 @@ body.dark-mode .btn-danger:hover {
   .add-cart-btn:hover {
     background: #8b5e3c;
   }
+
+  /* Định dạng link sản phẩm trong chatbot */
+.chatbot-link {
+    color: #007bff !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    border-bottom: 1px dashed #007bff;
+    transition: all 0.3s;
+}
+
+.chatbot-link:hover {
+    color: #0056b3 !important;
+    border-bottom: 1px solid #0056b3;
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Đảm bảo tin nhắn bot không bị vỡ định dạng khi có link */
+.message.bot {
+    line-height: 1.5;
+}

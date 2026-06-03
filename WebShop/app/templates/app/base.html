@@ -167,49 +167,48 @@
 
         <!-- Search + Dark mode toggle -->
         <!-- Search + Dark mode toggle -->
-      <div class="d-flex align-items-center">
-        <button id="themeToggle" class="theme-toggle-btn me-3">
-          <span class="material-symbols-outlined">light_mode</span>
-          <span class="material-symbols-outlined d-none">nightlight</span>
-        </button>
+        <div class="d-flex align-items-center">
+          <button id="themeToggle" class="theme-toggle-btn me-3">
+            <span class="material-symbols-outlined">light_mode</span>
+            <span class="material-symbols-outlined d-none">nightlight</span>
+          </button>
 
-        <!-- FORM TÌM KIẾM CẬP NHẬT -->
-        <!-- Chỉnh sửa phần Search trong Navbar -->
-        <form class="d-flex align-items-center ms-lg-3" method="POST" action="{% url 'search' %}" enctype="multipart/form-data">
+          <!-- FORM TÌM KIẾM CẬP NHẬT -->
+          <!-- Chỉnh sửa phần Search trong Navbar -->
+          <form class="d-flex align-items-center ms-lg-3" method="POST" action="{% url 'search' %}"
+            enctype="multipart/form-data">
             {% csrf_token %}
             <div class="input-group search-group">
-                <input class="form-control rounded-start-pill border-end-0 border-secondary-subtle" 
-                      type="search" 
-                      placeholder="Tìm kiếm nội thất..." 
-                      name="searched"
-                      style="width: 180px; font-size: 0.9rem;">
-                
-                <!-- Nút Camera -->
-                <label class="btn btn-white border-top border-bottom border-secondary-subtle d-flex align-items-center px-2" 
-                      style="cursor: pointer; background: white;" 
-                      title="Tìm bằng hình ảnh">
-                    <i class="fas fa-camera text-secondary"></i>
-                    <input type="file" name="image" accept="image/*" hidden onchange="this.form.submit()">
-                </label>
+              <input class="form-control rounded-start-pill border-end-0 border-secondary-subtle" type="search"
+                placeholder="Tìm kiếm nội thất..." name="searched" style="width: 180px; font-size: 0.9rem;">
 
-                <!-- Nút Tìm -->
-                <button class="btn btn-dark rounded-end-pill px-3" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
+              <!-- Nút Camera -->
+              <label
+                class="btn btn-white border-top border-bottom border-secondary-subtle d-flex align-items-center px-2"
+                style="cursor: pointer; background: white;" title="Tìm bằng hình ảnh">
+                <i class="fas fa-camera text-secondary"></i>
+                <input type="file" name="image" accept="image/*" hidden onchange="this.form.submit()">
+              </label>
+
+              <!-- Nút Tìm -->
+              <button class="btn btn-dark rounded-end-pill px-3" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
             </div>
-        </form>
+          </form>
 
-        <style>
+          <style>
             /* CSS bổ sung cho Navbar */
             .search-group .form-control:focus {
-                box-shadow: none;
-                border-color: #dee2e6;
+              box-shadow: none;
+              border-color: #dee2e6;
             }
+
             .search-group .btn-white:hover {
-                background-color: #f8f9fa !important;
+              background-color: #f8f9fa !important;
             }
-        </style>
-      </div>
+          </style>
+        </div>
 
         <!-- User / Cart menu -->
         <ul class="navbar-nav ms-3 ">
@@ -264,14 +263,14 @@
   </nav>
 
   {% if messages %}
-    <div class="container mt-3">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center shadow-sm" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      {% endfor %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center shadow-sm" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    {% endfor %}
+  </div>
   {% endif %}
 
   <main class="flex-grow-1">
@@ -421,6 +420,63 @@
         })
     }
   </script>
+
+
+
+  <!-- ✅ Import CSS + JS -->
+  <!-- ================= CHATBOT RAG GLOBAL ================= -->
+  <link rel="stylesheet" href="{% static 'app/css/chatbot.css' %}">
+
+  <div id="chatbot-bubble" onclick="toggleChat()" aria-label="Mở chatbot">
+    <span class="chatbot-bubble-icon">💬</span>
+
+    <div id="chatbot-tooltip">
+      <div class="tooltip-title">ChatRAG AI</div>
+      <div class="tooltip-text">Bạn cần tư vấn sản phẩm hay chính sách?</div>
+    </div>
+  </div>
+
+  <div id="chatbot-box">
+    <div id="chatbot-header">
+      <div class="chatbot-header-left">
+        <div class="chatbot-avatar">AI</div>
+
+        <div>
+          <div class="chatbot-title">Chatbot tư vấn nội thất</div>
+          <div class="chatbot-status">
+            <span class="status-dot"></span>
+            Đang hoạt động
+          </div>
+        </div>
+      </div>
+
+      <div class="chatbot-actions">
+        <button id="chatbot-clear" type="button" title="Xóa lịch sử chat" aria-label="Xóa lịch sử chat">
+          🗑
+        </button>
+
+        <button id="chatbot-close" type="button" title="Đóng chatbot" aria-label="Đóng chatbot">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <div id="chatbot-messages">
+      <div class="message bot">
+        - Chào bạn! 😊 Mình là ChatRAG AI. Bạn cần tìm sản phẩm nội thất hay hỏi về chính sách bảo hành, đổi trả?
+      </div>
+    </div>
+
+    <div id="chatbot-input">
+      <textarea id="chatbot-text" placeholder="Nhập câu hỏi của bạn..."></textarea>
+      <button type="button" onclick="sendMessage()" aria-label="Gửi tin nhắn">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <script src="{% static 'app/js/chatbot.js' %}"></script>
+  <!-- ================= END CHATBOT RAG GLOBAL ================= -->
 
 </body>
 

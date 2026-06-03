@@ -106,7 +106,7 @@ def clean_query(text):
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
 
-def search(request):
+def search(request): # tìm sản phẩm bằng cả keyword (MySQL) và AI (Milvus), sau đó gộp kết quả và render ra template
     print("=== HÀM SEARCH: ĐANG SỬ DỤNG NGƯỠNG AI===")
     searched_raw = ""
     searched = ""
@@ -581,32 +581,124 @@ def introduce(request):
     return render(request, 'app/introduce.html')
 
 
-from django.http import JsonResponse # để trả JSON response
-from django.views.decorators.csrf import csrf_exempt # để bỏ qua CSRF (nếu cần). cho phép frontend JS gọi API mà không cần CSRF token
-import json # để parse JSON - đọc dữ liệu gửi từ chatbot.js
-#from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\RAG_Milvus\rag_utils.py
-from .rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\WebShop\app\rag_utils.py
+# from django.http import JsonResponse # để trả JSON response
+# from django.views.decorators.csrf import csrf_exempt # để bỏ qua CSRF (nếu cần). cho phép frontend JS gọi API mà không cần CSRF token
+# import json # để parse JSON - đọc dữ liệu gửi từ chatbot.js
+# #from rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\RAG_Milvus\rag_utils.py
+# from .rag_utils import search_text  # ✅ hàm bạn đã viết sẵn D:\Big_project_2025\WebShop\app\rag_utils.py
+# @csrf_exempt
+# def chatbot_api(request):
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body.decode("utf-8")) # Đọc dữ liệu gửi từ chatbot.js
+#             question = data.get("question", "") # Lấy câu hỏi từ data
+#             if not question:
+#                 return JsonResponse({"answer": "❌ Bạn chưa nhập câu hỏi"}, status=400)
+
+#             # Gọi Milvus RAG
+#             answer = search_text(question, top_k=1)
+
+#             return JsonResponse({"answer": answer}) # { "answer": "nội dung tìm được từ Milvus" }
+#         except Exception as e:
+#             return JsonResponse({"answer": f"❌ Lỗi server: {str(e)}"}, status=500)
+#     return JsonResponse({"answer": "❌ Chỉ hỗ trợ POST"}, status=405)
+# =========================================================
+# API CHATBOT - DJANGO PROXY SANG RAG MICROSERVICE
+# =========================================================
+
+import json
+import requests
+
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
 @csrf_exempt
 def chatbot_api(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body.decode("utf-8")) # Đọc dữ liệu gửi từ chatbot.js
-            question = data.get("question", "") # Lấy câu hỏi từ data
-            if not question:
-                return JsonResponse({"answer": "❌ Bạn chưa nhập câu hỏi"}, status=400)
+    """
+    Frontend vẫn gọi URL cũ:
+        /chatbot_api/
 
-            # Gọi Milvus RAG
-            answer = search_text(question, top_k=1)
+    Nhưng Django không chạy RAG trực tiếp nữa.
+    Django chỉ nhận câu hỏi rồi gửi sang FastAPI RAG service:
+        http://127.0.0.1:8010/chat
+    """
+    if request.method != "POST":
+        return JsonResponse({
+            "answer": "❌ Chỉ hỗ trợ POST"
+        }, status=405)
 
-            return JsonResponse({"answer": answer}) # { "answer": "nội dung tìm được từ Milvus" }
-        except Exception as e:
-            return JsonResponse({"answer": f"❌ Lỗi server: {str(e)}"}, status=500)
-    return JsonResponse({"answer": "❌ Chỉ hỗ trợ POST"}, status=405)
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        question = data.get("question", "").strip()
+        history = data.get("history", [])
+        print("\n[Django chatbot_api]")
+        print("question:", question)
+        print("history length:", len(history))
+        print("history preview:", history[:2])
+
+        if not question:
+            return JsonResponse({
+                "answer": "❌ Bạn chưa nhập câu hỏi"
+            }, status=400)
+
+        rag_api_url = getattr(
+            settings,
+            "RAG_API_URL",
+            "http://127.0.0.1:8010/chat"
+        )
+
+        rag_response = requests.post(
+            rag_api_url,
+            json={
+                "question": question,
+                "history": history
+            },
+            timeout=330
+        )
+
+        rag_response.raise_for_status()
+        rag_data = rag_response.json()
+
+        return JsonResponse({
+            "answer": rag_data.get(
+                "answer",
+                "Xin lỗi, tôi chưa có thông tin về vấn đề này."
+            ),
+            "intent": rag_data.get("intent", ""),
+            "product_count": rag_data.get("product_count", 0),
+            "policy_count": rag_data.get("policy_count", 0),
+            "elapsed": rag_data.get("elapsed", 0),
+        })
+
+    except requests.exceptions.ConnectionError:
+        return JsonResponse({
+            "answer": (
+                "❌ Chatbot RAG chưa chạy. "
+                "Hãy mở terminal và chạy: uvicorn rag_api:app --host 127.0.0.1 --port 8010"
+            )
+        }, status=503)
+
+    except requests.exceptions.Timeout:
+        return JsonResponse({
+            "answer": "❌ Chatbot phản hồi quá lâu. Hãy kiểm tra Ollama, Milvus hoặc hỏi ngắn hơn."
+        }, status=504)
+
+    except json.JSONDecodeError:
+        return JsonResponse({
+            "answer": "❌ Dữ liệu gửi lên không hợp lệ."
+        }, status=400)
+
+    except Exception as e:
+        return JsonResponse({
+            "answer": f"❌ Lỗi server: {str(e)}"
+        }, status=500)
+
 
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
-
 def admin_check(user):
     return user.is_staff
 
