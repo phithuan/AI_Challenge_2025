@@ -1,4 +1,4 @@
-# CUỘC THI AI Challenge 2025
+# CUỘC THI AI Challenge 2025 - BÊN DƯỚI NỮA LÀ VỀ DỰ ÁN THỰC TẬP PHÁT TRIỂN LÊN CHAT BOT RAG
 Tên đội: HTTA Legends Cuộc thi: AI Challenge 2025 – Thành phố Hồ Chí Minh
 https://aichallenge.hochiminhcity.gov.vn/
 ## 🎬 Demo video  
@@ -33,7 +33,9 @@ https://aichallenge.hochiminhcity.gov.vn/
 
 ---
 ---
-##  Ứng Dụng Tiếp Theo: Vector Search trong E-commerce (Nội Thất PT)
+##  Ứng Dụng Tiếp Theo: AI Engineer Intern  ·  AI Powered E-Commerce Search & Chatbot  (Nội Thất PT)
+
+### tìm kiếm đa phương thức
 
 Dựa trên kinh nghiệm xử lý dữ liệu lớn từ dự án **Text-to-Video Retrieval**, tôi nhận thấy tiềm năng giải quyết các vấn đề tìm kiếm sản phẩm trong thương mại điện tử bằng công nghệ **Vector Search**.
 

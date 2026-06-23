@@ -14,8 +14,8 @@ PRODUCT_FILE = os.path.join(DATA_DIR, "products_final.json")
 # ─────────────────────────────────────────────────────────────
 # THAM SỐ CHUNKING CHÍNH SÁCH
 # ─────────────────────────────────────────────────────────────
-POLICY_CHUNK_SIZE    = 550
-POLICY_CHUNK_OVERLAP = 120
+POLICY_CHUNK_SIZE    = 1000
+POLICY_CHUNK_OVERLAP = 220
 
 # ═════════════════════════════════════════════════════════════
 # NGUỒN A — SẢN PHẨM

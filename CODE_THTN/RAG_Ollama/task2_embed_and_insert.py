@@ -175,3 +175,8 @@ if __name__ == "__main__":
     # 6. Kiểm tra
     verify(client)
     print("\n✅ Hoàn tất! Chạy chat_bot_rag.py để test.")
+
+
+
+
+
