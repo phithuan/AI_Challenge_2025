@@ -37,7 +37,7 @@ https://aichallenge.hochiminhcity.gov.vn/
 
 ## Demo Video
 
-[![Demo Project Video](https://img.youtube.com/vi/ajCMvLVAvGE/0.jpg)](https://www.youtube.com/watch?v=ajCMvLVAvGE)
+[![Demo Project Video](https://img.youtube.com/vi/idByzbFqUj8/0.jpg)](https://www.youtube.com/watch?v=idByzbFqUj8)
    
 ## Bài toán
 
