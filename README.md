@@ -33,29 +33,110 @@ https://aichallenge.hochiminhcity.gov.vn/
 
 ---
 ---
-##  Ứng Dụng Tiếp Theo: AI Engineer Intern  ·  AI Powered E-Commerce Search & Chatbot  (Nội Thất PT)
+# AI Engineer Intern · AI-Powered E-Commerce Search & RAG Chatbot (Nội Thất PT)
 
-### tìm kiếm đa phương thức
+## Demo Video
 
-Dựa trên kinh nghiệm xử lý dữ liệu lớn từ dự án **Text-to-Video Retrieval**, tôi nhận thấy tiềm năng giải quyết các vấn đề tìm kiếm sản phẩm trong thương mại điện tử bằng công nghệ **Vector Search**.
+[▶️ Watch Demo on YouTube](https://www.youtube.com/watch?v=ajCMvLVAvGE)
 
-### 🔎 Vấn đề hiện tại khi tìm kiếm sản phẩm
-* Khi người dùng gõ tên sản phẩm, nếu không khớp chuẩn xác — site thường trả về **không có kết quả**.
-    * **Ví dụ:** tìm “bàn tròn gỗ ốc chó màu đen” sẽ không ra sản phẩm nếu tên sản phẩm là “Carolina Dining Table”.
-* Tăng cảm giác khó chịu, trải nghiệm tìm kiếm kém khi dữ liệu sản phẩm lớn.
+## Bài toán
 
-### 💡 Giải pháp: Kết hợp Vector Search (Semantic Search) với Milvus
-* Biến tên và mô tả sản phẩm thành **embedding (vector)**.
-* Khi user gõ query như “áo thun nam đẹp mặc hè”, hệ thống hiểu **ý nghĩa** (semantic), không chỉ khớp từ khóa — tìm ra sản phẩm phù hợp.
-* Cải thiện đáng kể khả năng tìm kiếm: kể cả khi từ ngữ khác biệt, vẫn có thể tìm đúng sản phẩm.
+Hệ thống tìm kiếm sản phẩm truyền thống dựa trên keyword matching gặp nhiều hạn chế khi dữ liệu sản phẩm tăng lớn:
 
-### 🤖 Mở rộng: Chatbot hỗ trợ khách hàng
-* Dựa trên embedding / semantic search: chatbot có thể đề xuất sản phẩm phù hợp, trả lời tự động các câu hỏi như “Cho mình áo thun nam thoáng mát mặc hè” → gợi ý sản phẩm.
-* Cải thiện UX, giảm tải cho bộ phận hỗ trợ, tăng khả năng khách hàng tìm đúng món mình cần.
----
-## kết quả
+* Không hiểu được ý nghĩa ngữ nghĩa của truy vấn.
+* Không hỗ trợ tìm kiếm bằng hình ảnh.
+* Dễ trả về kết quả rỗng khi tên sản phẩm và mô tả của người dùng khác nhau.
+* Khó hỗ trợ tư vấn sản phẩm và giải đáp chính sách tự động.
 
-Xây dựng web bán sản phẩm nội thất thông minh cho cửa hàng Nội Thất PT (**Sử dụng Framework Django**):
-* **Tìm sản phẩm bằng ảnh** (chụp/gửi ảnh → ra đúng món đồ).
-* **Tìm sản phẩm bằng câu mô tả tự nhiên tiếng Việt** (dài, lủng củng, sai chính tả vẫn ra đúng).
-* **Chatbot tự động tư vấn**, hiểu ý khách hàng ngay lập tức.
+## Giải pháp kỹ thuật
+
+## 1. Multimodal Product Retrieval
+
+Xây dựng hệ thống tìm kiếm đa phương thức cho phép:
+
+* Text → Product Retrieval
+* Image → Product Retrieval
+
+Sử dụng CLIP để đưa hình ảnh và văn bản về cùng không gian embedding, cho phép truy xuất sản phẩm theo ngữ nghĩa thay vì khớp từ khóa.
+
+## 2. Semantic Search Pipeline
+
+Thiết kế pipeline xử lý dữ liệu sản phẩm:
+
+* Chuẩn hóa dữ liệu sản phẩm từ JSON.
+* Sinh `full_description` cho từng sản phẩm.
+* Tách và chuẩn hóa dữ liệu chính sách từ các tài liệu Markdown.
+* Chunking theo Heading + Recursive Text Splitting để giữ ngữ cảnh nghiệp vụ.
+
+Embedding được tạo bằng:
+
+* BGE-M3 (1024 dimensions)
+* Ollama Local Embedding Service
+
+Vector được lưu trữ trên:
+
+* Milvus Vector Database
+* HNSW Index
+* COSINE Similarity Search
+
+## 3. Retrieval-Augmented Generation (RAG)
+
+Xây dựng chatbot RAG gồm các bước:
+
+1. Intent Classification
+2. Query Embedding
+3. Vector Retrieval từ Milvus
+4. Context Construction
+5. LLM Response Generation
+
+Hệ thống hỗ trợ 3 nhóm intent:
+
+* `search_product`
+* `search_policy`
+* `answer_direct`
+
+Cho phép chatbot vừa tìm kiếm sản phẩm vừa trả lời chính sách bảo hành, vận chuyển, đổi trả và tư vấn nội thất.
+
+## 4. Hallucination Prevention & Guardrails
+
+Triển khai nhiều cơ chế giảm hallucination:
+
+* Retrieval chỉ sử dụng câu hỏi hiện tại, không dùng toàn bộ lịch sử hội thoại.
+* Multi-turn conversation được xử lý bằng cách chỉ đưa 2 phản hồi assistant gần nhất vào prompt.
+* Áp dụng similarity threshold để loại bỏ kết quả retrieval có độ liên quan thấp.
+* Không cho phép LLM tự sinh tên sản phẩm, giá bán, kích thước hoặc chất liệu ngoài dữ liệu truy xuất.
+* Cơ chế fallback khi không tìm thấy context phù hợp.
+
+## 5. Server-Side Product Link Injection
+
+Giải quyết lỗi LLM tạo sai URL sản phẩm:
+
+* LLM chỉ sinh placeholder `[SP1]`, `[SP2]`, ...
+* Backend ánh xạ placeholder với `product_id` thật từ metadata Milvus.
+* Tự động inject link sản phẩm phía server.
+
+Giúp loại bỏ hoàn toàn hiện tượng sinh sai URL hoặc điều hướng sai sản phẩm.
+
+## Công nghệ sử dụng
+
+* Python
+* Django
+* FastAPI
+* Milvus
+* Ollama
+* BGE-M3
+* CLIP
+* Groq API (Llama 3.1 8B)
+* Vector Search
+* Retrieval-Augmented Generation (RAG)
+
+## Kết quả
+
+* Xây dựng thành công website nội thất tích hợp Multimodal Search và RAG Chatbot.
+* Hỗ trợ tìm kiếm sản phẩm bằng văn bản và hình ảnh.
+* Tìm kiếm theo ngữ nghĩa thay vì từ khóa chính xác.
+* Giảm đáng kể hiện tượng hallucination thông qua retrieval guardrails và server-side link generation.
+* Đạt ~92.9% tỷ lệ pass trên bộ kiểm thử RAG gồm 28 test case.
+
+
+
