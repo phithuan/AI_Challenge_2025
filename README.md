@@ -37,8 +37,7 @@ https://aichallenge.hochiminhcity.gov.vn/
 
 ## Demo Video
 
-[▶️ Watch Demo on YouTube](https://www.youtube.com/watch?v=ajCMvLVAvGE)
-
+[![Demo Project Video](demo.png)](https://www.youtube.com/watch?v=ajCMvLVAvGE)    
 ## Bài toán
 
 Hệ thống tìm kiếm sản phẩm truyền thống dựa trên keyword matching gặp nhiều hạn chế khi dữ liệu sản phẩm tăng lớn:
