@@ -36,9 +36,13 @@ https://aichallenge.hochiminhcity.gov.vn/
 # AI Engineer Intern · AI-Powered E-Commerce Search & RAG Chatbot (Nội Thất PT)
 
 ## Demo Video
+<h2>Demo Video</h2>
 
-[![Demo Project Video](demo.png)](https://www.youtube.com/watch?v=ajCMvLVAvGE)    
-## Bài toán
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=ajCMvLVAvGE">
+    <img src="demo.png" alt="Demo Video" width="900">
+  </a>
+</p>## Bài toán
 
 Hệ thống tìm kiếm sản phẩm truyền thống dựa trên keyword matching gặp nhiều hạn chế khi dữ liệu sản phẩm tăng lớn:
 
