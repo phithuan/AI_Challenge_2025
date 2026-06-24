@@ -41,14 +41,32 @@ https://aichallenge.hochiminhcity.gov.vn/
    
 ## Bài toán
 
-Hệ thống tìm kiếm sản phẩm truyền thống dựa trên keyword matching gặp nhiều hạn chế khi dữ liệu sản phẩm tăng lớn:
+Các hệ thống thương mại điện tử truyền thống thường gặp hai nhóm vấn đề chính:
+
+### 1. Product Search
+
+Hệ thống tìm kiếm dựa trên keyword matching gặp nhiều hạn chế khi dữ liệu sản phẩm tăng lớn:
 
 * Không hiểu được ý nghĩa ngữ nghĩa của truy vấn.
 * Không hỗ trợ tìm kiếm bằng hình ảnh.
 * Dễ trả về kết quả rỗng khi tên sản phẩm và mô tả của người dùng khác nhau.
-* Khó hỗ trợ tư vấn sản phẩm và giải đáp chính sách tự động.
+* Khó xử lý các truy vấn tự nhiên hoặc chứa lỗi chính tả.
+
+### 2. Product Consultation & Policy Support
+
+Các chatbot thông thường sử dụng LLM thuần (không Retrieval) thường gặp các vấn đề:
+
+* Hallucination khi tư vấn sản phẩm.
+* Tự sinh thông tin không tồn tại trong hệ thống.
+* Trả lời sai về giá bán, kích thước hoặc chất liệu sản phẩm.
+* Không truy cập được dữ liệu chính sách bảo hành, vận chuyển và đổi trả của doanh nghiệp.
+* Khó duy trì ngữ cảnh trong các cuộc hội thoại nhiều lượt.
+
+Điều này làm giảm độ tin cậy của chatbot trong môi trường thương mại điện tử thực tế.
 
 ## Giải pháp kỹ thuật
+
+...
 
 ## 1. Multimodal Product Retrieval
 
